@@ -1,20 +1,39 @@
-const mongoose = require('mongoose');
+import  mongoose  from 'mongoose';
 const TenantSchema = new mongoose.Schema({
-    name: String,
-    slug: { type: String, unique: true },
-    // Instagram / Meta credentials per tenant
-    instagram: {
-        ig_user_id: String,
-        page_id: String,
-        access_token: String,
-        token_expires_at: Date
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    settings: {
-        auto_reply_enabled: { type: Boolean, default: true },
-        model: { type: String, default: 'gemini-small' }
+    businessName: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        unique: true
+    },
+    instagram: {
+        pageId: {
+            type: String,
+            required: true
+        },
+        igBusinessId: {
+            type: String,
+            required: true
+        },
+        accessToken: {
+            type: String,
+            required: true
+        },
+        tokenExpiresAt: Date
     },
 
-}, {
-    timestamps: true
-});
+
+    settings: {
+        autoReplyEnabled: { type: Boolean, default: true },
+        model: { type: String, default: 'gemini-small' }
+    }
+}, { timestamps: true });
 module.exports = mongoose.model('Tenant', TenantSchema);
+
