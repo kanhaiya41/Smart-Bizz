@@ -1,5 +1,3 @@
-
-
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
@@ -17,7 +15,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    
     // User can own or manage multiple tenants (businesses/pages)
     tenants: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -31,4 +29,5 @@ const UserSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+export default User;

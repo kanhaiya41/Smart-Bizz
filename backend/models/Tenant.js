@@ -1,4 +1,5 @@
 import  mongoose  from 'mongoose';
+
 const TenantSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,7 +29,6 @@ const TenantSchema = new mongoose.Schema({
         },
         tokenExpiresAt: Date
     },
-
 
     settings: {
         autoReplyEnabled: { type: Boolean, default: true },

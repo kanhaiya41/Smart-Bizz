@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import dbConnect from './utills/dbConnect.js';
 import cors from 'cors'
+import authApp from './routes/authRoutes.js'
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ dbConnect();
 app.get('/', async (req, res) => {
     res.send('all runs');
 })
+
+app.use('/auth',authApp)
 
 
 
