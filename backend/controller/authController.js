@@ -1,6 +1,35 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import Tenant from "../models/Tenant.js"
+
+
+export async function exchangeCodeForToken(code) {
+  try {
+    const res = await axios.get(
+      "https://graph.facebook.com/v18.0/oauth/access_token",
+      {
+        params: {
+          client_id: process.env.META_APP_ID,
+          client_secret: process.env.META_APP_SECRET,
+          redirect_uri: process.env.META_REDIRECT_URI,
+          code
+        }
+      }
+    );
+
+    if (!res.data?.access_token) {
+      throw new Error("No access token from Meta");
+    }
+
+    return res.data;
+  } catch (err) {
+    throw new Error(
+      err.response?.data?.error?.message || "OAuth exchange failed"
+    );
+  }
+}
+
 
 /* ===================== SIGN UP ===================== */
 export const signup = async (req, res) => {
@@ -98,5 +127,85 @@ export const login = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const socialConnection = async (req, res) => {
+  try {
+    const { code, state: userId } = req.query;
+    if (!code || !userId) {
+      return res.status(400).send("Invalid callback");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    //  Code → USER ACCESS TOKEN
+    const tokenData = await exchangeCodeForToken(code);
+    const userAccessToken = tokenData.access_token;
+
+    //  Get user's pages
+    const pagesRes = await axios.get(
+      "https://graph.facebook.com/v18.0/me/accounts",
+      { params: { access_token: userAccessToken } }
+    );
+
+    if (!pagesRes.data.data.length) {
+      throw new Error("No Facebook pages found");
+    }
+
+    let selectedPage = null;
+    let igBusinessId = null;
+
+    //  Find the page which has IG business linked
+    for (const page of pagesRes.data.data) {
+      const igRes = await axios.get(
+        `https://graph.facebook.com/v18.0/${page.id}`,
+        {
+          params: {
+            fields: "instagram_business_account",
+            access_token: page.access_token
+          }
+        }
+      );
+
+      if (igRes.data.instagram_business_account) {
+        selectedPage = page;
+        igBusinessId = igRes.data.instagram_business_account.id;
+        break; // only one
+      }
+    }
+
+    if (!selectedPage) {
+      throw new Error("No Instagram business account linked");
+    }
+
+    //  Create tenant
+    const tenant = await Tenant.create({
+      owner: userId,
+      businessName: selectedPage.name,
+      slug: selectedPage.name.toLowerCase().replace(/\s+/g, "-"),
+      page: {
+        pageId: selectedPage.id,
+        igBusinessId,
+        accessToken: selectedPage.access_token
+      }
+    });
+
+    //  Update user
+    await User.findByIdAndUpdate(userId, {
+      $push: {
+        tenants: {
+          name: selectedPage.name,
+          tenantId: tenant._id
+        }
+      }
+    });
+
+    return res.redirect(process.env.FRONTEND_SUCCESS_URL);
+
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send(err.message);
   }
 };

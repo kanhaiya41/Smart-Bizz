@@ -14,7 +14,7 @@ const TenantSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    instagram: {
+    page: {
         pageId: {
             type: String,
             required: true
@@ -35,5 +35,6 @@ const TenantSchema = new mongoose.Schema({
         model: { type: String, default: 'gemini-small' }
     }
 }, { timestamps: true });
-module.exports = mongoose.model('Tenant', TenantSchema);
+const Tenant = mongoose.model('Tenant', TenantSchema);
+export default Tenant;
 

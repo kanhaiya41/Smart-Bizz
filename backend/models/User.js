@@ -15,11 +15,16 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    
+
     // User can own or manage multiple tenants (businesses/pages)
     tenants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tenant'
+        name: String,
+        tenantId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tenant'
+        }
+
+
     }],
 
     role: {
