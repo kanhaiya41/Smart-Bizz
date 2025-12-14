@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Tenant from "../models/Tenant.js"
+import axios from "axios"
 
 
 export async function exchangeCodeForToken(code) {
@@ -21,9 +22,9 @@ export async function exchangeCodeForToken(code) {
     if (!res.data?.access_token) {
       throw new Error("No access token from Meta");
     }
-
     return res.data;
   } catch (err) {
+    console.log(err)
     throw new Error(
       err.response?.data?.error?.message || "OAuth exchange failed"
     );
@@ -130,9 +131,12 @@ export const login = async (req, res) => {
   }
 };
 
+
 export const socialConnection = async (req, res) => {
   try {
     const { code, state: userId } = req.query;
+    console.log(req.query);
+
     if (!code || !userId) {
       return res.status(400).send("Invalid callback");
     }
@@ -144,21 +148,25 @@ export const socialConnection = async (req, res) => {
     const tokenData = await exchangeCodeForToken(code);
     const userAccessToken = tokenData.access_token;
 
+    console.log("USER ACCESS TOKEN:", userAccessToken);
+
     //  Get user's pages
     const pagesRes = await axios.get(
       "https://graph.facebook.com/v18.0/me/accounts",
       { params: { access_token: userAccessToken } }
     );
 
-    if (!pagesRes.data.data.length) {
+    const pages = pagesRes.data.data;
+    console.log("PAGES:", pages);
+
+    if (!pages || pages.length === 0) {
       throw new Error("No Facebook pages found");
     }
 
-    let selectedPage = null;
-    let igBusinessId = null;
+    const igPages = [];
 
-    //  Find the page which has IG business linked
-    for (const page of pagesRes.data.data) {
+    //  Find ALL pages which have IG business linked
+    for (const page of pages) {
       const igRes = await axios.get(
         `https://graph.facebook.com/v18.0/${page.id}`,
         {
@@ -170,42 +178,67 @@ export const socialConnection = async (req, res) => {
       );
 
       if (igRes.data.instagram_business_account) {
-        selectedPage = page;
-        igBusinessId = igRes.data.instagram_business_account.id;
-        break; // only one
+        igPages.push({
+          pageId: page.id,
+          pageName: page.name,
+          pageAccessToken: page.access_token,
+          igBusinessId: igRes.data.instagram_business_account.id
+        });
       }
     }
 
-    if (!selectedPage) {
+    if (igPages.length === 0) {
       throw new Error("No Instagram business account linked");
     }
 
-    //  Create tenant
-    const tenant = await Tenant.create({
-      owner: userId,
-      businessName: selectedPage.name,
-      slug: selectedPage.name.toLowerCase().replace(/\s+/g, "-"),
-      page: {
-        pageId: selectedPage.id,
-        igBusinessId,
-        accessToken: selectedPage.access_token
-      }
-    });
+    //  Create tenants for each IG-linked page
+    const createdTenants = [];
 
-    //  Update user
-    await User.findByIdAndUpdate(userId, {
-      $push: {
-        tenants: {
-          name: selectedPage.name,
-          tenantId: tenant._id
+    for (const igPage of igPages) {
+      const slug = igPage.pageName
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+
+      const tenant = await Tenant.create({
+        owner: userId,
+        businessName: igPage.pageName,
+        slug,
+        page: {
+          pageId: igPage.pageId,
+          igBusinessId: igPage.igBusinessId,
+          accessToken: igPage.pageAccessToken
         }
+      });
+
+      createdTenants.push({
+        name: igPage.pageName,
+        tenantId: tenant._id
+      });
+    }
+
+    console.log("createed Teanants ", createdTenants);
+
+
+    //  Update user with all tenants
+    const upadteduser = await User.findByIdAndUpdate(userId, {
+      $push: {
+        tenants: { $each: createdTenants }
       }
-    });
+    }, { new: true });
+
+    console.log("updateduser", upadteduser);
+
 
     return res.redirect(process.env.FRONTEND_SUCCESS_URL);
 
   } catch (err) {
-    console.error(err.message);
+    console.error("SOCIAL CONNECT ERROR:", err.message);
     return res.status(500).send(err.message);
   }
 };
+
+
+
+
+
+

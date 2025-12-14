@@ -25,7 +25,21 @@ app.get('/', async (req, res) => {
     res.send('all runs');
 })
 
-app.use('/auth',authApp)
+app.get("/auth/instagram", (req, res) => {
+    const oauthUrl =
+        "https://www.facebook.com/v18.0/dialog/oauth" +
+        "?client_id=" + process.env.META_APP_ID +
+        "&redirect_uri=" + encodeURIComponent(process.env.META_REDIRECT_URI) +
+        "&response_type=code" +
+        "&scope=email,public_profile,pages_show_list" +
+        // instagram
+        // "&scope=instagram_basic,instagram_manage_messages" +
+        "&state=" + "693ef33a3dfcb0a4a11c0ad4";
+
+    res.redirect(oauthUrl);
+});
+
+app.use('/auth', authApp)
 
 
 
