@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import dbConnect from './utills/dbConnect.js';
 import cors from 'cors'
 import authApp from './routes/authRoutes.js'
+import webhooks from "./routes/webhooks.js"
 
 dotenv.config();
 
@@ -31,15 +32,16 @@ app.get("/auth/instagram", (req, res) => {
         "?client_id=" + process.env.META_APP_ID +
         "&redirect_uri=" + encodeURIComponent(process.env.META_REDIRECT_URI) +
         "&response_type=code" +
-        "&scope=email,public_profile,pages_show_list" +
+        // "&scope=pages_show_list,pages_read_engagement" +
         // instagram
-        // "&scope=instagram_basic,instagram_manage_messages" +
-        "&state=" + "693ef33a3dfcb0a4a11c0ad4";
+        "&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management" +
+    "&state=" + "693ef33a3dfcb0a4a11c0ad4";
 
     res.redirect(oauthUrl);
 });
 
 app.use('/auth', authApp)
+app.use('/webhook', webhooks)
 
 
 

@@ -177,6 +177,10 @@ export const socialConnection = async (req, res) => {
         }
       );
 
+      console.log("vishal saini", igRes.data);
+
+
+
       if (igRes.data.instagram_business_account) {
         igPages.push({
           pageId: page.id,
@@ -193,6 +197,7 @@ export const socialConnection = async (req, res) => {
 
     //  Create tenants for each IG-linked page
     const createdTenants = [];
+    console.log("igPages", igPages);
 
     for (const igPage of igPages) {
       const slug = igPage.pageName
