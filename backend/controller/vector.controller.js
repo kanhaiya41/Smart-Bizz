@@ -5,6 +5,7 @@ import {
   ensureCollection,
   COLLECTION,
 } from "../services/qdrant.service.js";
+import crypto from "crypto";
 
 /* ===============================
    PDF BUFFER → TEXT
@@ -56,8 +57,22 @@ export async function uploadPDF(req, res) {
   try {
     const { userId } = req.body;
 
-    // multer: single => req.file | multiple => req.files
-    const files = req.files || (req.file ? [req.file] : []);
+    let files = [];
+
+    // ✅ multer.fields() handling
+    if (req.files) {
+      if (req.files.file) {
+        files.push(...req.files.file);
+      }
+      if (req.files.files) {
+        files.push(...req.files.files);
+      }
+    }
+
+    // fallback (kabhi future me single use hua)
+    if (files.length === 0 && req.file) {
+      files = [req.file];
+    }
 
     if (!userId || files.length === 0) {
       return res
@@ -89,7 +104,7 @@ export async function uploadPDF(req, res) {
         const vector = await getEmbedding(chunks[i]);
 
         points.push({
-          id: `${userId}-${source}-${i}`, // ✅ stable & unique
+          id: crypto.randomUUID(),
           vector,
           payload: {
             userId,
@@ -117,6 +132,7 @@ export async function uploadPDF(req, res) {
   }
 }
 
+
 /* ===============================
    🔍 SEARCH USER DATA
 ================================ */
@@ -136,7 +152,7 @@ export async function searchUserData(req, res) {
       vector: queryVector,
       limit,
       with_payload: true,
-    //   with_vector: true,  uncomment when run
+      //   with_vector: true,  uncomment when run
       filter: {
         must: [
           {

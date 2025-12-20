@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import Tenant from "../models/Tenant.js"
 import axios from "axios"
 
-
 export async function exchangeCodeForToken(code) {
   try {
     const res = await axios.get(
