@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "docker compose up -d && nodemon index.js"
   },
   "dependencies": {
     "@qdrant/js-client-rest": "^1.16.2",
