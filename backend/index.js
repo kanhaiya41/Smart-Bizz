@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import dbConnect from './utills/dbConnect.js';
 import cors from 'cors'
-import authApp from './routes/authRoutes.js'
+import authApp from './routes/authRoutes.js';
+import vectorApp from './routes/vector.routes.js';
 
 dotenv.config();
 
@@ -39,8 +40,8 @@ app.get("/auth/instagram", (req, res) => {
     res.redirect(oauthUrl);
 });
 
-app.use('/auth', authApp)
-
+app.use('/auth', authApp);
+app.use('/vector_db', vectorApp);
 
 
 // app.use(express.static(path.join(__dirname, 'frontend', 'build')));
