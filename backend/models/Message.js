@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const MessageSchema = new mongoose.Schema({
-    convo: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation' },
-    tenant: { type: mongoose.Schema.Types.ObjectId, ref: 'Tenant' },
+import { Schema, model } from 'mongoose';
+const MessageSchema = new Schema({
+    convo: { type: Schema.Types.ObjectId, ref: 'Conversation' },
+    tenant: { type: Schema.Types.ObjectId, ref: 'Tenant' },
     from: { type: String }, // 'user' or 'bot' or 'system'
     text: String,
     payload: Object,
@@ -9,4 +9,5 @@ const MessageSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
-module.exports = mongoose.model('Message', MessageSchema);
+const Message = model('Message', MessageSchema);
+export default Message;
