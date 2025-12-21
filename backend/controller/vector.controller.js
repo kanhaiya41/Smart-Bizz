@@ -152,7 +152,7 @@ export async function searchUserData(req, res) {
       vector: queryVector,
       limit,
       with_payload: true,
-      with_vector: true, 
+      with_vector: true,
       filter: {
         must: [
           {
@@ -168,6 +168,7 @@ export async function searchUserData(req, res) {
       count: result.length,
       results: result.map(r => ({
         score: r.score,
+        vector: r.vector, // This is the line ---- we miss
         ...r.payload,
       })),
     });
