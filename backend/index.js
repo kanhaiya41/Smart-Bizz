@@ -4,7 +4,7 @@ import dbConnect from './utills/dbConnect.js';
 import cors from 'cors'
 import authApp from './routes/authRoutes.js'
 import webhooks from "./routes/webhooks.js"
-
+import vectorApp from './routes/vector.routes.js';
 dotenv.config();
 
 const app = express();
@@ -42,6 +42,7 @@ app.get("/auth/instagram", (req, res) => {
 
 app.use('/auth', authApp)
 app.use('/webhook', webhooks)
+app.use('/vector_db', vectorApp);
 
 
 
