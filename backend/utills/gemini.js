@@ -1,9 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from 'dotenv';
+dotenv.config();
 
-const GEMINI_API_KEY = "AIzaSyDfKXV2YsH10S9SpL3zFN5m-DteNm12Zx8";
-
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
+const key = process.env.GEMINI_API_KEY
+const genAI = new GoogleGenerativeAI(key);
 const Gemini_Model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
 });
@@ -45,3 +45,78 @@ export default Gemini_Model
 // }
 
 // testGemini();
+
+
+
+// {
+//   "object": "instagram",
+//   "entry": [
+//     {
+//       "time": 1766327110390,
+//       "id": "17841479961311534",
+//       "messaging": [
+//         {
+//           "sender": {
+//             "id": "17841479961311534"
+//           },
+//           "recipient": {
+//             "id": "2095110131238447"
+//           },
+//           "timestamp": 1766327107185,
+//           "message": {
+//             "mid": "aWdfZAG1faXRlbToxOklHTWVzc2FnZAUlEOjE3ODQxNDc5OTYxMzExNTM0OjM0MDI4MjM2Njg0MTcxMDMwMTI0NDI3NjAxNzI1MDE2Mzc1MjM1NDozMjU4Mjk4NDA5NjcwMDI1NzA2OTYzNTk5OTUyMjM1NzI0OAZDZD",
+//             "text": "Aaaksh Badve Message Aa gaye",
+//             "is_echo": true
+//           }
+//         }
+//       ]
+//     }
+//   ]
+// }
+
+
+// {
+//   "object": "page",
+//   "entry": [
+//     {
+//       "time": 1766337132454,
+//       "id": "972844119238761",
+//       "messaging": [
+//         {
+//           "sender": {
+//             "id": "25531833793163570"
+//           },
+//           "recipient": {
+//             "id": "972844119238761"
+//           },
+//           "timestamp": 1766337130900,
+//           "message": {
+//             "mid": "m_HjRmxdgtUU4wLX-zQQoD62wnDXxecYM62Ofhi-Z8gKwectApkjfmwcl0yHQ4uIzJIwCTsw54gmf5glku0HoUHQ",
+//             "text": "DJ Bisaal",
+//             "nlpv2": {
+//               "detected_locales": [
+//                 {
+//                   "locale": "en_XX",
+//                   "confidence": 0.5494
+//                 }
+//               ],
+//               "traits": {
+//                 "greetings": {
+//                   "id": "5900cc2d-41b7-45b2-b21f-b950d3ae3c5c",
+//                   "value": "true",
+//                   "confidence": 0.5826
+//                 },
+//                 "sentiment": {
+//                   "id": "5ac2b50a-44e4-466e-9d49-bad6bd40092c",
+//                   "value": "neutral",
+//                   "confidence": 0.522
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       ]
+//     }
+//   ]
+// }
+

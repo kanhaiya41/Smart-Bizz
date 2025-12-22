@@ -161,3 +161,5 @@ async function readAllPointsPaginated(userId, queryVector) {
     console.log(allPoints);
 }
 
+
+
