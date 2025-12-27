@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
-// Icons Components (Kept exactly the same as yours)
+// Icons Components (Kept exactly the same)
 const Icons = {
   Home: () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>,
   Rate: () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"></path></svg>,
@@ -17,14 +17,36 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1. Added paths to ALL items to prevent errors
-  const menuItems = [
+  // 1. Get the User Role from LocalStorage
+  const userRole = localStorage.getItem("role");
+
+  // 2. Define Menu for SuperAdmin
+  const superAdminItems = [
     { name: "Dashboard", path: "/dashboard", icon: <Icons.Home /> },
     { name: "User Management", path: "/user-management", icon: <Icons.Rate /> },
     { name: "Channel Heath", path: "/health", icon: <Icons.Bookings /> },
     { name: "AI Usage & Logs", path: "/logs", icon: <Icons.Apartments /> },
     { name: "Subscription", path: "/subscription", icon: <Icons.Pricing /> },
   ];
+
+  // 3. Define Menu for Owner
+  const ownerItems = [
+    { name: "Dashboard", path: "/owner-dashboard", icon: <Icons.Home /> },
+    { name: "Inventory", path: "/inventory", icon: <Icons.Home /> },
+    { name: "Connect Socials", path: "/connect", icon: <Icons.Home /> },
+    { name: "Subscription", path: "/subscription", icon: <Icons.Pricing /> },
+    
+  ];
+
+  // 4. Decide which menu to show
+  const menuItems = userRole === "superAdmin" ? superAdminItems : ownerItems;
+
+  // 5. Handle Logout (Clear storage)
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.clear(); // Clear Token and Role
+    navigate("/"); // Redirect to Login
+  };
 
   return (
     <div className="sidebar">
@@ -36,19 +58,14 @@ const Sidebar = () => {
       <nav className="nav-menu">
         <ul>
           {menuItems.map((item) => {
-            // 2. Logic to determine active state from URL (fixes refresh issue)
             const isActive = location.pathname === item.path;
-            
+
             return (
-              <li
-                key={item.name}
-                className={isActive ? "active" : ""}
-              >
+              <li key={item.name} className={isActive ? "active" : ""}>
                 <a
                   href={item.path}
                   onClick={(e) => {
-                    e.preventDefault(); 
-                    // 3. ACTUALLY Navigate to the page
+                    e.preventDefault();
                     navigate(item.path);
                   }}
                 >
@@ -64,16 +81,17 @@ const Sidebar = () => {
           <ul>
             <li>
               <a href="#support">
-                <span className="icon"><Icons.Support /></span>
+                <span className="icon">
+                  <Icons.Support />
+                </span>
                 <span className="title">Support</span>
               </a>
             </li>
             <li>
-              <a href="/" onClick={(e) => { 
-                  e.preventDefault(); 
-                  navigate('/'); // Go back to Login on Logout
-                }}>
-                <span className="icon"><Icons.LogOut /></span>
+              <a href="/" onClick={handleLogout}>
+                <span className="icon">
+                  <Icons.LogOut />
+                </span>
                 <span className="title">LogOut</span>
               </a>
             </li>
@@ -81,6 +99,8 @@ const Sidebar = () => {
         </div>
       </nav>
 
+      {/* Optional: You can hide the upgrade card for Admins if you want, 
+          or keep it for everyone. Keeping it for now. */}
       <div className="upgrade-card">
         <div className="cat-illustration">
           <div className="moon-shape"></div>

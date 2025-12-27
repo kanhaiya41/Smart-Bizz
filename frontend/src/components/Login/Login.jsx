@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_ENDPOINTS } from "../../apiConfig"; // Import the base URL config
+import { API_ENDPOINTS } from "../../apiConfig"; // Adjust path as needed
 import "./Login.css";
 
 const Login = () => {
@@ -51,7 +51,7 @@ const Login = () => {
     }
   };
 
-  // --- API FUNCTION: LOGIN ---
+  // --- API FUNCTION: LOGIN (UPDATED) ---
   const handleLogin = async (e) => {
     e.preventDefault();
     console.log("Logging in with:", formData);
@@ -69,12 +69,25 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Optional: Save token if your backend sends one
+        // 1. Save Token
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
+
+        // 2. Save Role (Backend sends user object with role)
+        // Default to 'owner' if role is missing for some reason
+        const userRole = data.user?.role || "owner";
+        localStorage.setItem("role", userRole);
+
         alert("Login Successful!");
-        navigate("/connect"); // Navigate to Connect Page
+
+        // 3. Conditional Redirect based on Role
+        if (userRole === "superAdmin") {
+          navigate("/dashboard");
+        } else {
+          // If owner, go to connect page
+          navigate("/connect");
+        }
       } else {
         alert(data.message || "Invalid email or password.");
       }

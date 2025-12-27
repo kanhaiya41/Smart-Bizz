@@ -47,6 +47,7 @@ app.use('/webhook', webhooks);
 app.use('/vector_db', vectorApp);
 app.use('/super-admin', superAdminApp);
 
+
 // app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
 // app.get('/*splat', (req, res) => {

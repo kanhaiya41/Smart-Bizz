@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import { BASE_URL } from "../../apiConfig"; // Import your Base URL
+import { BASE_URL } from "../../apiConfig"; 
 import './Auth.css';
 
 // Importing images from assets
@@ -11,13 +11,33 @@ import whtspLogo from '../../assets/whtsp.png';
 const ConnectSocials = () => {
   const navigate = useNavigate(); 
 
-  // --- UPDATED FUNCTION ---
-  function connectInstagram() {
-      // Redirect to your backend. The backend will construct the Meta URL 
-      // with the correct App IDs and Redirect URIs stored in your .env file.
-      // If BASE_URL is empty (using proxy), this becomes '/auth/instagram'
-      window.location.href = `${BASE_URL}/auth/instagram`;
-  }
+  // --- HELPER: Get User ID from Local Storage ---
+  const getUserId = () => {
+    // 1. Retrieve the userId saved during login
+    const userId = localStorage.getItem("userId"); 
+    
+    // 2. Validation: If no ID is found, force re-login
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      navigate('/'); 
+      return null;
+    }
+    return userId;
+  };
+
+  // --- DYNAMIC CONNECTION HANDLER ---
+  const handleConnect = (platform) => {
+    // 1. Get the current user's ID
+    const userId = getUserId();
+    if (!userId) return;
+
+    // 2. Construct the URL with Path Parameters (Slashes)
+    // Structure: BASE_URL/auth/oauth/USER_ID/PLATFORM_NAME
+    const redirectUrl = `${BASE_URL}/auth/oauth/${userId}/${platform}`;
+    
+    // 3. Redirect the browser to the backend
+    window.location.href = redirectUrl;
+  };
 
   return (
     <div className="connect-page-container">
@@ -32,8 +52,12 @@ const ConnectSocials = () => {
               <img src={instaLogo} alt="Instagram" className="social-icon" />
             </div>
             <h3>Instagram</h3>
-            {/* Call the updated function */}
-            <button className="connect-btn" onClick={connectInstagram}>Connect</button>
+            <button 
+              className="connect-btn" 
+              onClick={() => handleConnect('instagram')}
+            >
+              Connect
+            </button>
           </div>
 
           {/* WhatsApp Card */}
@@ -42,7 +66,12 @@ const ConnectSocials = () => {
               <img src={whtspLogo} alt="WhatsApp" className="social-icon" />
             </div>
             <h3>WhatsApp</h3>
-            <button className="connect-btn">Connect</button>
+            <button 
+              className="connect-btn" 
+              onClick={() => handleConnect('whatsapp')}
+            >
+              Connect
+            </button>
           </div>
 
           {/* Facebook Card */}
@@ -51,12 +80,17 @@ const ConnectSocials = () => {
               <img src={fbLogo} alt="Facebook" className="social-icon" />
             </div>
             <h3>Facebook</h3>
-            <button className="connect-btn">Connect</button>
+            <button 
+              className="connect-btn" 
+              onClick={() => handleConnect('facebook')}
+            >
+              Connect
+            </button>
           </div>
         </div>
 
         <div className="footer-action">
-          <button className="btn-dashboard-link" onClick={() => navigate('/dashboard')}>
+          <button className="btn-dashboard-link" onClick={() => navigate('/owner-dashboard')}>
             Continue to Dashboard <span className="arrow-icon">➔</span>
           </button>
         </div>
@@ -65,4 +99,4 @@ const ConnectSocials = () => {
   );
 };
 
-export default ConnectSocials;   
+export default ConnectSocials;
