@@ -1,16 +1,30 @@
-import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
-    convo: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation' },
-    tenant: { type: mongoose.Schema.Types.ObjectId, ref: 'Tenant' },
-    convo: { type: Schema.Types.ObjectId, ref: 'Conversation' },
-    tenant: { type: Schema.Types.ObjectId, ref: 'Tenant' },
-    from: { type: String }, // 'user' or 'bot' or 'system'
-    text: String,
-    payload: Object,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Tenant",
+    required: true
+  },
+  platform: {
+    type: String,
+    enum: ["instagram", "facebook"],
+    required: true
+  },
+  sender: {
+    type: String,
+    enum: ["user", "bot"],
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  }
+}, { timestamps: true });
 
-}, {
-    timestamps: true
-});
+MessageSchema.index({ user: 1, createdAt: -1 });
 
-const Message = mongoose.model('Message', MessageSchema);
-
+export default mongoose.model("Message", MessageSchema);
