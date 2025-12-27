@@ -4,13 +4,12 @@ import cors from "cors";
 import http from "http";
 
 import dbConnect from "./utills/dbConnect.js";
-import { initSocket } from "./socket.js";
-
 import authApp from "./routes/authRoutes.js";
 import webhooks from "./routes/webhooks.js";
 import vectorApp from "./routes/vector.routes.js";
 import superAdminApp from "./routes/superAdmin.routes.js";
 import bussinessOwnerApp from "./routes/bussinessOwner.rotue.js";
+import { initSocket } from "./utills/socket.js";
 
 dotenv.config();
 
@@ -36,7 +35,7 @@ app.use("/vector_db", vectorApp);
 app.use("/super-admin", superAdminApp);
 app.use("/owner", bussinessOwnerApp);
 
-// 🔥 init socket AFTER routes
+//  init socket AFTER routes
 initSocket(server);
 
 server.listen(process.env.PORT, "0.0.0.0", () => {

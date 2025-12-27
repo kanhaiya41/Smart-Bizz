@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Tenant from "../models/Tenant.js"
 import axios from "axios"
+import { generateToken } from '../utills/jswToken.js';
 
 export async function exchangeCodeForToken(code) {
   try {
@@ -60,11 +61,7 @@ export const signup = async (req, res) => {
     });
 
     // 5. JWT token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token =await  generateToken({id :user._id , name :user.name , email:user.email})
 
     res.status(201).json({
       message: "Signup successful",
@@ -100,17 +97,13 @@ export const login = async (req, res) => {
     }
 
     // 3. Compare password
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    const isMatch = await bcrypt.compare(String(password), user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     // 4. JWT token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = await generateToken({id :user._id , name :user.name , email:user.email})
 
     res.status(200).json({
       message: "Login successful",

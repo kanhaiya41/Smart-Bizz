@@ -1,9 +1,9 @@
 import express from 'express';
-// import { metaEvents, reciveWebhook } from '../controller/webhooks.js';
+import { metaEvents, reciveWebhook } from '../controller/webhooks.js';
 const router = express.Router();
 
 
-// router.get("/meta", reciveWebhook)
-// router.post("/meta", metaEvents);
+router.get("/meta", reciveWebhook)
+router.post("/meta", metaEvents);
 
 export default router

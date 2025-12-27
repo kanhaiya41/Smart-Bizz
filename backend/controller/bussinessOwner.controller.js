@@ -1,11 +1,25 @@
-import User from "../models/User";
+import Message from "../models/Message.js";
+import User from "../models/User.js";
 
 export const getAllMessages = async (req, res) => {
     try {
-        const ownerId = req.user.id;   
-        const users = await User.find({ owner: ownerId })
+        const ownerId = req.user.id;
+        const filter = req.query.filter
+        console.log(req.user);
+
+        let query ={ owner: ownerId }
+
+        if(filter)
+            { query.platform = filter }
+
+
+       
+        const users = await User.find(query)
             .select("-passwordHash")
             .lean();
+
+           
+            
 
         const userIds = users.map(u => u._id);
 

@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+
+        platform: {
+    type: String,
+  },
     name: {
         type: String,
         required: true

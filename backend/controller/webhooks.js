@@ -2,8 +2,10 @@
 import axios from "axios";
 import Tenant from "../models/Tenant.js";
 import { searchUserData } from "../services/embedding.service.js";
-import Message from "../models/Message.js";
+
 import Gemini_Model from "../utills/gemini.js";
+import User from "../models/User.js";
+import Message from "../models/Message.js"
 
 async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
     // FIX: Use 'me/messages' or ensure igBusinessId is the correct Page/Business ID
