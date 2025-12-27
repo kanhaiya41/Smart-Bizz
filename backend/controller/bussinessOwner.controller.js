@@ -1,6 +1,23 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 
+
+export const getProfile = async (req, res) => {
+    try {
+        const ownerId = req.user.id;
+
+        const user = await User.findById(ownerId)
+            .select("-passwordHash")
+            .lean();
+
+        return res.json({ success: true, data:user });
+
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+
 export const getAllMessages = async (req, res) => {
     try {
         const ownerId = req.user.id;
@@ -48,3 +65,7 @@ export const getAllMessages = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
+
+export const todayMessage = async(req,res)=>{
+    
+}
