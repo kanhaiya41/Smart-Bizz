@@ -1,6 +1,6 @@
 import React from "react";
 // Reuse dashboard styles
-import "../Dashboard/Dashboard.css"; 
+
 
 const Subscription = () => {
   return (

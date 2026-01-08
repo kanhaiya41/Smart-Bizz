@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./components/Login/Login";
 import ConnectSocials from "./components/Oauth/Auth"; // Adjust path if your file is named differently
-import Dashboard from "./components/Component/superAdmin/Dashboard/Dashboard";
+import Dashboard from "./components/Component/superAdmin/dashboard/Dashboard.jsx";
 import UserManagement from "./components/Component/superAdmin/User management/UserManagement";
 import ChannelHealth from "./components/Component/superAdmin/Channel/Channel";
 import AiUsage from "./components/Component/superAdmin/AIusage/AiUsage";
@@ -16,36 +16,20 @@ import OwnerSubscription from "./components/Component/owner/subscriptions/OwnerS
 // Helpers
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout"; // <--- Import the Layout
+import Sidebar from "./components/sidebar/Sidebar.jsx";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* --- Public Route --- */}
-        <Route path="/" element={<Login />} />
+  <Routes>
 
-        {/* --- OWNER ROUTES (With Sidebar) --- */}
-        <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
-        <Route element={<Layout />}>
-            <Route path="/owner-dashboard" element={<OwnerDashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
-          <Route path="/subscription" element={<OwnerSubscription />} />
-          </Route>
-        <Route path="/connect" element={<ConnectSocials />} />
-        </Route>
+    <Route path="/" element={<Sidebar></Sidebar>}>
 
-        {/* --- SUPER ADMIN ROUTES (With Sidebar) --- */}
-        <Route element={<ProtectedRoute allowedRoles={["superAdmin"]} />}>
-          {/* We wrap these routes in the Layout so they get the Sidebar */}
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/user-management" element={<UserManagement />} />
-            <Route path="/health" element={<ChannelHealth />} />
-            <Route path="/logs" element={<AiUsage />} />
-            <Route path="/subscription" element={<Subscription />} />
-          </Route>
-        </Route>
-      </Routes>
+    <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
+
+    </Route>
+
+  </Routes>
     </Router>
   );
 }
