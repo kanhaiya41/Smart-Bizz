@@ -22,15 +22,17 @@ const data = [
 
 export const RevenueChart = () => {
   return (
-    <div className='revenue.chart'>
+    <div className='revenue.chart' style={{
+      marginTop:'10px'
+    }}>
       {/* Header section as seen in your image */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
         <div>
-          <span >Revenue</span>
-          <h4>IDR 7.852.000</h4>
+          <span style={{fontSize:'12px'}} >Revenue</span>
+          <h5>IDR 7.852.000</h5>
           <span style={{ color: '#28a745', fontSize: '12px', fontWeight: 'bold' }}>↑ 2.1% <span style={{color: '#999'}}>vs last week</span></span>
         </div>
-        <button style={{ height:'15px', padding: '8px', borderRadius: '8px', border: '1px solid #eee', background: 'none', cursor: 'pointer' }}>View Report</button>
+        <button style={{ height:'15px', fontSize: '10px',  padding: '8px', borderRadius: '8px', border: '1px solid #eee', background: 'none', cursor: 'pointer' }}>View Report</button>
       </div>
       
       <p style={{ color: '#999', fontSize: '13px'}}>Sales from 1-12 Dec, 2020</p>

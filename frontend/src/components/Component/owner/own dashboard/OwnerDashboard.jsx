@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './OwnerDashboard.css';
 import  {CircleChart, RevenueChart} from './utils.Rvenue.chart';
-import { MessageCircle, Instagram, Facebook } from 'lucide-react';
+import { MessageCircle, Instagram, Facebook  } from 'lucide-react';
 const OwnerDashboard = () => {
 
 const topQueriesData = [
@@ -125,7 +125,7 @@ const todayMessage = [
   {
     "user_id": 4,
     "user_name": "Priya Verma",
-    "platform": "Facebook Messenger",
+    "platform": "Messenger",
     "last_active": "2026-01-07 11:15 AM",
     "chat_history": [
       {"sender": "user", "message": "Store kab tak open rehta hai?", "time": "11:10 AM"},
@@ -198,22 +198,35 @@ const todayMessage = [
   return ( 
   <div className='OwnerDashboard'>
 
-    <h4>Dashboard</h4>
+    <div className='searchbaranduserprofile'>
+      <div className='inputSearch'>
+   <input type="search" placeholder='Search' />
+   <i class="ri-search-2-line"></i>
+      </div>
+      <div className='profile-div'>
+        <p>Vishal Saini <i class="ri-arrow-drop-down-line"></i></p>
+        <i class="ri-notification-3-line"></i>
+      </div>
+      <div>
+      </div>
 
+    </div>
+   <hr className='hr'/>
+    <p className='Dashboard'>Dashboard</p>
     <div className='revenueandtop10Querydiv'>
           <RevenueChart/>
           <div className='top10QuerySearch'>
-            <h4>Top Search Question Ask By Users</h4>
+            <p>Top Search Question Ask By Users</p>
             {topQueriesData.map((query , i)=>{
               return (
                 <div key={i} className='searchQueryCard'>
                     <div className='searchQueryCard-icon'>
                       <span> 
                       {query.platform === "Messenger" ? 
-                      (<Facebook color="#1877F2" size={24} />): 
+                      (<Facebook color="#1877F2" size={15} />): 
                       (query.platform === "Instagram" ? 
-                        (<Instagram color="#E1306C" size={24} />):(
- <                         MessageCircle color="#25D366" size={24} />
+                        (<Instagram color="#E1306C" size={15} />):(
+ <                         MessageCircle color="#25D366" size={15} />
                       ))}
                         </span>
                     <p>{query.query}</p>
@@ -233,7 +246,16 @@ const todayMessage = [
     <div className='todayUsersMessageAndPieChart'>
 
       <div className='todayMessage'>
-        <h5>Today</h5>
+        <div className='todayMessage-action'>
+    <h5>Today</h5>
+    <select name="" id="">
+      <option value="">All</option>
+      <option value="">Instagram</option>
+      <option value="">Messenger</option>
+      <option value="">Whatsapp</option>
+    </select>
+        </div>
+    
 
         <div className='todayMessageheading'>
             <p>Name</p>
@@ -246,12 +268,22 @@ const todayMessage = [
         <div>
           {todayMessage.map((user , index)=>{
            return <div key={index} className='todayMessagebody'>
-              <p>{user.user_name}</p>
-              <p> {user.platform === "Messenger" ? 
-                      (<Facebook color="#1877F2" size={24} />): 
+              <p style={{
+                display:"flex",
+                alignItems:'center',
+                gap:'5px'
+
+              }}><i style={{fontSize:'25px'}} class="ri-account-circle-fill"></i>{user.user_name}</p>
+              <p style={{
+                display:"flex",
+                alignItems:'center',
+                gap:'5px'
+
+              }}> {user.platform === "Messenger" ? 
+                      (<Facebook color="#1877F2" size={15} />): 
                       (user.platform === "Instagram" ? 
-                        (<Instagram color="#E1306C" size={24} />):(
- <                         MessageCircle color="#25D366" size={24} />
+                        (<Instagram color="#E1306C" size={15} />):(
+ <                         MessageCircle color="#25D366" size={15} />
                       ))}{user.platform}</p>
               <p>{user.last_active}</p>
               <p>{user.user_id}</p>
@@ -264,7 +296,7 @@ const todayMessage = [
       </div>
 
       <div className='pie-Chart'>
-         <p>Order Time</p>
+         <p>Statistic</p>
          <span>02-12-2016 Thursday</span>
         <div className='pie-Chart-items'>
          
@@ -292,7 +324,11 @@ const todayMessage = [
   <span className="legend-value">20%</span>
 </div>          
     </div>
+
+    <div className='circlechart'>
         <CircleChart/>
+    </div>
+      
       </div>
 
     </div>

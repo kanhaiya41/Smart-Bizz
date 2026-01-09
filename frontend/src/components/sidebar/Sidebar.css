@@ -5,34 +5,54 @@
 
 }
 
-.sidebar{
-width: 200px;
-background-color: #F1F2F7;
-justify-content: center;
-align-items: center;
-}
-
-.main-cotent{
-  width: 100px;
-
-}
-.sidebarlinks{
+.sidebar {
+  width: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
+  background-color: #F1F2F7;
   align-items: center;
-  background-color: antiquewhite;
+  gap: 10px;
+}
 
+.sidebar h4 {
+  margin-top: 28px;
+  font-size: 12px;
+}
+.hr{
+  width: 100%;
+  height: 0.6px;
+
+  background-color:lightgray;
+
+}
+.main-content {
+  width: 100%;
+}
+.sidebarlinks{
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+    gap: 10px;
+
+}
+.menudiv ,.otherdiv{
+  p{
+    font-size: 12px;
+    color: grey;
+  }
 }
 
 .navCard{
-  height: 100%;
-  background-color: aliceblue;
   padding: 10px;
   display: flex;
-  p{
+  gap: 10px;
+  cursor: pointer;
+  i{
     font-size: 12px;
+  }
+  p{
+    font-size: 10px;
+    color: black;
   }
   
 }

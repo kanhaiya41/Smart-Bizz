@@ -24,8 +24,8 @@ function App() {
   <Routes>
 
     <Route path="/" element={<Sidebar></Sidebar>}>
-
     <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
+    <Route path="inventory" element={<Inventory/>}></Route>
 
     </Route>
 

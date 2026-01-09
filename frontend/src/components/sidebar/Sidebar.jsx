@@ -24,7 +24,7 @@ const Sidebar = () => {
   const ownerItems = [
     { name: "Dashboard", path: "/dashboard", icon: 'ri-dashboard-line' },
     { name: "Inventory", path: "/inventory",icon: 'ri-dashboard-line'},
-    { name: "Connect Socials", path: "/connect", icon: 'ri-dashboard-line'},
+    { name: "Accounts", path: "/accounts", icon: 'ri-dashboard-line'},
     { name: "Subscription", path: "/subscription", icon: 'ri-dashboard-line'},
     
   ];
@@ -44,15 +44,14 @@ const Sidebar = () => {
 
     <div className="sidebar">
       <h4>Smartbizz</h4>
-      <hr />
+      < hr className="hr"/>
       <div className="sidebarlinks">
-   
-        <div>
+        <div className="menudiv">
                <p>Menu</p>
           {
             ownerItems.map((nav , index)=>{
               return <div 
-              onClick={()=>navigate("/dashboard")}
+              onClick={()=>navigate(nav.path)}
                key={index} className="navCard">
                 <i className={nav.icon}></i>
                 <p>{nav.name}</p>
@@ -60,7 +59,7 @@ const Sidebar = () => {
             })
           }
         </div>
-                <div>
+         <div className="otherdiv">
                <p>Other</p>
           {
             ownerItems.map((nav , index)=>{

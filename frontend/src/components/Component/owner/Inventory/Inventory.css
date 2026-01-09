@@ -1,180 +1,54 @@
-/* Container reuse */
-.dashboard-container {
-  display: block;
-  padding: 30px;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background-color: #F4F7FE;
-  font-family: 'DM Sans', sans-serif;
-  color: #2B3674;
+.inventory-div{
+   width: 100%;
+  padding: 10px;
+}
+.fileInput{
+margin: 20px;
+height: 200px;
+border: 0.5px dotted ;
+display: flex;
+justify-content: center;
+align-items: center;
 }
 
-/* Header */
-.page-header {
+.inventory-list-headings{
+  display: grid;
+  grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr;
+  border-top: 0.5px solid lightgrey;
+  padding: 10px;
+  p{
+    font-size: 12px;
+  }
+}
+.inventory-list-items{
+  height: 200px;
+  display: flex;
+ flex-direction: column;
+  overflow-y: scroll;
+}
+
+.inventory-list-items-card{
+  display: grid;
+  grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr;
+  border-bottom: 0.5px solid lightgrey;
+  
+  padding: 10px;
+  p{
+    font-size: 12px;
+  }
+}
+
+
+.inventory-list-filter{
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+
 }
 
-.header-text h1 {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0;
-  color: #2B3674;
-}
 
-.header-text p {
-  color: #A3AED0;
-  margin: 5px 0 0 0;
-  font-size: 14px;
-}
-
-/* New Inventory Button */
-.btn-new-inventory {
-  background-color: #4318FF;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(67, 24, 255, 0.2);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-new-inventory:hover {
-  background-color: #3311CC;
-  transform: translateY(-2px);
-}
-
-.btn-new-inventory:disabled {
-  background-color: #A3AED0;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Upload Progress Bar */
-.upload-bar-container {
-  width: 100%;
-  height: 6px;
-  background-color: #E0E5F2;
-  border-radius: 3px;
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
-.upload-bar-fill {
-  height: 100%;
-  background-color: #4318FF;
-  transition: width 0.2s ease;
-}
-
-/* Table Card */
-.table-card {
-  background: white;
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 10px 20px rgba(112, 144, 176, 0.08);
-}
-
-.card-header h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  color: #2B3674;
-}
-
-/* Table Styles */
-.modern-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.modern-table th {
-  text-align: left;
-  color: #A3AED0;
-  font-size: 12px;
-  font-weight: 500;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #E0E5F2;
-}
-
-.modern-table td {
-  padding: 15px 0;
-  font-size: 14px;
-  border-bottom: 1px solid #F4F7FE;
-  vertical-align: middle;
-}
-
-/* File Name Styling */
-.file-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.file-icon {
-  font-size: 20px;
-  background: #EFF4FB;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-
-.file-name {
-  font-weight: 700;
-  color: #2B3674;
-}
-
-/* Status Pills */
-.status-pill {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.status-pill.processed {
-  background-color: #E6FBF5;
-  color: #05CD99;
-}
-
-.status-pill.failed {
-  background-color: #FEEEEE;
-  color: #EE5D50;
-}
-
-/* Action Buttons */
-.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  opacity: 0.6;
-  transition: 0.2s;
-}
-
-.icon-btn:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.icon-btn.delete:hover {
-  filter: grayscale(0) hue-rotate(300deg); /* Makes it slightly redder on hover */
-}
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #A3AED0;
+.inventory-list-filter-search{
+  input{
+    padding: 5px;
+  }
 }

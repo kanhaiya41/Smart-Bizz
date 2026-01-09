@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent EMR | PA Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2a6e8f;
+            --primary-light: #e8f4fc;
+            --secondary-color: #4a9bcc;
+            --accent-color: #36a18b;
+            --warning-color: #e67e22;
+            --danger-color: #e74c3c;
+            --text-dark: #333333;
+            --text-medium: #555555;
+            --text-light: #777777;
+            --bg-light: #f9fafc;
+            --border-color: #e1e5eb;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            margin: 4px 10px;
+            border-radius: 8px;
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-info p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 0;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .header {
+            height: var(--header-height);
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-medium);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-light);
+            border-radius: 8px;
+            padding: 10px 16px;
+            width: 300px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding-left: 10px;
+            font-size: 15px;
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1400px;
+        }
+
+        /* UPDATED: Dashboard Cards - Smaller Size */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .card-icon.patient {
+            background-color: var(--primary-color);
+        }
+
+        .card-icon.assessment {
+            background-color: var(--accent-color);
+        }
+
+        .card-icon.records {
+            background-color: #9c56b8;
+        }
+
+        .card-icon.queue {
+            background-color: #e67e22;
+        }
+
+        .card-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+
+        .card-trend {
+            font-size: 13px;
+            color: #36a18b;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        .card-trend.down {
+            color: #e74c3c;
+        }
+
+        /* UPDATED: Date Filter */
+        .date-filter {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .date-filter h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .date-input {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-dark);
+            width: 180px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* UPDATED: Recent Patients Table */
+        .recent-patients {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .recent-patients-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .recent-patients-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .view-all-btn {
+            padding: 8px 16px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .view-all-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* Section Styles */
+        .section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #d35400;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--bg-light);
+        }
+
+        th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-medium);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: var(--primary-light);
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.in-progress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            margin-right: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            padding: 24px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-dark);
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .aadhar-scan {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 40px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .aadhar-scan:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .aadhar-scan i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+        }
+
+        .aadhar-scan p {
+            color: var(--text-medium);
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .aadhar-scan span {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        /* UPDATED: File Upload Section */
+        .file-upload-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .file-upload-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 30px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: var(--bg-light);
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .file-upload-box i {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+        }
+
+        .file-upload-box p {
+            color: var(--text-medium);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-box span {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .uploaded-files {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .file-size {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Patient Details Preview */
+        .patient-details {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .patient-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .patient-name h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .patient-id {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 16px;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card p {
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .medical-history {
+            margin-top: 30px;
+        }
+
+        .history-item {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .history-doctor {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .history-details {
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+
+        /* Assessment Form */
+        .assessment-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* UPDATED: Vitals Grid with Height */
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .vital-item {
+            background-color: var(--bg-light);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .vital-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .vital-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .vital-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        /* Settings Page */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .setting-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .setting-card h3 {
+            margin-bottom: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-option:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .mobile-toggle {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .date-filter {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .filter-controls {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .date-input {
+                width: 100%;
+            }
+            
+            .filter-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .header {
+                padding: 0 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .patient-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vitals-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">EMR</div>
+            <div class="logo-text">IntelliEMR</div>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-page="newPatient">
+                <i class="fas fa-user-injured"></i>
+                <span>New Patient Registration</span>
+            </a>
+            <a href="#" class="nav-item" data-page="initialAssessment">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Initial Assessments</span>
+            </a>
+            <a href="#" class="nav-item" data-page="patientHistory">
+                <i class="fas fa-history"></i>
+                <span>Patient History</span>
+            </a>
+            <a href="#" class="nav-item" data-page="medicalRecords">
+                <i class="fas fa-file-medical"></i>
+                <span>Medical Records</span>
+            </a>
+            <a href="#" class="nav-item" data-page="doctorQueue">
+                <i class="fas fa-user-md"></i>
+                <span>Doctor Queue</span>
+            </a>
+            <a href="#" class="nav-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-avatar">PA</div>
+            <div class="user-info">
+                <h4>Priya Sharma</h4>
+                <p>Physician Assistant</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-title">
+                <h1 id="pageTitle">PA Dashboard</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search patients, records...">
+                </div>
+                
+                <div class="notification" id="notificationBtn">
+                    <i class="far fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Dashboard Section -->
+            <div class="section active" id="dashboardSection">
+                <!-- UPDATED: Date Filter -->
+                <div class="date-filter">
+                    <h3>Dashboard Overview</h3>
+                    <div class="filter-controls">
+                        <input type="date" class="date-input" id="startDate" value="2023-10-01">
+                        <span>to</span>
+                        <input type="date" class="date-input" id="endDate" value="2023-10-15">
+                        <button class="filter-btn" id="applyFilterBtn">
+                            <i class="fas fa-filter"></i>
+                            Apply Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- UPDATED: Dashboard Cards - Smaller -->
+                <div class="dashboard-cards">
+                    <div class="card" id="newPatientCard">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-count">12</div>
+                                <div class="card-title">New Patients Today</div>
+                            </div>
+                            <div class="card-icon patient">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                        <div class="card-trend">+2 from yesterday</div>
+                    </div>
+                    
+                    <div class="card" id="pendingAssessmentsCard">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-count">8</div>
+                                <div class="card-title">Pending Assessments</div>
+                            </div>
+                            <div class="card-icon assessment">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                        </div>
+                        <div class="card-trend down">-3 from yesterday</div>
+                    </div>
+                    
+                    <div class="card" id="patientRecordsCard">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-count">142</div>
+                                <div class="card-title">Total Patient Records</div>
+                            </div>
+                            <div class="card-icon records">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                        </div>
+                        <div class="card-trend">+12 this week</div>
+                    </div>
+                    
+                    <div class="card" id="doctorQueueCard">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-count">5</div>
+                                <div class="card-title">In Doctor Queue</div>
+                            </div>
+                            <div class="card-icon queue">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                        </div>
+                        <div class="card-trend">+1 in queue</div>
+                    </div>
+                </div>
+                
+                <!-- UPDATED: Recent Patients Table -->
+                <div class="recent-patients">
+                    <div class="recent-patients-header">
+                        <h2 class="recent-patients-title">Recent Patient Registrations</h2>
+                        <button class="view-all-btn" id="viewAllPatientsBtn">
+                            <i class="fas fa-list"></i>
+                            View All
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient ID</th>
+                                    <th>Patient Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Registration Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentPatientsTable">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Doctor Queue Section -->
+                <div class="section active">
+                    <div class="section-header">
+                        <h2 class="section-title">Doctor Consultation Queue</h2>
+                        <button class="btn btn-outline" id="refreshQueueBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh Queue
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Queue No.</th>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Assigned</th>
+                                    <th>Chief Complaint</th>
+                                    <th>Wait Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doctorQueueTable">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Patient Registration Section -->
+            <div class="section" id="newPatientSection">
+                <div class="section-header">
+                    <h2 class="section-title">New Patient Registration</h2>
+                    <button class="btn btn-outline" id="scanAadharBtn">
+                        <i class="fas fa-id-card"></i>
+                        Scan Aadhar Card
+                    </button>
+                </div>
+                
+                <div class="patient-details">
+                    <form id="newPatientForm">
+                        <div class="aadhar-scan" id="aadharScanBtnSection">
+                            <i class="fas fa-id-card"></i>
+                            <p>Scan Aadhar Card to Auto-fetch Patient Details</p>
+                            <span>Click here or use scanner to capture Aadhar details</span>
+                        </div>
+                        
+                        <div class="patient-preview" id="patientPreview" style="display: none;">
+                            <h3>Patient Details from Aadhar</h3>
+                            <div class="preview-grid">
+                                <div class="preview-item">
+                                    <label>Full Name</label>
+                                    <p id="previewName">Rajesh Kumar</p>
+                                </div>
+                                <div class="preview-item">
+                                    <label>Date of Birth</label>
+                                    <p id="previewDOB">15-08-1981</p>
+                                </div>
+                                <div class="preview-item">
+                                    <label>Gender</label>
+                                    <p id="previewGender">Male</p>
+                                </div>
+                                <div class="preview-item">
+                                    <label>Aadhar Number</label>
+                                    <p id="previewAadhar">XXXX-XXXX-1234</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin-bottom: 20px;">Patient Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patientName">Full Name *</label>
+                                <input type="text" id="patientName" placeholder="Enter patient full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="patientAge">Age *</label>
+                                <input type="number" id="patientAge" placeholder="Age" min="0" max="120" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patientGender">Gender *</label>
+                                <select id="patientGender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="patientPhone">Contact Number *</label>
+                                <input type="tel" id="patientPhone" placeholder="+91 00000 00000" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="patientAddress">Address</label>
+                            <textarea id="patientAddress" placeholder="Enter patient address"></textarea>
+                        </div>
+                        
+                        <!-- UPDATED: Emergency Contact Fields -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="emergencyName">Emergency Contact Name</label>
+                                <input type="text" id="emergencyName" placeholder="Emergency contact person name">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyPhone">Emergency Contact Number</label>
+                                <input type="tel" id="emergencyPhone" placeholder="Emergency contact phone number">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="consultingDoctor">Consulting Doctor *</label>
+                                <select id="consultingDoctor" required>
+                                    <option value="">Select Doctor</option>
+                                    <option value="dr_sharma">Dr. Anil Sharma (General Physician)</option>
+                                    <option value="dr_nair">Dr. Priya Nair (Internal Medicine)</option>
+                                    <option value="dr_mehta">Dr. Rohan Mehta (Cardiologist)</option>
+                                    <option value="dr_verma">Dr. Sunita Verma (Endocrinologist)</option>
+                                </select>
+                            </div>
+                            <!-- UPDATED: Visit Type -->
+                            <div class="form-group">
+                                <label for="visitType">Visit Type</label>
+                                <select id="visitType">
+                                    <option value="consultation">Consultation</option>
+                                    <option value="followup">Follow Up</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="patientHistory">Medical History Summary</label>
+                            <textarea id="patientHistory" placeholder="Any known medical conditions, allergies, or previous surgeries"></textarea>
+                        </div>
+                        
+                        <!-- UPDATED: File Upload Section -->
+                        <div class="file-upload-section">
+                            <h3 style="margin-bottom: 15px;">Upload Previous Medical Records</h3>
+                            <div class="file-upload-box" id="fileUploadBox">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <span>Supports PDF, JPG, PNG (Max 10MB each)</span>
+                            </div>
+                            <div class="uploaded-files" id="uploadedFiles">
+                                <!-- Uploaded files will appear here -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;">
+                            <button type="button" class="btn btn-outline" id="cancelPatientBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Register Patient</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Initial Assessment Section -->
+            <div class="section" id="initialAssessmentSection">
+                <div class="section-header">
+                    <h2 class="section-title">Initial Patient Assessments</h2>
+                    <button class="btn btn-primary" id="newAssessmentBtn">
+                        <i class="fas fa-plus"></i>
+                        New Assessment
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>Vitals</th>
+                                <th>Chief Complaint</th>
+                                <th>Assessment Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assessmentsTable">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Assessment Form (Hidden by default) -->
+                <div class="assessment-form" id="assessmentForm" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 20px;">Initial Assessment Form</h3>
+                    
+                    <div class="patient-info" style="margin-bottom: 30px;">
+                        <div class="patient-avatar">RK</div>
+                        <div>
+                            <h3 id="assessmentPatientName">Rajesh Kumar</h3>
+                            <p id="assessmentPatientId">#PT-2023-0012 | 42 years, Male</p>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 15px;">Vital Signs</h4>
+                    <!-- UPDATED: Vitals Grid with Height -->
+                    <div class="vitals-grid">
+                        <div class="vital-item">
+                            <div class="vital-label">Blood Pressure</div>
+                            <input type="text" class="vital-input" placeholder="120/80" value="">
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">Heart Rate</div>
+                            <input type="text" class="vital-input" placeholder="72 bpm" value="">
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">Temperature</div>
+                            <input type="text" class="vital-input" placeholder="98.6°F" value="">
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">Respiratory Rate</div>
+                            <input type="text" class="vital-input" placeholder="16/min" value="">
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">SpO2</div>
+                            <input type="text" class="vital-input" placeholder="98%" value="">
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">Weight</div>
+                            <input type="text" class="vital-input" placeholder="75 kg" value="">
+                        </div>
+                        <!-- NEW: Height Field -->
+                        <div class="vital-item">
+                            <div class="vital-label">Height</div>
+                            <input type="text" class="vital-input" placeholder="175 cm" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chiefComplaint">Chief Complaint *</label>
+                        <textarea id="chiefComplaint" placeholder="Describe the patient's main symptoms and duration" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medicalHistory">Relevant Medical History</label>
+                        <textarea id="medicalHistory" placeholder="Any relevant medical history for current complaint"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="physicalExam">Physical Examination Findings</label>
+                        <textarea id="physicalExam" placeholder="Findings from physical examination"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="assessmentNotes">Assessment Notes</label>
+                            <textarea id="assessmentNotes" placeholder="Initial assessment and observations"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;">
+                        <button type="button" class="btn btn-outline" id="cancelAssessmentBtn">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="submitAssessmentBtn">Submit Assessment</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient History Section -->
+            <div class="section" id="patientHistorySection">
+                <div class="section-header">
+                    <h2 class="section-title">Patient History</h2>
+                    <div class="search-box" style="width: 400px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="historySearch" placeholder="Search patient by name or ID...">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>Age/Gender</th>
+                                <th>Last Visit</th>
+                                <th>Last Diagnosis</th>
+                                <th>Total Visits</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientHistoryTable">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Medical Records Section -->
+            <div class="section" id="medicalRecordsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Medical Records</h2>
+                    <button class="btn btn-primary" id="uploadRecordBtn">
+                        <i class="fas fa-upload"></i>
+                        Upload Record
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Record ID</th>
+                                <th>Patient Name</th>
+                                <th>Record Type</th>
+                                <th>Date</th>
+                                <th>Doctor</th>
+                                <th>File Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicalRecordsTable">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Doctor Queue Section (Full Page) -->
+            <div class="section" id="doctorQueueSection">
+                <div class="section-header">
+                    <h2 class="section-title">Doctor Consultation Queue</h2>
+                    <div>
+                        <button class="btn btn-outline" id="refreshQueueFullBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                        <button class="btn btn-primary" style="margin-left: 10px;">
+                            <i class="fas fa-print"></i>
+                            Print Queue
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Queue No.</th>
+                                <th>Patient Name</th>
+                                <th>Doctor Assigned</th>
+                                <th>Chief Complaint</th>
+                                <th>Wait Time</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorQueueFullTable">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div class="section" id="settingsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Settings</h2>
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3><i class="fas fa-user-cog"></i> Account Settings</h3>
+                        <div class="setting-option">
+                            <span>Email Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>SMS Alerts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Two-Factor Authentication</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <div class="setting-option">
+                            <span>New Patient Alerts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Doctor Assignment Alerts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Prescription Ready Alerts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <h3><i class="fas fa-print"></i> Print Settings</h3>
+                        <div class="setting-option">
+                            <span>Auto Print Prescriptions</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Include Logo on Print</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Print Queue Summary</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <h3><i class="fas fa-database"></i> Data Management</h3>
+                        <div class="setting-option">
+                            <span>Auto Backup Records</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Data Encryption</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-option">
+                            <span>Cloud Sync</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-card" style="margin-top: 30px;">
+                    <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                    <button class="btn btn-outline" style="margin-right: 15px;">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                    <button class="btn btn-outline" style="margin-right: 15px;">
+                        <i class="fas fa-history"></i> View Login History
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-user-shield"></i> Privacy Settings
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p>Intelligent Electronic Medical Records System v2.1 | © 2023 IntelliEMR. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Patient Details Modal -->
+    <div class="modal" id="patientDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Patient Details</h2>
+                <button class="close-modal" id="closePatientModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Patient details will be loaded here by JavaScript -->
+                <div id="patientDetailsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data
+        const samplePatients = [
+            {
+                id: "PT-2023-0012",
+                name: "Rajesh Kumar",
+                age: 42,
+                gender: "Male",
+                phone: "+91 98765 43210",
+                address: "123, MG Road, Bangalore, Karnataka",
+                emergencyName: "Neha Kumar",
+                emergencyPhone: "+91 98765 43211",
+                medicalHistory: "Hypertension (5 years), Allergic to Penicillin",
+                lastVisit: "2023-10-15",
+                doctor: "Dr. Anil Sharma",
+                visitType: "consultation",
+                status: "completed",
+                registrationTime: "10:15 AM",
+                chiefComplaint: "Fever and cough for 3 days",
+                vitals: "BP: 130/85, HR: 78, Temp: 100.2°F, Height: 175 cm"
+            },
+            {
+                id: "PT-2023-0011",
+                name: "Meena Desai",
+                age: 35,
+                gender: "Female",
+                phone: "+91 98765 43212",
+                address: "456, Koramangala, Bangalore",
+                emergencyName: "Rahul Desai",
+                emergencyPhone: "+91 98765 43213",
+                medicalHistory: "No known allergies",
+                lastVisit: "2023-10-15",
+                doctor: "Dr. Priya Nair",
+                visitType: "followup",
+                status: "in-progress",
+                registrationTime: "09:45 AM",
+                chiefComplaint: "Abdominal pain and nausea",
+                vitals: "BP: 120/80, HR: 72, Temp: 98.6°F, Height: 162 cm"
+            },
+            {
+                id: "PT-2023-0010",
+                name: "Arun Patel",
+                age: 58,
+                gender: "Male",
+                phone: "+91 98765 43214",
+                address: "789, Indiranagar, Bangalore",
+                emergencyName: "Priya Patel",
+                emergencyPhone: "+91 98765 43215",
+                medicalHistory: "Diabetes Type 2, Hypertension",
+                lastVisit: "2023-10-14",
+                doctor: "Dr. Anil Sharma",
+                visitType: "followup",
+                status: "pending",
+                registrationTime: "09:20 AM",
+                chiefComplaint: "Hypertension follow-up",
+                vitals: "BP: 145/90, HR: 76, Temp: 98.4°F, Height: 168 cm"
+            },
+            {
+                id: "PT-2023-0009",
+                name: "Sunita Reddy",
+                age: 29,
+                gender: "Female",
+                phone: "+91 98765 43216",
+                address: "101, Whitefield, Bangalore",
+                emergencyName: "Vikram Reddy",
+                emergencyPhone: "+91 98765 43217",
+                medicalHistory: "Asthma, Allergic to dust",
+                lastVisit: "2023-10-13",
+                doctor: "Dr. Priya Nair",
+                visitType: "consultation",
+                status: "completed",
+                registrationTime: "Yesterday",
+                chiefComplaint: "Asthma exacerbation",
+                vitals: "BP: 118/75, HR: 82, Temp: 99.1°F, Height: 158 cm"
+            }
+        ];
+
+        const sampleQueue = [
+            {
+                queueNo: "DQ-01",
+                patientName: "Rajesh Kumar",
+                doctor: "Dr. Anil Sharma",
+                complaint: "Fever & Cough",
+                waitTime: "15 mins",
+                status: "In Consultation",
+                priority: "High"
+            },
+            {
+                queueNo: "DQ-02",
+                patientName: "Meena Desai",
+                doctor: "Dr. Priya Nair",
+                complaint: "Abdominal Pain",
+                waitTime: "10 mins",
+                status: "Waiting",
+                priority: "Medium"
+            },
+            {
+                queueNo: "DQ-03",
+                patientName: "Arun Patel",
+                doctor: "Dr. Anil Sharma",
+                complaint: "Hypertension Follow-up",
+                waitTime: "5 mins",
+                status: "Assessment Pending",
+                priority: "Medium"
+            }
+        ];
+
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const patientDetailsModal = document.getElementById('patientDetailsModal');
+        const closePatientModal = document.getElementById('closePatientModal');
+        const sections = document.querySelectorAll('.section');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageTitle = document.getElementById('pageTitle');
+        const recentPatientsTable = document.getElementById('recentPatientsTable');
+        const doctorQueueTable = document.getElementById('doctorQueueTable');
+        const doctorQueueFullTable = document.getElementById('doctorQueueFullTable');
+        const assessmentsTable = document.getElementById('assessmentsTable');
+        const patientHistoryTable = document.getElementById('patientHistoryTable');
+        const medicalRecordsTable = document.getElementById('medicalRecordsTable');
+        const fileUploadBox = document.getElementById('fileUploadBox');
+        const uploadedFiles = document.getElementById('uploadedFiles');
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load sample data into tables
+            populateRecentPatientsTable();
+            populateDoctorQueueTables();
+            populateAssessmentsTable();
+            populatePatientHistoryTable();
+            populateMedicalRecordsTable();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            console.log('Intelligent EMR PA Dashboard loaded successfully.');
+        });
+
+        // Populate tables with sample data
+        function populateRecentPatientsTable() {
+            recentPatientsTable.innerHTML = '';
+            samplePatients.forEach(patient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.age}</td>
+                    <td>${patient.gender}</td>
+                    <td>${patient.registrationTime}</td>
+                    <td><span class="status ${patient.status}">${getStatusText(patient.status)}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" data-id="${patient.id}"><i class="fas fa-eye"></i> View</button>
+                        <button class="action-btn edit-btn" data-id="${patient.id}"><i class="fas fa-edit"></i> Edit</button>
+                    </td>
+                `;
+                recentPatientsTable.appendChild(row);
+            });
+        }
+
+        function populateDoctorQueueTables() {
+            doctorQueueTable.innerHTML = '';
+            doctorQueueFullTable.innerHTML = '';
+            
+            sampleQueue.forEach(queueItem => {
+                // For dashboard table
+                const row1 = document.createElement('tr');
+                row1.innerHTML = `
+                    <td>${queueItem.queueNo}</td>
+                    <td>${queueItem.patientName}</td>
+                    <td>${queueItem.doctor}</td>
+                    <td>${queueItem.complaint}</td>
+                    <td>${queueItem.waitTime}</td>
+                    <td><span class="status ${getQueueStatusClass(queueItem.status)}">${queueItem.status}</span></td>
+                `;
+                doctorQueueTable.appendChild(row1);
+                
+                // For full queue table
+                const row2 = document.createElement('tr');
+                row2.innerHTML = `
+                    <td>${queueItem.queueNo}</td>
+                    <td>${queueItem.patientName}</td>
+                    <td>${queueItem.doctor}</td>
+                    <td>${queueItem.complaint}</td>
+                    <td>${queueItem.waitTime}</td>
+                    <td>${queueItem.priority}</td>
+                    <td><span class="status ${getQueueStatusClass(queueItem.status)}">${queueItem.status}</span></td>
+                    <td>
+                        <button class="action-btn" data-action="move-up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="action-btn" data-action="move-down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn" data-action="remove"><i class="fas fa-times"></i></button>
+                    </td>
+                `;
+                doctorQueueFullTable.appendChild(row2);
+            });
+        }
+
+        function populateAssessmentsTable() {
+            assessmentsTable.innerHTML = '';
+            samplePatients.forEach(patient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.vitals}</td>
+                    <td>${patient.chiefComplaint}</td>
+                    <td>${patient.registrationTime}</td>
+                    <td><span class="status ${patient.status}">${getStatusText(patient.status)}</span></td>
+                    <td>
+                        <button class="action-btn" data-action="assess" data-id="${patient.id}"><i class="fas fa-clipboard-check"></i> Assess</button>
+                        <button class="action-btn" data-action="view-assessment" data-id="${patient.id}"><i class="fas fa-eye"></i> View</button>
+                    </td>
+                `;
+                assessmentsTable.appendChild(row);
+            });
+        }
+
+        function populatePatientHistoryTable() {
+            patientHistoryTable.innerHTML = '';
+            samplePatients.forEach(patient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.age} / ${patient.gender}</td>
+                    <td>${patient.lastVisit}</td>
+                    <td>${patient.chiefComplaint}</td>
+                    <td>${Math.floor(Math.random() * 10) + 1}</td>
+                    <td>
+                        <button class="action-btn view-history-btn" data-id="${patient.id}"><i class="fas fa-history"></i> Full History</button>
+                    </td>
+                `;
+                patientHistoryTable.appendChild(row);
+            });
+        }
+
+        function populateMedicalRecordsTable() {
+            medicalRecordsTable.innerHTML = '';
+            const recordTypes = ["Prescription", "Lab Report", "X-Ray", "Discharge Summary", "Consultation Note"];
+            
+            samplePatients.forEach(patient => {
+                const recordType = recordTypes[Math.floor(Math.random() * recordTypes.length)];
+                const fileSize = `${(Math.random() * 5 + 0.1).toFixed(1)} MB`;
+                const date = `2023-10-${Math.floor(Math.random() * 15) + 1}`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>REC-${patient.id.substring(3)}</td>
+                    <td>${patient.name}</td>
+                    <td>${recordType}</td>
+                    <td>${date}</td>
+                    <td>${patient.doctor}</td>
+                    <td>${fileSize}</td>
+                    <td>
+                        <button class="action-btn" data-action="view-record"><i class="fas fa-eye"></i> View</button>
+                        <button class="action-btn" data-action="download-record"><i class="fas fa-download"></i> Download</button>
+                    </td>
+                `;
+                medicalRecordsTable.appendChild(row);
+            });
+        }
+
+        // Helper functions
+        function getStatusText(status) {
+            switch(status) {
+                case 'pending': return 'Assessment Pending';
+                case 'in-progress': return 'With Doctor';
+                case 'completed': return 'Assessment Done';
+                default: return 'Unknown';
+            }
+        }
+
+        function getQueueStatusClass(status) {
+            if (status.includes('Consultation')) return 'in-progress';
+            if (status.includes('Pending')) return 'pending';
+            return 'in-progress';
+        }
+
+        function showPatientDetails(patientId) {
+            const patient = samplePatients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            const content = document.getElementById('patientDetailsContent');
+            content.innerHTML = `
+                <div class="patient-header">
+                    <div class="patient-info">
+                        <div class="patient-avatar">${patient.name.charAt(0)}</div>
+                        <div class="patient-name">
+                            <h2>${patient.name}</h2>
+                            <div class="patient-id">${patient.id}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-primary" style="margin-left: 10px;"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+                
+                <div class="patient-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                        <p><strong>Age:</strong> ${patient.age} years</p>
+                        <p><strong>Gender:</strong> ${patient.gender}</p>
+                        <p><strong>Phone:</strong> ${patient.phone}</p>
+                        <p><strong>Visit Type:</strong> ${patient.visitType === 'consultation' ? 'Consultation' : 'Follow Up'}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-home"></i> Contact Information</h3>
+                        <p><strong>Address:</strong> ${patient.address}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-phone-alt"></i> Emergency Contact</h3>
+                        <p><strong>Name:</strong> ${patient.emergencyName}</p>
+                        <p><strong>Phone:</strong> ${patient.emergencyPhone}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-md"></i> Medical Information</h3>
+                        <p><strong>Current Doctor:</strong> ${patient.doctor}</p>
+                        <p><strong>Last Visit:</strong> ${patient.lastVisit}</p>
+                        <p><strong>Status:</strong> ${getStatusText(patient.status)}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-stethoscope"></i> Current Visit</h3>
+                        <p><strong>Chief Complaint:</strong> ${patient.chiefComplaint}</p>
+                        <p><strong>Vital Signs:</strong> ${patient.vitals}</p>
+                        <p><strong>Registration Time:</strong> ${patient.registrationTime}</p>
+                    </div>
+                </div>
+                
+                <div class="medical-history">
+                    <h3 style="margin-bottom: 20px;"><i class="fas fa-history"></i> Medical History</h3>
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span class="history-date">${patient.lastVisit}</span>
+                            <span class="history-doctor">${patient.doctor}</span>
+                        </div>
+                        <div class="history-details">
+                            <p><strong>Medical History:</strong> ${patient.medicalHistory}</p>
+                            <p><strong>Current Medications:</strong> Amlodipine 5mg daily, Metformin 500mg twice daily</p>
+                            <p><strong>Allergies:</strong> Penicillin (rash, difficulty breathing)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span class="history-date">2023-09-20</span>
+                            <span class="history-doctor">Dr. Priya Nair</span>
+                        </div>
+                        <div class="history-details">
+                            <p><strong>Diagnosis:</strong> Upper Respiratory Infection</p>
+                            <p><strong>Treatment:</strong> Antibiotics, cough syrup, rest</p>
+                            <p><strong>Follow-up:</strong> 7 days</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;">
+                    <button class="btn btn-outline" id="closeDetailsBtn">Close</button>
+                    <button class="btn btn-primary"><i class="fas fa-file-medical"></i> Create New Assessment</button>
+                </div>
+            `;
+            
+            patientDetailsModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Add event listener to close button inside modal
+            document.getElementById('closeDetailsBtn').addEventListener('click', () => {
+                patientDetailsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        function setupEventListeners() {
+            // Mobile sidebar toggle
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (event) => {
+                if (window.innerWidth <= 1100 && 
+                    !sidebar.contains(event.target) && 
+                    !mobileToggle.contains(event.target) && 
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Navigation between sections
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.getAttribute('data-page');
+                    
+                    // Remove active class from all nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked item
+                    item.classList.add('active');
+                    
+                    // Hide all sections
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show selected section
+                    const sectionId = `${page}Section`;
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.classList.add('active');
+                    }
+                    
+                    // Update page title
+                    const pageTitleText = item.querySelector('span').textContent;
+                    pageTitle.textContent = pageTitleText;
+                    
+                    // Close sidebar on mobile after clicking
+                    if (window.innerWidth <= 1100) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Close patient details modal
+            closePatientModal.addEventListener('click', () => {
+                patientDetailsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target === patientDetailsModal) {
+                    patientDetailsModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // View patient details from table
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.view-btn')) {
+                    const patientId = e.target.closest('.view-btn').getAttribute('data-id');
+                    showPatientDetails(patientId);
+                }
+                
+                // Edit patient
+                if (e.target.closest('.edit-btn')) {
+                    const patientId = e.target.closest('.edit-btn').getAttribute('data-id');
+                    alert(`Editing patient: ${patientId}`);
+                    // Navigate to edit page
+                    document.querySelector('[data-page="newPatient"]').click();
+                }
+                
+                // View patient history
+                if (e.target.closest('.view-history-btn')) {
+                    const patientId = e.target.closest('.view-history-btn').getAttribute('data-id');
+                    showPatientDetails(patientId);
+                }
+                
+                // Start assessment
+                if (e.target.closest('[data-action="assess"]')) {
+                    const patientId = e.target.closest('[data-action="assess"]').getAttribute('data-id');
+                    const patient = samplePatients.find(p => p.id === patientId);
+                    
+                    // Show assessment form
+                    const form = document.getElementById('assessmentForm');
+                    form.style.display = 'block';
+                    
+                    // Populate patient info
+                    document.getElementById('assessmentPatientName').textContent = patient.name;
+                    document.getElementById('assessmentPatientId').textContent = `${patient.id} | ${patient.age} years, ${patient.gender}`;
+                    
+                    // Populate vitals with patient data
+                    const vitalInputs = form.querySelectorAll('.vital-input');
+                    if (patient.vitals.includes('Height')) {
+                        // Extract values from vitals string
+                        const bpMatch = patient.vitals.match(/BP: ([\d/]+)/);
+                        const hrMatch = patient.vitals.match(/HR: ([\d]+)/);
+                        const tempMatch = patient.vitals.match(/Temp: ([\d.]+°F)/);
+                        const heightMatch = patient.vitals.match(/Height: ([\d]+ cm)/);
+                        
+                        if (bpMatch) vitalInputs[0].value = bpMatch[1];
+                        if (hrMatch) vitalInputs[1].value = hrMatch[1] + ' bpm';
+                        if (tempMatch) vitalInputs[2].value = tempMatch[1];
+                        if (heightMatch) vitalInputs[5].value = heightMatch[1];
+                    }
+                    
+                    // Scroll to form
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }
+                
+                // Cancel assessment
+                if (e.target.closest('#cancelAssessmentBtn')) {
+                    document.getElementById('assessmentForm').style.display = 'none';
+                }
+                
+                // Submit assessment
+                if (e.target.closest('#submitAssessmentBtn')) {
+                    alert('Assessment submitted successfully! Patient added to doctor queue.');
+                    document.getElementById('assessmentForm').style.display = 'none';
+                }
+            });
+            
+            // Add new patient button
+            document.getElementById('addNewPatientBtn')?.addEventListener('click', () => {
+                document.querySelector('[data-page="newPatient"]').click();
+            });
+            
+            // Aadhar scan button
+            document.getElementById('aadharScanBtnSection')?.addEventListener('click', () => {
+                // Simulate Aadhar scan
+                document.getElementById('patientName').value = 'Rajesh Kumar';
+                document.getElementById('patientAge').value = '42';
+                document.getElementById('patientGender').value = 'male';
+                document.getElementById('patientPhone').value = '+91 98765 43210';
+                document.getElementById('patientAddress').value = '123, MG Road, Bangalore, Karnataka';
+                document.getElementById('emergencyName').value = 'Neha Kumar';
+                document.getElementById('emergencyPhone').value = '+91 98765 43211';
+                document.getElementById('visitType').value = 'consultation';
+                
+                // Show patient preview
+                document.getElementById('patientPreview').style.display = 'block';
+                
+                alert('Aadhar details successfully fetched! Patient information has been auto-filled.');
+            });
+            
+            // File upload functionality
+            fileUploadBox.addEventListener('click', () => {
+                // Create a file input element
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.multiple = true;
+                fileInput.accept = '.pdf,.jpg,.jpeg,.png';
+                
+                fileInput.addEventListener('change', (e) => {
+                    const files = Array.from(e.target.files);
+                    files.forEach(file => {
+                        addUploadedFile(file);
+                    });
+                });
+                
+                fileInput.click();
+            });
+            
+            // New patient form submission
+            document.getElementById('newPatientForm')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Patient registered successfully!');
+                // Reset form
+                e.target.reset();
+                document.getElementById('patientPreview').style.display = 'none';
+                uploadedFiles.innerHTML = '';
+            });
+            
+            // Cancel patient registration
+            document.getElementById('cancelPatientBtn')?.addEventListener('click', () => {
+                document.getElementById('newPatientForm').reset();
+                document.getElementById('patientPreview').style.display = 'none';
+                uploadedFiles.innerHTML = '';
+                document.querySelector('[data-page="dashboard"]').click();
+            });
+            
+            // New assessment button
+            document.getElementById('newAssessmentBtn')?.addEventListener('click', () => {
+                // Show assessment form with empty patient
+                const form = document.getElementById('assessmentForm');
+                form.style.display = 'block';
+                
+                document.getElementById('assessmentPatientName').textContent = 'Select a patient';
+                document.getElementById('assessmentPatientId').textContent = 'Patient will be selected from list';
+                
+                // Clear vitals
+                const vitalInputs = form.querySelectorAll('.vital-input');
+                vitalInputs.forEach(input => input.value = '');
+                
+                form.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Apply date filter
+            document.getElementById('applyFilterBtn')?.addEventListener('click', () => {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                alert(`Filter applied for date range: ${startDate} to ${endDate}`);
+            });
+            
+            // View all patients button
+            document.getElementById('viewAllPatientsBtn')?.addEventListener('click', () => {
+                document.querySelector('[data-page="patientHistory"]').click();
+            });
+            
+            // Refresh queue buttons
+            document.getElementById('refreshQueueBtn')?.addEventListener('click', () => {
+                alert('Queue refreshed!');
+            });
+            
+            document.getElementById('refreshQueueFullBtn')?.addEventListener('click', () => {
+                alert('Queue refreshed!');
+            });
+            
+            // Upload record button
+            document.getElementById('uploadRecordBtn')?.addEventListener('click', () => {
+                alert('Upload record functionality would open file browser here.');
+            });
+            
+            // Notification button
+            document.getElementById('notificationBtn')?.addEventListener('click', () => {
+                alert('You have 3 new notifications:\n1. New lab result for Patient #PT-2023-0008\n2. Doctor request for Patient #PT-2023-0010\n3. System backup completed successfully');
+            });
+            
+            // Dashboard card clicks
+            document.getElementById('newPatientCard')?.addEventListener('click', () => {
+                document.querySelector('[data-page="newPatient"]').click();
+            });
+            
+            document.getElementById('pendingAssessmentsCard')?.addEventListener('click', () => {
+                document.querySelector('[data-page="initialAssessment"]').click();
+            });
+            
+            document.getElementById('patientRecordsCard')?.addEventListener('click', () => {
+                document.querySelector('[data-page="medicalRecords"]').click();
+            });
+            
+            document.getElementById('doctorQueueCard')?.addEventListener('click', () => {
+                document.querySelector('[data-page="doctorQueue"]').click();
+            });
+        }
+        
+        function addUploadedFile(file) {
+            const fileSize = (file.size / (1024 * 1024)).toFixed(1); // Convert to MB
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            // Determine icon based on file type
+            let fileIcon = 'fa-file';
+            if (fileExtension === 'pdf') fileIcon = 'fa-file-pdf';
+            else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) fileIcon = 'fa-file-image';
+            
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">
+                        <i class="fas ${fileIcon}"></i>
+                    </div>
+                    <div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${fileSize} MB</div>
+                    </div>
+                </div>
+                <button class="file-remove" onclick="removeFile(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            uploadedFiles.appendChild(fileItem);
+        }
+        
+        window.removeFile = function(button) {
+            const fileItem = button.closest('.file-item');
+            fileItem.remove();
+        };
+    </script>
+</body>
+</html>

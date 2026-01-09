@@ -11,6 +11,7 @@ body{
 
 }
 
+
 .hr{
        height:0.5px;
       background-color:lightgrey;
@@ -33,30 +34,37 @@ body{
   border: 0.5px solid #eee;
   padding: 10px;
   overflow-y: scroll;
+  p{
+    font-size: 12px;
+    color: gray;
+  }
 }
 .searchQueryCard-icon{
     display: flex;
     justify-content: space-between;
     align-items: center;
     span{
-      padding: 10px;
+      padding: 7px;
     }
     p{
-      font-size: 12px;
+      font-size: 10px;
+        color: black;
     }
 }
 .searchQueryCard{
-  width: 100%;
+  
   height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+      border-bottom: 0.5px solid #eee;
 }
 
 .searchQueryCard-count{
   
   p{
     font-size: 10px;
+    color: #000;
   }
 }
 
@@ -91,6 +99,8 @@ body{
 .pie-Chart-items{
   display: flex;
   justify-content: space-between;
+
+
 }
 
 .legend-item {
@@ -123,5 +133,90 @@ body{
   color: #000;
   margin-left: 18px;
 }
+.searchbaranduserprofile{
+ 
+ display: flex;
+ justify-content: space-between;
+ width: 100%;
+ align-items: center;
+ padding: 10px;
+ /* position: fixed; */
 
 
+}
+
+.fixedpos{
+  position: fixed;
+}
+
+.Dashboard{
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.profile-div{
+  display: flex;
+  width: 100%;
+  margin-left: 350px;
+  p{
+    font-size: 12px;
+  cursor: pointer;
+  }
+  
+}
+.inputSearch{
+  height: 25px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+  margin-left: 100px;
+   background-color: #F6F6FB;
+  width: 80%;
+  padding: 10px;
+   
+  
+
+ input
+ {
+width: 100%;
+  border: none;
+  outline: none;
+       
+   background-color: #F6F6FB;
+ }
+ 
+}
+
+.todayMessage-action{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  select{
+       background-color: #F6F6FB;
+    padding: 5px;
+    width: 100px;
+    font-size: 10px;
+    border: 0.5px solid lightgrey;
+    outline: none;
+  }
+}
+
+.pie-Chart{
+  p{
+    font-size: 12px;
+  }
+  span{
+    font-size: 12px;
+    color: gray;
+  }
+}
+
+.circlechart{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  margin-right: 180px;
+  /* align-items: center; */
+
+}

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBizz - Business Owner Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>SmartBizz</h1>
+                </div>
+                <div class="business-info">
+                    <div class="business-avatar">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="business-details">
+                        <h3>Business Owner</h3>
+                        <p>Premium Plan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="menu-item" data-page="messages">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                    <span class="badge">5</span>
+                </li>
+                <li class="menu-item" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </li>
+                <li class="menu-item" data-page="accounts">
+                    <i class="fas fa-link"></i>
+                    <span>Connected Accounts</span>
+                </li>
+                <li class="menu-item" data-page="documents">
+                    <i class="fas fa-file-upload"></i>
+                    <span>Documents Upload</span>
+                </li>
+                <li class="menu-item" data-page="profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="auto-reply-status">
+                    <div class="status-indicator active"></div>
+                    <span>Auto Reply: Enabled</span>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Dashboard</h2>
+                    <p>Welcome back! Here's what's happening with your business.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="date-display">
+                        <i class="far fa-calendar"></i>
+                        <span id="current-date">Today, June 15, 2023</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content Container -->
+            <div class="page-content">
+                <!-- Dashboard Page (Default Active) -->
+                <section id="dashboard-page" class="page active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon instagram">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Connected Accounts</h3>
+                                <p class="stat-number">3</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>All Connected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-card">
+                            <div class="stat-icon messages">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Today's Messages</h3>
+                                <p class="stat-number">24</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12% from yesterday</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon users">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Users</h3>
+                                <p class="stat-number">1,248</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+5% this week</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon auto-reply">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Auto Reply Status</h3>
+                                <p class="stat-number enabled">Enabled</p>
+                            </div>
+                            <div class="status-indicator-large active"></div>
+                        </div>
+                    </div>
+
+                    <!-- Graphs Section -->
+                    <div class="graphs-section">
+                        <div class="graph-card">
+                            <div class="graph-header">
+                                <h3>Message Volume</h3>
+                                <div class="time-filter">
+                                    <span class="filter-option active">7 Days</span>
+                                    <span class="filter-option">30 Days</span>
+                                    <span class="filter-option">90 Days</span>
+                                </div>
+                            </div>
+                            <div class="graph-container">
+                                <div class="css-graph">
+                                    <div class="graph-bars">
+                                        <div class="bar" style="height: 40%;"><span>Mon</span></div>
+                                        <div class="bar" style="height: 60%;"><span>Tue</span></div>
+                                        <div class="bar" style="height: 80%;"><span>Wed</span></div>
+                                        <div class="bar" style="height: 100%;"><span>Thu</span></div>
+                                        <div class="bar" style="height: 75%;"><span>Fri</span></div>
+                                        <div class="bar" style="height: 50%;"><span>Sat</span></div>
+                                        <div class="bar" style="height: 30%;"><span>Sun</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="graph-card">
+                            <div class="graph-header">
+                                <h3>Platform Engagement</h3>
+                            </div>
+                            <div class="graph-container">
+                                <div class="css-pie-chart">
+                                    <div class="pie-chart">
+                                        <div class="pie-segment instagram-seg" style="--percentage: 45%;"></div>
+                                        <div class="pie-segment whatsapp-seg" style="--percentage: 30%;"></div>
+                                        <div class="pie-segment messenger-seg" style="--percentage: 25%;"></div>
+                                    </div>
+                                    <div class="pie-legend">
+                                        <div class="legend-item">
+                                            <span class="legend-color instagram"></span>
+                                            <span>Instagram (45%)</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color whatsapp"></span>
+                                            <span>WhatsApp (30%)</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color messenger"></span>
+                                            <span>Messenger (25%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>New message from <strong>@john_doe</strong> on Instagram</p>
+                                    <span class="activity-time">10 minutes ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>Auto-reply sent to <strong>+1 234-567-890</strong> on WhatsApp</p>
+                                    <span class="activity-time">45 minutes ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fab fa-facebook-messenger"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>New connection: <strong>Messenger</strong> account linked</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Messages Page -->
+                <section id="messages-page" class="page">
+                    <div class="page-header">
+                        <h2>Messages</h2>
+                        <p>Manage and view all your customer messages in one place.</p>
+                    </div>
+                    
+                    <div class="messages-table-container">
+                        <div class="table-header">
+                            <h3>Recent Messages</h3>
+                            <div class="message-filters">
+                                <div class="filter-option active">All</div>
+                                <div class="filter-option">Unread</div>
+                                <div class="filter-option">Instagram</div>
+                                <div class="filter-option">WhatsApp</div>
+                                <div class="filter-option">Messenger</div>
+                            </div>
+                        </div>
+                        
+                        <table class="messages-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Platform</th>
+                                    <th>Message</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">John Doe</span>
+                                                <span class="user-handle">@john_doe</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-tag instagram">
+                                            <i class="fab fa-instagram"></i>
+                                            <span>Instagram</span>
+                                        </div>
+                                    </td>
+                                    <td class="message-preview">
+                                        <p>Hi, I'd like to inquire about your pricing for the premium plan.</p>
+                                    </td>
+                                    <td>10:24 AM</td>
+                                    <td>
+                                        <div class="status-badge replied">
+                                            <i class="fas fa-reply"></i>
+                                            <span>Replied</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Sarah Johnson</span>
+                                                <span class="user-handle">+1 234-567-891</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-tag whatsapp">
+                                            <i class="fab fa-whatsapp"></i>
+                                            <span>WhatsApp</span>
+                                        </div>
+                                    </td>
+                                    <td class="message-preview">
+                                        <p>Do you have this item in stock? I need it by Friday.</p>
+                                    </td>
+                                    <td>9:45 AM</td>
+                                    <td>
+                                        <div class="status-badge auto-replied">
+                                            <i class="fas fa-robot"></i>
+                                            <span>Auto-replied</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Mike Wilson</span>
+                                                <span class="user-handle">Mike Wilson</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-tag messenger">
+                                            <i class="fab fa-facebook-messenger"></i>
+                                            <span>Messenger</span>
+                                        </div>
+                                    </td>
+                                    <td class="message-preview">
+                                        <p>Thanks for your quick response! I'll place the order now.</p>
+                                    </td>
+                                    <td>9:15 AM</td>
+                                    <td>
+                                        <div class="status-badge read">
+                                            <i class="fas fa-check-double"></i>
+                                            <span>Read</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Emma Davis</span>
+                                                <span class="user-handle">@emma_davis</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-tag instagram">
+                                            <i class="fab fa-instagram"></i>
+                                            <span>Instagram</span>
+                                        </div>
+                                    </td>
+                                    <td class="message-preview">
+                                        <p>Can you send me more details about your services?</p>
+                                    </td>
+                                    <td>Yesterday</td>
+                                    <td>
+                                        <div class="status-badge unread">
+                                            <i class="fas fa-envelope"></i>
+                                            <span>Unread</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Robert Brown</span>
+                                                <span class="user-handle">Robert Brown</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-tag messenger">
+                                            <i class="fab fa-facebook-messenger"></i>
+                                            <span>Messenger</span>
+                                        </div>
+                                    </td>
+                                    <td class="message-preview">
+                                        <p>I have a problem with my recent order, order #45678.</p>
+                                    </td>
+                                    <td>Yesterday</td>
+                                    <td>
+                                        <div class="status-badge replied">
+                                            <i class="fas fa-reply"></i>
+                                            <span>Replied</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Users Page -->
+                <section id="users-page" class="page">
+                    <div class="page-header">
+                        <h2>Users</h2>
+                        <p>Users who have contacted your business across all platforms.</p>
+                    </div>
+                    
+                    <div class="users-stats">
+                        <div class="user-stat-card">
+                            <div class="stat-number">1,248</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="user-stat-card">
+                            <div class="stat-number">342</div>
+                            <div class="stat-label">Active This Month</div>
+                        </div>
+                        <div class="user-stat-card">
+                            <div class="stat-number">24</div>
+                            <div class="stat-label">New This Week</div>
+                        </div>
+                    </div>
+                    
+                    <div class="users-table-container">
+                        <div class="table-header">
+                            <h3>All Users</h3>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search users by name or handle...">
+                            </div>
+                        </div>
+                        
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Platforms</th>
+                                    <th>First Contact</th>
+                                    <th>Last Contact</th>
+                                    <th>Message Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">John Doe</span>
+                                                <span class="user-handle">@john_doe</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-instagram" title="Instagram"></i>
+                                            <i class="fab fa-whatsapp" title="WhatsApp"></i>
+                                        </div>
+                                    </td>
+                                    <td>May 12, 2023</td>
+                                    <td>Today</td>
+                                    <td>24</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Sarah Johnson</span>
+                                                <span class="user-handle">+1 234-567-891</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-whatsapp" title="WhatsApp"></i>
+                                        </div>
+                                    </td>
+                                    <td>Apr 28, 2023</td>
+                                    <td>Today</td>
+                                    <td>12</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Mike Wilson</span>
+                                                <span class="user-handle">Mike Wilson</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-facebook-messenger" title="Messenger"></i>
+                                        </div>
+                                    </td>
+                                    <td>Jun 5, 2023</td>
+                                    <td>Today</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Emma Davis</span>
+                                                <span class="user-handle">@emma_davis</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-instagram" title="Instagram"></i>
+                                            <i class="fab fa-facebook-messenger" title="Messenger"></i>
+                                        </div>
+                                    </td>
+                                    <td>May 30, 2023</td>
+                                    <td>Yesterday</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Robert Brown</span>
+                                                <span class="user-handle">Robert Brown</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-facebook-messenger" title="Messenger"></i>
+                                        </div>
+                                    </td>
+                                    <td>Jun 10, 2023</td>
+                                    <td>Yesterday</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Lisa Anderson</span>
+                                                <span class="user-handle">@lisa_anderson</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-instagram" title="Instagram"></i>
+                                        </div>
+                                    </td>
+                                    <td>Jun 12, 2023</td>
+                                    <td>Jun 14, 2023</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">David Miller</span>
+                                                <span class="user-handle">+1 345-678-902</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-whatsapp" title="WhatsApp"></i>
+                                            <i class="fab fa-facebook-messenger" title="Messenger"></i>
+                                        </div>
+                                    </td>
+                                    <td>May 15, 2023</td>
+                                    <td>Jun 13, 2023</td>
+                                    <td>18</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Sophia Williams</span>
+                                                <span class="user-handle">Sophia Williams</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="platform-icons">
+                                            <i class="fab fa-facebook-messenger" title="Messenger"></i>
+                                        </div>
+                                    </td>
+                                    <td>Jun 1, 2023</td>
+                                    <td>Jun 12, 2023</td>
+                                    <td>7</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Connected Accounts Page -->
+                <section id="accounts-page" class="page">
+                    <div class="page-header">
+                        <h2>Connected Accounts</h2>
+                        <p>Manage your connected social media and messaging accounts.</p>
+                    </div>
+                    
+                    <div class="accounts-grid">
+                        <div class="account-card connected">
+                            <div class="account-header">
+                                <div class="account-icon instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <div class="account-status">
+                                    <span class="status-badge connected">Connected</span>
+                                </div>
+                            </div>
+                            <div class="account-body">
+                                <h3>Instagram</h3>
+                                <p>@smartbizz_business</p>
+                                <div class="account-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">642</span>
+                                        <span class="stat-label">Followers</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">124</span>
+                                        <span class="stat-label">Messages</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-footer">
+                                <span class="connection-date">Connected: Jun 1, 2023</span>
+                                <button class="account-action">Manage</button>
+                            </div>
+                        </div>
+                        
+                        <div class="account-card connected">
+                            <div class="account-header">
+                                <div class="account-icon whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="account-status">
+                                    <span class="status-badge connected">Connected</span>
+                                </div>
+                            </div>
+                            <div class="account-body">
+                                <h3>WhatsApp Business</h3>
+                                <p>+1 234-567-8900</p>
+                                <div class="account-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">856</span>
+                                        <span class="stat-label">Contacts</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">342</span>
+                                        <span class="stat-label">Messages</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-footer">
+                                <span class="connection-date">Connected: May 28, 2023</span>
+                                <button class="account-action">Manage</button>
+                            </div>
+                        </div>
+                        
+                        <div class="account-card connected">
+                            <div class="account-header">
+                                <div class="account-icon messenger">
+                                    <i class="fab fa-facebook-messenger"></i>
+                                </div>
+                                <div class="account-status">
+                                    <span class="status-badge connected">Connected</span>
+                                </div>
+                            </div>
+                            <div class="account-body">
+                                <h3>Facebook Messenger</h3>
+                                <p>SmartBizz Page</p>
+                                <div class="account-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">1.2K</span>
+                                        <span class="stat-label">Page Likes</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">189</span>
+                                        <span class="stat-label">Messages</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-footer">
+                                <span class="connection-date">Connected: Jun 5, 2023</span>
+                                <button class="account-action">Manage</button>
+                            </div>
+                        </div>
+                        
+                        <div class="account-card not-connected">
+                            <div class="account-header">
+                                <div class="account-icon twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <div class="account-status">
+                                    <span class="status-badge not-connected">Not Connected</span>
+                                </div>
+                            </div>
+                            <div class="account-body">
+                                <h3>Twitter</h3>
+                                <p>Connect your Twitter account</p>
+                                <div class="account-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">-</span>
+                                        <span class="stat-label">Followers</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">-</span>
+                                        <span class="stat-label">Messages</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-footer">
+                                <span class="connection-date">Not Connected</span>
+                                <button class="account-action connect">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="integration-info">
+                        <div class="info-header">
+                            <i class="fas fa-info-circle"></i>
+                            <h3>Integration Information</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>Your connected accounts allow SmartBizz to:</p>
+                            <ul>
+                                <li>Receive and send messages on your behalf</li>
+                                <li>Auto-reply to common customer inquiries</li>
+                                <li>Track engagement metrics across all platforms</li>
+                                <li>Provide unified customer management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Documents Upload Page -->
+                <section id="documents-page" class="page">
+                    <div class="page-header">
+                        <h2>Documents Upload</h2>
+                        <p>Upload inventory and rule sheets for your auto-reply bot.</p>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <div class="upload-card">
+                            <div class="upload-header">
+                                <div class="upload-icon">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <div class="upload-info">
+                                    <h3>Inventory Upload</h3>
+                                    <p>Upload your product inventory in CSV or Excel format</p>
+                                </div>
+                            </div>
+                            <div class="upload-body">
+                                <div class="file-upload-area">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>Drop your inventory file here</h4>
+                                    <p>or <span class="browse-link">browse</span> to upload</p>
+                                    <p class="file-types">Supported formats: .csv, .xlsx, .xls</p>
+                                </div>
+                                <div class="uploaded-files">
+                                    <h4>Uploaded Files</h4>
+                                    <div class="file-item">
+                                        <div class="file-icon">
+                                            <i class="fas fa-file-csv"></i>
+                                        </div>
+                                        <div class="file-details">
+                                            <span class="file-name">inventory_june_2023.csv</span>
+                                            <span class="file-size">2.4 MB</span>
+                                            <span class="file-date">Uploaded: Jun 10, 2023</span>
+                                        </div>
+                                        <div class="file-actions">
+                                            <i class="fas fa-eye" title="View"></i>
+                                            <i class="fas fa-download" title="Download"></i>
+                                            <i class="fas fa-trash" title="Delete"></i>
+                                        </div>
+                                    </div>
+                                    <div class="file-item">
+                                        <div class="file-icon">
+                                            <i class="fas fa-file-excel"></i>
+                                        </div>
+                                        <div class="file-details">
+                                            <span class="file-name">products_may_2023.xlsx</span>
+                                            <span class="file-size">3.1 MB</span>
+                                            <span class="file-date">Uploaded: May 28, 2023</span>
+                                        </div>
+                                        <div class="file-actions">
+                                            <i class="fas fa-eye" title="View"></i>
+                                            <i class="fas fa-download" title="Download"></i>
+                                            <i class="fas fa-trash" title="Delete"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="upload-card">
+                            <div class="upload-header">
+                                <div class="upload-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="upload-info">
+                                    <h3>Rule Sheet Upload</h3>
+                                    <p>Upload your auto-reply rules and response templates</p>
+                                </div>
+                            </div>
+                            <div class="upload-body">
+                                <div class="file-upload-area">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>Drop your rule sheet here</h4>
+                                    <p>or <span class="browse-link">browse</span> to upload</p>
+                                    <p class="file-types">Supported formats: .csv, .xlsx, .pdf</p>
+                                </div>
+                                <div class="uploaded-files">
+                                    <h4>Uploaded Files</h4>
+                                    <div class="file-item">
+                                        <div class="file-icon">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                        <div class="file-details">
+                                            <span class="file-name">auto_reply_rules.pdf</span>
+                                            <span class="file-size">1.8 MB</span>
+                                            <span class="file-date">Uploaded: Jun 5, 2023</span>
+                                        </div>
+                                        <div class="file-actions">
+                                            <i class="fas fa-eye" title="View"></i>
+                                            <i class="fas fa-download" title="Download"></i>
+                                            <i class="fas fa-trash" title="Delete"></i>
+                                        </div>
+                                    </div>
+                                    <div class="file-item">
+                                        <div class="file-icon">
+                                            <i class="fas fa-file-csv"></i>
+                                        </div>
+                                        <div class="file-details">
+                                            <span class="file-name">response_templates.csv</span>
+                                            <span class="file-size">0.9 MB</span>
+                                            <span class="file-date">Uploaded: May 15, 2023</span>
+                                        </div>
+                                        <div class="file-actions">
+                                            <i class="fas fa-eye" title="View"></i>
+                                            <i class="fas fa-download" title="Download"></i>
+                                            <i class="fas fa-trash" title="Delete"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-info-card">
+                        <div class="info-header">
+                            <i class="fas fa-robot"></i>
+                            <h3>How Your Bot Uses These Files</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>SmartBizz auto-reply bot will reference your uploaded files to:</p>
+                            <ul>
+                                <li>Answer customer inquiries about product availability using your inventory data</li>
+                                <li>Provide accurate pricing and product information</li>
+                                <li>Follow your specified business rules for responses</li>
+                                <li>Handle common customer questions automatically</li>
+                            </ul>
+                            <p class="note"><strong>Note:</strong> The bot only uses information from your uploaded files and will not respond to queries about products or information not included in your documents.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Page -->
+                <section id="profile-page" class="page">
+                    <div class="page-header">
+                        <h2>Business Profile</h2>
+                        <p>Manage your business information and account settings.</p>
+                    </div>
+                    
+                    <div class="profile-container">
+                        <div class="profile-sidebar">
+                            <div class="profile-card">
+                                <div class="profile-avatar">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="profile-info">
+                                    <h3>SmartBizz Business</h3>
+                                    <p>Premium Plan</p>
+                                    <div class="plan-badge">Active</div>
+                                </div>
+                                <div class="profile-stats">
+                                    <div class="stat">
+                                        <span class="stat-number">3</span>
+                                        <span class="stat-label">Connected Accounts</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-number">1,248</span>
+                                        <span class="stat-label">Total Users</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="quick-actions">
+                                <h4>Quick Actions</h4>
+                                <div class="action-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Account Settings</span>
+                                </div>
+                                <div class="action-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Privacy & Security</span>
+                                </div>
+                                <div class="action-item">
+                                    <i class="fas fa-bell"></i>
+                                    <span>Notification Preferences</span>
+                                </div>
+                                <div class="action-item">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <span>Billing & Subscription</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-content">
+                            <div class="profile-form">
+                                <h3>Business Information</h3>
+                                <form>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="business-name">Business Name</label>
+                                            <input type="text" id="business-name" value="SmartBizz Business">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="business-email">Business Email</label>
+                                            <input type="email" id="business-email" value="contact@smartbizz.example.com">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="business-phone">Business Phone</label>
+                                            <input type="text" id="business-phone" value="+1 234-567-8900">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="business-industry">Industry</label>
+                                            <select id="business-industry">
+                                                <option selected>Technology</option>
+                                                <option>Retail</option>
+                                                <option>Services</option>
+                                                <option>Manufacturing</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="business-address">Business Address</label>
+                                        <input type="text" id="business-address" value="123 Business Ave, Suite 100, San Francisco, CA 94107">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="business-description">Business Description</label>
+                                        <textarea id="business-description" rows="4">SmartBizz provides comprehensive business management solutions for small and medium enterprises, focusing on social media integration and automated customer service.</textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary">Cancel</button>
+                                        <button type="submit" class="btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h3>Auto-Reply Settings</h3>
+                                <div class="settings-card">
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <h4>Auto-Reply Status</h4>
+                                            <p>Automatically respond to customer messages</p>
+                                        </div>
+                                        <div class="setting-action">
+                                            <div class="toggle-switch active">
+                                                <div class="toggle-slider"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <h4>Response Time</h4>
+                                            <p>Set maximum time to respond to messages</p>
+                                        </div>
+                                        <div class="setting-action">
+                                            <select class="time-select">
+                                                <option>Immediately</option>
+                                                <option selected>Within 5 minutes</option>
+                                                <option>Within 15 minutes</option>
+                                                <option>Within 1 hour</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <h4>Working Hours</h4>
+                                            <p>Set your business hours for auto-replies</p>
+                                        </div>
+                                        <div class="setting-action">
+                                            <div class="hours-display">9:00 AM - 6:00 PM (Mon-Fri)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="main-footer">
+                <p>SmartBizz Business Owner Dashboard &copy; 2023. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Pure CSS Tab Switching Mechanism -->
+    <style>
+        /* Hide all pages by default */
+        .page {
+            display: none;
+        }
+        
+        /* Show only active page */
+        .page.active {
+            display: block;
+        }
+        
+        /* Sidebar menu item click simulation */
+        .menu-item:active {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Visual feedback for active menu item */
+        .menu-item.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+        
+        /* Show active page when menu item is focused (for keyboard navigation) */
+        .menu-item[data-page="dashboard"]:focus ~ .main-content .page#dashboard-page,
+        .menu-item[data-page="messages"]:focus ~ .main-content .page#messages-page,
+        .menu-item[data-page="users"]:focus ~ .main-content .page#users-page,
+        .menu-item[data-page="accounts"]:focus ~ .main-content .page#accounts-page,
+        .menu-item[data-page="documents"]:focus ~ .main-content .page#documents-page,
+        .menu-item[data-page="profile"]:focus ~ .main-content .page#profile-page {
+            display: block !important;
+        }
+        
+        /* Hide other pages when one is focused */
+        .menu-item:focus ~ .main-content .page {
+            display: none;
+        }
+        
+        /* Ensure only the active page is visible initially */
+        .page.active {
+            display: block;
+        }
+    </style>
+</body>
+</html>
