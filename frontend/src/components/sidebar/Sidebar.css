@@ -6,7 +6,7 @@
 }
 
 .sidebar {
-  width: 200px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   background-color: #F1F2F7;
@@ -27,6 +27,7 @@
 }
 .main-content {
   width: 100%;
+  margin: 10px;
 }
 .sidebarlinks{
    height: 100%;

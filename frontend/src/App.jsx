@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import "./App.css"
 // Components
 
 import Login from "./components/Login/Login";
@@ -17,6 +17,7 @@ import OwnerSubscription from "./components/Component/owner/subscriptions/OwnerS
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout"; // <--- Import the Layout
 import Sidebar from "./components/sidebar/Sidebar.jsx";
+import AccountsPage from "./components/Component/owner/Accounts/Accounts.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
     <Route path="/" element={<Sidebar></Sidebar>}>
     <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
     <Route path="inventory" element={<Inventory/>}></Route>
+    <Route path="accounts" element={<AccountsPage/>}></Route>
 
     </Route>
 

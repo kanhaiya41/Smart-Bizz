@@ -1,0 +1,139 @@
+.AccountsPageDiv{
+    width: 100%;
+}
+.account-heading{
+    display: flex;
+    justify-content: space-between;
+}
+
+.account-heading-filter{
+        display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.account-content-div-heading
+{
+     
+    margin-top: 10px;
+ display: grid;
+    grid-template-columns: repeat(5,1fr);
+    background-color: #F6F6FB;
+  
+
+    p{
+       
+        font-size: 13px;
+          padding: 7px;
+          font-weight: 600;
+    }
+
+}
+
+.checkBoxP{
+    display: flex;
+    align-items: center ;
+    gap: 10px;
+}
+
+.account-content-div-body-card{
+        margin-top: 10px;
+ display: grid;
+    grid-template-columns: repeat(5,1fr);
+  
+  
+    p{
+       
+        font-size: 12px;
+            padding: 7px;
+         
+    }
+}
+.account-content-div-body-card:hover{
+
+    background-color: lightgray;
+    
+}
+/* Overlay */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup box */
+.popup {
+  background: #fff;
+  width: 450px;
+  padding: 25px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Title */
+.popup h5 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+/* Subtitle */
+.popup-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Social icons container */
+.social-pages-images {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Social item */
+.social-pages-div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.social-pages-div:hover {
+  background: #f5f7fa;
+}
+
+/* Image */
+.social-pages-div img {
+  height: 45px;
+  width: 45px;
+}
+
+/* Text */
+.social-pages-div p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}

@@ -8,24 +8,19 @@ const TenantSchema = new mongoose.Schema({
     },
     businessName: {
         type: String,
-        required: true
-    },
-    slug: {
-        type: String,
-        unique: true
     },
     page: {
         pageId: {
             type: String,
-            required: true
+           
         },
         igBusinessId: {
             type: String,
-            required: true
+          
         },
         accessToken: {
             type: String,
-            required: true
+       
         },
         tokenExpiresAt: Date
     },

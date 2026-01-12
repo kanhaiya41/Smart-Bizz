@@ -124,112 +124,120 @@ export const login = async (req, res) => {
 };
 
 
+
+
 export const socialConnection = async (req, res) => {
   try {
-    const { code, state: userId } = req.query;
-    console.log(req.query);
-
-    if (!code || !userId) {
+    const { code, state } = req.query;
+    if (!code || !state) {
       return res.status(400).send("Invalid callback");
     }
+
+    const { userId, type } = JSON.parse(decodeURIComponent(state));
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).send("User not found");
 
-    //  Code → USER ACCESS TOKEN
-    const tokenData = await exchangeCodeForToken(code);
-    const userAccessToken = tokenData.access_token;
+    // Exchange code for token
+    const { access_token: userAccessToken } = await exchangeCodeForToken(code);
 
-    console.log("USER ACCESS TOKEN:", userAccessToken);
-
-    //  Get user's pages
-    const pagesRes = await axios.get(
+    // Get pages
+    const { data } = await axios.get(
       "https://graph.facebook.com/v18.0/me/accounts",
       { params: { access_token: userAccessToken } }
     );
 
-    const pages = pagesRes.data.data;
-    console.log("PAGES:", pages);
+    const pages = data.data;
+    if (!pages?.length) throw new Error("No pages found");
 
-    if (!pages || pages.length === 0) {
-      throw new Error("No Facebook pages found");
-    }
-
-    const igPages = [];
-
-    //  Find ALL pages which have IG business linked
-    for (const page of pages) {
-      const igRes = await axios.get(
-        `https://graph.facebook.com/v18.0/${page.id}`,
-        {
-          params: {
-            fields: "instagram_business_account",
-            access_token: page.access_token
-          }
-        }
-      );
-
-      console.log("vishal saini", igRes.data);
-
-
-
-      if (igRes.data.instagram_business_account) {
-        igPages.push({
-          pageId: page.id,
-          pageName: page.name,
-          pageAccessToken: page.access_token,
-          igBusinessId: igRes.data.instagram_business_account.id
-        });
-      }
-    }
-
-    if (igPages.length === 0) {
-      throw new Error("No Instagram business account linked");
-    }
-
-    //  Create tenants for each IG-linked page
-    const createdTenants = [];
-    console.log("igPages", igPages);
-
-    for (const igPage of igPages) {
-      const slug = igPage.pageName
-        .toLowerCase()
-        .replace(/\s+/g, "-");
+    if (type === "instagram") {
+      await instagramConnection(pages, userId, type);
+    } else {
+      const page = pages[0];
 
       const tenant = await Tenant.create({
         owner: userId,
-        businessName: igPage.pageName,
-        slug,
+        businessName: page.name,
         page: {
-          pageId: igPage.pageId,
-          igBusinessId: igPage.igBusinessId,
-          accessToken: igPage.pageAccessToken
+          pageId: page.id,
+          accessToken: page.access_token
         }
       });
 
-      createdTenants.push({
-        name: igPage.pageName,
-        tenantId: tenant._id
+      await User.findByIdAndUpdate(userId, {
+        $push: {
+          tenants: { name: type, tenantId: tenant._id }
+        }
       });
     }
-
-    console.log("createed Teanants ", createdTenants);
-
-
-    //  Update user with all tenants
-    const upadteduser = await User.findByIdAndUpdate(userId, {
-      $push: {
-        tenants: { $each: createdTenants }
-      }
-    }, { new: true });
-
-    console.log("updateduser", upadteduser);
-
 
     return res.redirect(process.env.FRONTEND_SUCCESS_URL);
 
   } catch (err) {
+    console.log(err);
+    
     console.error("SOCIAL CONNECT ERROR:", err.message);
     return res.status(500).send(err.message);
   }
+};
+
+
+const instagramConnection = async (pages, userId, type) => {
+  // Run all API calls in parallel
+  const igResults = await Promise.all(
+    pages.map(async (page) => {
+      try {
+        const igRes = await axios.get(
+          `https://graph.facebook.com/v18.0/${page.id}`,
+          {
+            params: {
+              fields: "instagram_business_account",
+              access_token: page.access_token
+            }
+          }
+        );
+
+        if (igRes.data.instagram_business_account) {
+          return {
+            pageId: page.id,
+            pageName: page.name,
+            pageAccessToken: page.access_token,
+            igBusinessId: igRes.data.instagram_business_account.id
+          };
+        }
+
+        return null;
+      } catch (err) {
+        console.log("IG fetch failed for page:", page.id);
+        return null;
+      }
+    })
+  );
+
+  const igPages = igResults.filter(Boolean);
+
+  if (!igPages.length) {
+    throw new Error("No Instagram business account linked");
+  }
+
+  // Pick first IG linked page
+  const igPage = igPages[0];
+
+  const tenant = await Tenant.create({
+    owner: userId,
+    businessName: igPage.pageName,
+    page: {
+      pageId: igPage.pageId,
+      igBusinessId: igPage.igBusinessId,
+      accessToken: igPage.pageAccessToken
+    }
+  });
+
+  await User.findByIdAndUpdate(userId, {
+    $push: {
+      tenants: { name: type, tenantId: tenant._id }
+    }
+  });
+
+  return tenant;
 };

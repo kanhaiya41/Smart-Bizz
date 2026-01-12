@@ -69,3 +69,20 @@ export const getAllMessages = async (req, res) => {
 export const todayMessage = async(req,res)=>{
     
 }
+
+
+export const getAllTeanants = async (req, res) => {
+    try {
+        const ownerId = req.user.id;
+
+        const user = await User.findById(ownerId)
+            .select("-passwordHash")
+            .lean();
+
+        return res.json({ success: true, data:user });
+
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+

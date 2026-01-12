@@ -25,9 +25,17 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/dashboard", icon: 'ri-dashboard-line' },
     { name: "Inventory", path: "/inventory",icon: 'ri-dashboard-line'},
     { name: "Accounts", path: "/accounts", icon: 'ri-dashboard-line'},
-    { name: "Subscription", path: "/subscription", icon: 'ri-dashboard-line'},
+    { name: "Users    ", path: "/dashboard", icon: 'ri-dashboard-line'},
     
   ];
+
+    const otherItems = [
+    { name: "Profile", path: "/dashboard", icon: 'ri-dashboard-line' },
+    { name: "Setting", path: "/inventory",icon: 'ri-dashboard-line'},
+    { name: "Help", path: "/accounts", icon: 'ri-dashboard-line'},
+  
+  ];
+
 
   // 4. Decide which menu to show
   const menuItems = userRole === "superAdmin" ? superAdminItems : ownerItems;
@@ -62,7 +70,7 @@ const Sidebar = () => {
          <div className="otherdiv">
                <p>Other</p>
           {
-            ownerItems.map((nav , index)=>{
+            otherItems.map((nav , index)=>{
               return <div 
               onClick={()=>navigate("/dashboard")}
                key={index} className="navCard">
@@ -76,7 +84,7 @@ const Sidebar = () => {
       {}
     </div>
 
-    <div className="main-cotent">
+    <div className="main-content">
       <Outlet/>
     </div>
 

@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app); // 👈 VERY IMPORTANT
 
 app.use(cors({
-    origin: process.env.URI,
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 
@@ -34,6 +34,7 @@ app.use("/webhook", webhooks);
 app.use("/vector_db", vectorApp);
 app.use("/super-admin", superAdminApp);
 app.use("/owner", bussinessOwnerApp);
+
 
 //  init socket AFTER routes
 initSocket(server);
