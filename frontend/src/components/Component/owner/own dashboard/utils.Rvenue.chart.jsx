@@ -1,16 +1,12 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-  ,PieChart, Pie, Cell
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
- } from 'recharts';
-
-// Dummy Data matching your image (Dec 1 to 12)
 const data = [
   { day: '01', current: 4000, previous: 2400 },
   { day: '02', current: 3000, previous: 4000 },
   { day: '03', current: 3800, previous: 2000 },
   { day: '04', current: 2780, previous: 3908 },
-  { day: '05', current: 4800, previous: 3200 },
+  { day: '05', current: 4800, previous: 3200 }, 
   { day: '06', current: 5500, previous: 2500 },
   { day: '07', current: 4000, previous: 2800 },
   { day: '08', current: 3200, previous: 4000 },
@@ -22,35 +18,33 @@ const data = [
 
 export const RevenueChart = () => {
   return (
-    <div className='revenue.chart' style={{
-      marginTop:'10px'
-    }}>
-      {/* Header section as seen in your image */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <div>
-          <span style={{fontSize:'12px'}} >Revenue</span>
-          <h5>IDR 7.852.000</h5>
-          <span style={{ color: '#28a745', fontSize: '12px', fontWeight: 'bold' }}>↑ 2.1% <span style={{color: '#999'}}>vs last week</span></span>
+    <div className='revenue-chart-container'>
+      <div className='chart-header-main'>
+        <div className='revenue-info'>
+          <span className='label'>Total Revenue</span>
+          <h3>IDR 7.852.000</h3>
+          <div className='trend-badge'>
+            <span className='trend-up'>↑ 2.1%</span>
+            <span className='comparison'>vs last week</span>
+          </div>
         </div>
-        <button style={{ height:'15px', fontSize: '10px',  padding: '8px', borderRadius: '8px', border: '1px solid #eee', background: 'none', cursor: 'pointer' }}>View Report</button>
+        <button className='view-report-btn'>View Report</button>
       </div>
       
-      <p style={{ color: '#999', fontSize: '13px'}}>Sales from 1-12 Dec, 2020</p>
+      <p className='chart-timeline'>Sales from 1-12 Dec, 2020</p>
 
-      {/* Actual Chart */}
-      <div style={{ height: "150px"}}>
-        <ResponsiveContainer>
+      <div className='bar-wrapper'>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barGap={8}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#999', fontSize: 12}} />
+            <CartesianGrid strokeDasharray="0" vertical={false} stroke="#f1f5f9" />
+            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11}} />
             <YAxis hide={true} />
-            <Tooltip cursor={{fill: 'transparent'}} />
-            
-            {/* Blue Bar (Current) */}
-            <Bar dataKey="current" fill="#5c67f2" radius={[4, 4, 0, 0]} barSize={10} />
-            
-            {/* Grey Bar (Previous/Comparison) */}
-            <Bar dataKey="previous" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={10} />
+            <Tooltip 
+              cursor={{fill: '#f8fafc'}} 
+              contentStyle={{borderRadius: '10px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}
+            />
+            <Bar dataKey="current" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={8} />
+            <Bar dataKey="previous" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={8} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -58,29 +52,28 @@ export const RevenueChart = () => {
   );
 };
 
-
-
 const circleData = [
   { name: "Morning", value: 30 },
   { name: "Afternoon", value: 40 },
   { name: "Evening", value: 30 },
 ];
 
-const COLORS = ["#5A6ACF", "#8593ED", "#C7CEFF"];
+const COLORS = ["#4f46e5", "#818cf8", "#c7d2fe"];
 
 export const CircleChart = () => {
   return (
-    <div style={{ height: 220 }}>
+    <div className='circle-chart-wrapper'>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={circleData}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={90}
-            paddingAngle={4}
+            innerRadius={70}
+            outerRadius={95}
+            paddingAngle={8}
             dataKey="value"
+            stroke="none"
           >
             {circleData.map((_, i) => (
               <Cell key={i} fill={COLORS[i]} />
@@ -89,9 +82,11 @@ export const CircleChart = () => {
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
+      {/* Optional: Center Text for Pie Chart */}
+      <div className='pie-center-label'>
+        <span className='total-val'>100%</span>
+        <span className='total-lbl'>Active</span>
+      </div>
     </div>
   );
 };
-
-
-

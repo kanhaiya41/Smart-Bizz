@@ -1,59 +1,124 @@
-.sidbar-div{
+:root {
+  --primary-blue: #4e73df;
+  --bg-sidebar: #f8f9fc;
+  --text-active: #4e73df;
+  --text-idle: #5a5c69;
+  --bg-active: #f0f3ff;
+  --sidebar-width: 260px;
+}
+
+.layout-wrapper {
+  display: flex;
   height: 100vh;
   width: 100vw;
-  display: flex;
-
+  background-color: #fff;
 }
 
 .sidebar {
-  width: 250px;
+  width: var(--sidebar-width);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid #e3e6f0;
   display: flex;
   flex-direction: column;
-  background-color: #F1F2F7;
-  align-items: center;
-  gap: 10px;
+  height: 100%;
 }
 
-.sidebar h4 {
-  margin-top: 28px;
-  font-size: 12px;
-}
-.hr{
-  width: 100%;
-  height: 0.6px;
-
-  background-color:lightgray;
-
-}
-.main-content {
-  width: 100%;
-  margin: 10px;
-}
-.sidebarlinks{
-   height: 100%;
-   display: flex;
-   flex-direction: column;
-    gap: 10px;
-
-}
-.menudiv ,.otherdiv{
-  p{
-    font-size: 12px;
-    color: grey;
-  }
+/* LOGO SECTION - Sabse upar wala part */
+.sidebar-logo {
+  padding: 35px 24px 20px 24px;
+  /* Upper padding badhadi hai */
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
 }
 
-.navCard{
-  padding: 10px;
+.logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-blue);
+  letter-spacing: 1px;
+}
+
+.sidebar-content {
+  flex: 1;
+  padding: 0 16px;
+  overflow-y: auto;
+}
+
+/* Group Labels (MENU / OTHERS) */
+.menu-group {
+  margin-bottom: 24px;
+}
+
+.group-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b7b9cc;
+  margin-bottom: 12px;
+  padding-left: 12px;
+  text-transform: uppercase;
+}
+
+/* NAV LINKS */
+.nav-link {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text-idle);
+  border-radius: 10px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+}
+
+.nav-link i {
+  font-size: 20px;
+}
+
+.nav-link span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Hover and Active State */
+.nav-link:hover {
+  background-color: #eaecf4;
+  color: #3a3b45;
+}
+
+.nav-link.active {
+  background-color: var(--bg-active);
+  color: var(--text-active);
+}
+
+/* Footer & Logout */
+.sidebar-footer {
+  padding: 20px 16px;
+  border-top: 1px solid #e3e6f0;
+}
+
+.btn-logout {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #e74a3b;
+  font-weight: 700;
   cursor: pointer;
-  i{
-    font-size: 12px;
-  }
-  p{
-    font-size: 10px;
-    color: black;
-  }
-  
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: #fff1f0;
+}
+
+.main-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
 }

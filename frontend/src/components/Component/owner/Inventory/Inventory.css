@@ -1,54 +1,232 @@
-.inventory-div{
-   width: 100%;
-  padding: 10px;
-}
-.fileInput{
-margin: 20px;
-height: 200px;
-border: 0.5px dotted ;
-display: flex;
-justify-content: center;
-align-items: center;
+.inventory-div {
+  padding: 30px;
+  background-color: #f8fafc;
+  min-height: 100vh;
 }
 
-.inventory-list-headings{
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr;
-  border-top: 0.5px solid lightgrey;
-  padding: 10px;
-  p{
-    font-size: 12px;
-  }
+.inventory-header-section {
+  margin-bottom: 25px;
 }
-.inventory-list-items{
-  height: 200px;
+
+.inventory-heading h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.inventory-heading p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* MAIN GRID LAYOUT */
+.inventory-main-grid {
   display: flex;
- flex-direction: column;
-  overflow-y: scroll;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.inventory-list-items-card{
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr;
-  border-bottom: 0.5px solid lightgrey;
-  
-  padding: 10px;
-  p{
-    font-size: 12px;
-  }
+/* UPLOAD CARD */
+.upload-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
+.file-drop-area {
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #fcfdfe;
+}
 
-.inventory-list-filter{
+.file-drop-area:hover {
+  border-color: #4f46e5;
+  background: #f5f3ff;
+}
+
+.icon-circle {
+  width: 64px;
+  height: 64px;
+  background: #eef2ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+.drop-label h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.drop-label p {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* CONTENT CARD */
+.inventory-content-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.inventory-list-filter {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-
+  align-items: center;
+  margin-bottom: 20px;
 }
 
+.filter-text h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
 
-.inventory-list-filter-search{
-  input{
-    padding: 5px;
-  }
+.count-tag {
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.search-box-modern {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 8px 16px;
+  border-radius: 12px;
+  width: 300px;
+}
+
+.search-box-modern input {
+  border: none;
+  background: transparent;
+  outline: none;
+  margin-left: 10px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* TABLE STYLING */
+.table-header-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 2fr 1fr 1fr 1fr;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inventory-scroll-area {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.inventory-row-card {
+  display: grid;
+  grid-template-columns: 0.8fr 2fr 1fr 1fr 1fr;
+  padding: 16px;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s;
+}
+
+.inventory-row-card:hover {
+  background: #fcfdfe;
+}
+
+.id-text {
+  font-family: monospace;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.name-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.type-badge.pdf {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.type-badge.excel,
+.type-badge.csv {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.type-badge.zip {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon-btn.view:hover {
+  color: #4f46e5;
+  border-color: #4f46e5;
+  background: #f5f3ff;
+}
+
+.icon-btn.delete:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+  background: #fee2e2;
+}
+
+.text-center {
+  text-align: center;
 }

@@ -1,94 +1,89 @@
 import React from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
-// Icons Components (Kept exactly the same)
+const MENU_CONFIG = {
+  superAdmin: [
+    { name: "Dashboard", path: "/dashboard", icon: "ri-grid-fill" },
+    { name: "User Management", path: "/user-management", icon: "ri-user-settings-line" },
+    { name: "Channel Health", path: "/health", icon: "ri-pulse-line" },
+    { name: "AI Usage & Logs", path: "/logs", icon: "ri-terminal-window-line" },
+    { name: "Subscription", path: "/subscription", icon: "ri-vip-crown-2-line" },
+  ],
+  owner: [
+    { name: "Dashboard", path: "/dashboard", icon: "ri-grid-fill" },
+    { name: "Inventory", path: "/inventory", icon: "ri-box-3-line" },
+    { name: "Accounts", path: "/accounts", icon: "ri-wallet-3-line" },
+    { name: "Users", path: "/users", icon: "ri-group-line" },
+  ],
+  others: [
+    { name: "Profile", path: "/profile", icon: "ri-user-3-line" },
+    { name: "Settings", path: "/settings", icon: "ri-settings-4-line" },
+    { name: "Help", path: "/help", icon: "ri-question-line" },
+  ],
+};
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // 1. Get the User Role from LocalStorage
-  const userRole = localStorage.getItem("role");
-
-  // 2. Define Menu for SuperAdmin
-  const superAdminItems = [
-    { name: "Dashboard", path: "/dashboard", icon: "<Icons.Home />" },
-    { name: "User Management", path: "/user-management", icon: "<Icons.Rate />" },
-    { name: "Channel Heath", path: "/health", icon: "<Icons.Bookings /> "},
-    { name: "AI Usage & Logs", path: "/logs", icon:" <Icons.Apartments />" },
-    { name: "Subscription", path: "/subscription", icon: "<Icons.Pricing /> "},
-  ];
-
-  // 3. Define Menu for Owner
-  const ownerItems = [
-    { name: "Dashboard", path: "/dashboard", icon: 'ri-dashboard-line' },
-    { name: "Inventory", path: "/inventory",icon: 'ri-dashboard-line'},
-    { name: "Accounts", path: "/accounts", icon: 'ri-dashboard-line'},
-    { name: "Users    ", path: "/dashboard", icon: 'ri-dashboard-line'},
-    
-  ];
-
-    const otherItems = [
-    { name: "Profile", path: "/dashboard", icon: 'ri-dashboard-line' },
-    { name: "Setting", path: "/inventory",icon: 'ri-dashboard-line'},
-    { name: "Help", path: "/accounts", icon: 'ri-dashboard-line'},
-  
-  ];
-
-
-  // 4. Decide which menu to show
-  const menuItems = userRole === "superAdmin" ? superAdminItems : ownerItems;
-
-  // 5. Handle Logout (Clear storage)
-  const handleLogout = (e) => {
-    e.preventDefault();
-    localStorage.clear(); // Clear Token and Role
-    navigate("/"); // Redirect to Login
-  };
+  const userRole = localStorage.getItem("role") || "owner";
+  const mainMenuItems = MENU_CONFIG[userRole] || MENU_CONFIG.owner;
 
   return (
-  <div className="sidbar-div">
-
-    <div className="sidebar">
-      <h4>Smartbizz</h4>
-      < hr className="hr"/>
-      <div className="sidebarlinks">
-        <div className="menudiv">
-               <p>Menu</p>
-          {
-            ownerItems.map((nav , index)=>{
-              return <div 
-              onClick={()=>navigate(nav.path)}
-               key={index} className="navCard">
-                <i className={nav.icon}></i>
-                <p>{nav.name}</p>
-              </div>
-            })
-          }
+    <div className="layout-wrapper">
+      <aside className="sidebar">
+        {/* LOGO SECTION */}
+        <div className="sidebar-logo">
+          <h2 className="logo-text">SMARTBIZZ</h2>
         </div>
-         <div className="otherdiv">
-               <p>Other</p>
-          {
-            otherItems.map((nav , index)=>{
-              return <div 
-              onClick={()=>navigate("/dashboard")}
-               key={index} className="navCard">
-                <i className={nav.icon}></i>
-                <p>{nav.name}</p>
-              </div>
-            })
-          }
+
+        <nav className="sidebar-content">
+          {/* MAIN MENU */}
+          <div className="menu-group">
+            <label className="group-label">MENU</label>
+            <div className="nav-list">
+              {mainMenuItems.map((item) => (
+                <NavLink 
+                  to={item.path} 
+                  key={item.name} 
+                  className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                >
+                  <i className={item.icon}></i>
+                  <span>{item.name}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          {/* OTHER SECTION */}
+          <div className="menu-group">
+            <label className="group-label">OTHERS</label>
+            <div className="nav-list">
+              {MENU_CONFIG.others.map((item) => (
+                <NavLink 
+                  to={item.path} 
+                  key={item.name} 
+                  className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                >
+                  <i className={item.icon}></i>
+                  <span>{item.name}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        </nav>
+
+        <div className="sidebar-footer">
+            <button className="btn-logout" onClick={() => {localStorage.clear(); navigate("/")}}>
+                <i className="ri-logout-circle-r-line"></i>
+                <span>Logout</span>
+            </button>
         </div>
-      </div>
-      {}
-    </div>
+      </aside>
 
-    <div className="main-content">
-      <Outlet/>
+      <main className="main-view">
+        <Outlet />
+      </main>
     </div>
-
-  </div>
   );
 };
 
