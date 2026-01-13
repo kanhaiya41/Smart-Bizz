@@ -6,6 +6,8 @@ import "./Account.css";
 import fbimg from '../../../../assets/fb.png'
 import instaimg from '../../../../assets/insta.png'
 import whtsimg from '../../../../assets/whtsp.png'
+import { useApi } from "../../../../api/useApi";
+import businessOwnerApi from "../../../../api/apiService";
 
 const connectedAccounts = [
   { accountName: "Instagram Business", accountId: "IG_982134", platform: "Instagram", contacts: "1.2k", status: "Connected" },
@@ -82,12 +84,25 @@ const AccountsPage = () => {
         </div>
 
         <div className="account-table-body">
-          {connectedAccounts.map((item, index) => (
+
+                  {tenantsLoading && (
+            <div className="loadingDiv">
+              <p>Loading...</p>
+            </div>
+          )}
+
+          {!tenantsLoading && tenantsError && (
+            <div className="errorDiv">
+              <p>Error loading accounts</p>
+            </div>
+          )}
+
+          {!tenantsLoading && !tenantsError  && tenants.map((item, index) => (
             <div className="account-row" key={index}>
               <p className="acc-name-cell">
                 <input type="checkbox" />
-                <div className="acc-avatar">{item.accountName[0]}</div>
-                <span>{item.accountName}</span>
+                <div className="acc-avatar">{item.businessName[0]}</div>
+                <span>{item.businessName}</span>
               </p>
               <p className="id-cell">{item.accountId}</p>
               <p className="platform-cell">

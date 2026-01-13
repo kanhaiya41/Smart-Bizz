@@ -1,0 +1,91 @@
+.profile-management {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-basic h4 {
+  color: blueviolet;
+  margin: 0;
+}
+
+.profile-basic p {
+  font-size: 13px;
+  margin: 5px 0;
+  color: gray;
+}
+
+.badge {
+  background: #eee;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+/* Info Card */
+.info-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.info-header button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background: blueviolet;
+  color: white;
+  cursor: pointer;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.info-item span {
+  font-size: 12px;
+  color: gray;
+}
+
+.info-item p {
+  margin: 5px 0 0;
+  font-weight: 500;
+}

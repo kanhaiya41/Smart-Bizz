@@ -18,8 +18,7 @@ const MENU_CONFIG = {
   ],
   others: [
     { name: "Profile", path: "/profile", icon: "ri-user-3-line" },
-    { name: "Settings", path: "/settings", icon: "ri-settings-4-line" },
-    { name: "Help", path: "/help", icon: "ri-question-line" },
+    { name: "Help", path: "/support-help", icon: "ri-question-line" },
   ],
 };
 
