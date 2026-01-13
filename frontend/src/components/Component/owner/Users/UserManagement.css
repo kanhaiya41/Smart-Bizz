@@ -1,0 +1,117 @@
+.UserPageDiv {
+  width: 100%;
+}
+
+.user-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-heading-filter {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== TABLE HEADER ===== */
+.user-content-div-heading {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 0.4fr 1.6fr 1fr 1fr 1fr 1fr 1fr;
+  background-color: #f6f6fb;
+}
+
+.user-content-div-heading p {
+  font-size: 13px;
+  padding: 7px;
+  font-weight: 600;
+}
+
+/* ===== TABLE ROW ===== */
+.account-content-div-body-card {
+  display: grid;
+  grid-template-columns: 0.4fr 1.6fr 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.account-content-div-body-card p {
+  font-size: 12px;
+  padding: 7px;
+}
+
+.account-content-div-body-card:hover {
+  background-color: #f1f1f1;
+}
+
+.checkBoxP {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== POPUP ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: #fff;
+  width: 450px;
+  padding: 25px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.popup-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.social-pages-images {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.social-pages-div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+}
+
+.social-pages-div:hover {
+  background: #f5f7fa;
+}
+
+.social-pages-div img {
+  width: 45px;
+  height: 45px;
+}
+
+
+.checkBoxP{
+   font-size:12px ;
+  
+}

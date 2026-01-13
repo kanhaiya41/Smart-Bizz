@@ -1,0 +1,192 @@
+import { useState } from "react";
+import "./UserManagement.css";
+const todayMessage = [
+  {
+    "user_id": 1,
+    "user_name": "Rahul Sharma",
+    "platform": "WhatsApp",
+    "last_active": "2026-01-07 10:15 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Hi, mujhe product ki price janni hai.", "time": "10:14 AM"},
+      {"sender": "bot", "message": "Namaste Rahul! Hamara standard plan ₹999 se shuru hota hai.", "time": "10:14 AM"},
+      {"sender": "user", "message": "Theek hai, dhanyawad!", "time": "10:15 AM"}
+    ]
+  },
+  {
+    "user_id": 2,
+    "user_name": "Anjali Gupta",
+    "platform": "Instagram",
+    "last_active": "2026-01-07 10:30 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Kya ye dress red color mein available hai?", "time": "10:28 AM"},
+      {"sender": "bot", "message": "Ji Anjali, red color mein hamare paas Small aur Medium size available hain.", "time": "10:29 AM"},
+      {"sender": "bot", "message": "Kya main aapke liye order book kar doon?", "time": "10:30 AM"}
+    ]
+  },
+  {
+    "user_id": 3,
+    "user_name": "Amit Patel",
+    "platform": "Website Chat",
+    "last_active": "2026-01-07 11:00 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Order track kaise karein?", "time": "10:55 AM"},
+      {"sender": "bot", "message": "Apna Order ID share kijiye, main turant check karta hoon.", "time": "10:56 AM"},
+      {"sender": "user", "message": "ID: #99821", "time": "10:58 AM"},
+      {"sender": "bot", "message": "Aapka order ship ho chuka hai aur kal tak pahunch jayega.", "time": "11:00 AM"}
+    ]
+  },
+  {
+    "user_id": 4,
+    "user_name": "Priya Verma",
+    "platform": "Messenger",
+    "last_active": "2026-01-07 11:15 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Store kab tak open rehta hai?", "time": "11:10 AM"},
+      {"sender": "bot", "message": "Priya, hamara store subah 10 baje se raat 9 baje tak khula rehta hai.", "time": "11:11 AM"}
+    ]
+  },
+  {
+    "user_id": 5,
+    "user_name": "Vikram Singh",
+    "platform": "Telegram",
+    "last_active": "2026-01-07 11:30 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Refund status kya hai?", "time": "11:25 AM"},
+      {"sender": "bot", "message": "Vikram, aapka refund process kar diya gaya hai. 3-5 din mein account mein dikhne lagega.", "time": "11:30 AM"}
+    ]
+  },
+  {
+    "user_id": 6,
+    "user_name": "Sana Khan",
+    "platform": "WhatsApp",
+    "last_active": "2026-01-07 11:45 AM",
+    "chat_history": [
+      {"sender": "user", "message": "Offer kab khatam ho raha hai?", "time": "11:40 AM"},
+      {"sender": "bot", "message": "Sana, New Year offer aaj raat 12 baje tak hi valid hai.", "time": "11:41 AM"}
+    ]
+  },
+  {
+    "user_id": 7,
+    "user_name": "Rajesh Kumar",
+    "platform": "Website Chat",
+    "last_active": "2026-01-07 12:00 PM",
+    "chat_history": [
+      {"sender": "user", "message": "Login nahi ho raha hai.", "time": "11:55 AM"},
+      {"sender": "bot", "message": "Kya aapne 'Forgot Password' try kiya?", "time": "11:56 AM"},
+      {"sender": "user", "message": "Haan, OTP nahi aaya.", "time": "11:58 AM"}
+    ]
+  },
+  {
+    "user_id": 8,
+    "user_name": "Megha Das",
+    "platform": "Instagram",
+    "last_active": "2026-01-07 12:10 PM",
+    "chat_history": [
+      {"sender": "user", "message": "Collab ke liye kisse baat karein?", "time": "12:05 PM"},
+      {"sender": "bot", "message": "Megha, aap apna proposal info@company.com par bhej sakti hain.", "time": "12:10 PM"}
+    ]
+  },
+  {
+    "user_id": 9,
+    "user_name": "Sandeep Bose",
+    "platform": "WhatsApp",
+    "last_active": "2026-01-07 12:20 PM",
+    "chat_history": [
+      {"sender": "user", "message": "Menu bhej dijiye.", "time": "12:18 PM"},
+      {"sender": "bot", "message": "Zaroor Sandeep! Ye raha hamara digital menu link: [Link].", "time": "12:20 PM"}
+    ]
+  },
+  {
+    "user_id": 10,
+    "user_name": "Neha Joshi",
+    "platform": "Telegram",
+    "last_active": "2026-01-07 12:35 PM",
+    "chat_history": [
+      {"sender": "user", "message": "Subscription cancel karni hai.", "time": "12:30 PM"},
+      {"sender": "bot", "message": "Hamein dukh hai ki aap ja rahi hain. Kya hum wajah jaan sakte hain?", "time": "12:32 PM"},
+      {"sender": "user", "message": "Price thoda zyada hai.", "time": "12:35 PM"}
+    ]
+  }
+]
+const UserMangement = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleConnection = (type) => {
+    console.log("Connect:", type);
+  };
+
+  return (
+    <div className="UserPageDiv">
+      {/* HEADER */}
+      <div className="user-heading">
+        <p>User Management</p>
+      </div>
+
+      {/* TABLE */}
+      <div className="account-content-div">
+        <div className="user-content-div-heading">
+          <p><input type="checkbox" /> </p> 
+          <p > Account Name</p>
+          <p>Account Id</p>
+          <p>Platform</p>
+          <p>Last Active</p>
+          <p>Contacts</p>
+          <p>Action</p>
+        </div>
+
+        {todayMessage.map((item) => (
+          <div className="account-content-div-body-card" key={item.user_id}>
+            <p><input type="checkbox" /></p>
+            <p>{item.user_name}</p>
+            <p>{item.user_id}</p>
+            <p>{item.platform}</p>
+            <p>{item.last_active}</p>
+            <p>{item.last_active}</p>
+            <p className="action-text">Edit | Delete</p>
+          </div>
+        ))}
+      </div>
+
+      {/* POPUP */}
+      {isPopupOpen && (
+        <div className="popup-overlay" onClick={() => setIsPopupOpen(false)}>
+          <div className="popup" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setIsPopupOpen(false)}>
+              ✕
+            </button>
+
+            <h5>Add Your Profile</h5>
+            <p className="popup-subtitle">
+              Choose a social profile you'd like to manage
+            </p>
+
+            <div className="social-pages-images">
+              <div
+                className="social-pages-div"
+                onClick={() => handleConnection("facebook")}
+              >
+                <p>Facebook Page</p>
+              </div>
+
+              <div
+                className="social-pages-div"
+                onClick={() => handleConnection("instagram")}
+              >
+                <p>Instagram Page</p>
+              </div>
+
+              <div
+                className="social-pages-div"
+                onClick={() => handleConnection("whatsapp")}
+              >
+                <p>WhatsApp Page</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default UserMangement;

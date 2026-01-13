@@ -16,13 +16,42 @@ const connectedAccounts = [
 
 const AccountsPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [tenants, setTenants] = useState([]);
 
   const handleConnection = (type) => {
     const userId = "693ef33a3dfcb0a4a11c0ad4";
     const state = encodeURIComponent(JSON.stringify({ type, userId }));
-    const oauthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${import.meta.env.VITE_META_APP_ID}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI)}&response_type=code&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management&state=${state}`;
+
+    const oauthUrl =
+      "https://www.facebook.com/v18.0/dialog/oauth" +
+      "?client_id=" + import.meta.env.VITE_META_APP_ID +
+      "&redirect_uri=" + encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI) +
+      "&response_type=code" +
+      "&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management" +
+      "&state=" + state;
+
     window.location.href = oauthUrl;
   };
+
+  const {
+    request: fetchTenants,
+    error: tenantsError,
+    loading: tenantsLoading
+  } = useApi(businessOwnerApi.getTenants);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await fetchTenants();
+        setTenants(res?.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadData();
+  }, []);
+
 
   return (
     <div className="AccountsPageDiv">
