@@ -1,4 +1,4 @@
-import instImg from "../../../../assets/insta.png";
+import instImg from "../../../assets/insta.png";
 import "./ProfileManagement.css";
 
 const ProfileManagement = () => {

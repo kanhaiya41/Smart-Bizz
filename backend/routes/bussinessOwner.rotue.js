@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/getProfile",verifyToken,getProfile)
 router.get("/all-users-with-messages",verifyToken, getAllMessages)
-router.get("/get-all-teanants" , getAllTeanants)
+router.get("/get-all-teanants" ,verifyToken, getAllTeanants)
 router.get("/today-message",verifyToken, getAllMessages)
 
 

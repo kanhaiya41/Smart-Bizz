@@ -1,5 +1,8 @@
 import { useState } from "react";
 import "./UserManagement.css";
+import { useApi } from "../../../api/useApi";
+import businessOwnerApi from "../../../api/apiService";
+import { useEffect } from "react";
 const todayMessage = [
   {
     "user_id": 1,
@@ -110,11 +113,27 @@ const todayMessage = [
 ]
 const UserMangement = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [users,setusers]= useState([])
 
   const handleConnection = (type) => {
     console.log("Connect:", type);
   };
 
+  const {loading:userLoading , error : userError , request:getAllUsers} = useApi(businessOwnerApi.getUsers)
+
+  useEffect(()=>{
+
+    const loadUsers = async()=>{
+         try {
+          const res  = await getAllUsers()
+          setusers(res?.data || [])
+          
+         } catch (error) {
+          console.log(error);
+         }
+    }
+    loadUsers()
+  } , [])
   return (
     <div className="UserPageDiv">
       {/* HEADER */}

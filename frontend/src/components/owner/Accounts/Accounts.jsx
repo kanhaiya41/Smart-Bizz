@@ -3,11 +3,11 @@ import { Search, Plus, MoreVertical, X, Globe, UserCheck, MessageCircle, Instagr
 import "./Account.css";
 
 // Dummy images (Jo tumne import kiye hain wahi use honge)
-import fbimg from '../../../../assets/fb.png'
-import instaimg from '../../../../assets/insta.png'
-import whtsimg from '../../../../assets/whtsp.png'
-import { useApi } from "../../../../api/useApi";
-import businessOwnerApi from "../../../../api/apiService";
+import fbimg from '../../../assets/fb.png'
+import instaimg from '../../../assets/insta.png'
+import whtsimg from '../../../assets/whtsp.png'
+import { useApi } from "../../../api/useApi";
+import businessOwnerApi from "../../../api/apiService";
 
 const connectedAccounts = [
   { accountName: "Instagram Business", accountId: "IG_982134", platform: "Instagram", contacts: "1.2k", status: "Connected" },
@@ -45,7 +45,9 @@ const AccountsPage = () => {
     const loadData = async () => {
       try {
         const res = await fetchTenants();
-        setTenants(res?.data || []);
+        console.log("re",res);
+        
+        setTenants(res?.data|| []);
       } catch (err) {
         console.error(err);
       }
@@ -71,7 +73,7 @@ const AccountsPage = () => {
             <Plus size={18} /> Add New Account
           </button>
         </div>
-      </div>
+      </div>false
 
       <div className="account-table-container">
         <div className="account-table-header">
@@ -101,13 +103,13 @@ const AccountsPage = () => {
             <div className="account-row" key={index}>
               <p className="acc-name-cell">
                 <input type="checkbox" />
-                <div className="acc-avatar">{item.businessName[0]}</div>
-                <span>{item.businessName}</span>
+                <div className="acc-avatar">{item?.businessName[0]}</div>
+                <span>{item?.businessName}</span>
               </p>
-              <p className="id-cell">{item.accountId}</p>
+              <p className="id-cell">{item.type === "instagram" ? item.page.igBusinessId :item.page.pageId }</p>
               <p className="platform-cell">
-                <span className={`platform-tag ${item.platform.toLowerCase()}`}>
-                  {item.platform}
+                <span className={`platform-tag ${item?.type.toLowerCase()}`}>
+                  {item?.type}
                 </span>
               </p>
               <p className="contact-cell"><Globe size={14} /> {item.contacts}</p>

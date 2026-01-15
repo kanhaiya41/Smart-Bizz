@@ -1,5 +1,6 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import Tenant from "../models/Tenant.js";
 
 
 export const getProfile = async (req, res) => {
@@ -13,7 +14,7 @@ export const getProfile = async (req, res) => {
         return res.json({ success: true, data:user });
 
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({message: err.message });
     }
 };
 
@@ -75,11 +76,9 @@ export const getAllTeanants = async (req, res) => {
     try {
         const ownerId = req.user.id;
 
-        const user = await User.findById(ownerId)
-            .select("-passwordHash")
-            .lean();
+        const teants = await Tenant.find({owner:ownerId })
 
-        return res.json({ success: true, data:user });
+        return res.json({ success: true, data:teants });
 
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });

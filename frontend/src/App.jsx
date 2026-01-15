@@ -4,13 +4,13 @@ import "./App.css"
 // Components
 
 import Login from "./components/Login/Login";
-import OwnerDashboard from "./components/Component/owner/own dashboard/OwnerDashboard";
-import Inventory from "./components/Component/owner/Inventory/Inventory";
+import OwnerDashboard from "./components/owner/own dashboard/OwnerDashboard";
+import Inventory from "./components/owner/Inventory/Inventory";
 import Sidebar from "./components/sidebar/Sidebar.jsx";
-import AccountsPage from "./components/Component/owner/Accounts/Accounts.jsx";
-import UserMangement from "./components/Component/owner/Users/UserManagement.jsx";
-import ProfileManagement from "./components/Component/owner/ProfilePage/ProfileManagement.jsx";
-import SupportAndHelp from "./components/Component/owner/SupportAndHelp/SupportAndHelp.jsx";
+import AccountsPage from "./components/owner/Accounts/Accounts.jsx";
+import UserMangement from "./components/owner/Users/UserManagement.jsx";
+import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.jsx";
+import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
 
 function App() {
   return (
