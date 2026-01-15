@@ -153,17 +153,34 @@ const UserMangement = () => {
           <p>Action</p>
         </div>
 
-        {todayMessage.map((item) => (
-          <div className="account-content-div-body-card" key={item.user_id}>
+
+
+
+                  {userLoading && (
+            <div className="loadingDiv">
+              <p>Loading...</p>
+            </div>
+          )}
+
+          {!userLoading && userError && (
+            <div className="errorDiv">
+              <p>Error loading accounts</p>
+            </div>
+          )}
+
+       {!userLoading && !userError  && users.map((item, index) => {
+        const lastMessage = item?.messages[0]?.text
+        const sender = item?.messages[0]?.sender
+        return    <div className="account-content-div-body-card" key={item.user_id}>
             <p><input type="checkbox" /></p>
-            <p>{item.user_name}</p>
-            <p>{item.user_id}</p>
-            <p>{item.platform}</p>
-            <p>{item.last_active}</p>
+            <p>{item?.name}</p>
+            <p>{item?.uniqueId}</p>
+            <p>{item?.platform}</p>
+            <p>{`${lastMessage} (${sender})`}</p>
             <p>{item.last_active}</p>
             <p className="action-text">Edit | Delete</p>
           </div>
-        ))}
+       })}
       </div>
 
       {/* POPUP */}
