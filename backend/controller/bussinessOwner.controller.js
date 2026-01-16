@@ -22,14 +22,28 @@ export const getProfile = async (req, res) => {
 export const getAllMessages = async (req, res) => {
     try {
         const ownerId = req.user.id;
+        const platform = req.query.platform
         const filter = req.query.filter
+    
         console.log(req.user);
 
         let query ={ owner: ownerId }
 
-        if(filter)
-            { query.platform = filter }
+        if(platform)
+            { query.platform = platform }
 
+if (filter) { 
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);   // day start
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999); // day end
+
+  query.updatedAt = { 
+    $gte: start, 
+    $lte: end 
+  };
+}
 
        
         const users = await User.find(query)
@@ -56,7 +70,7 @@ export const getAllMessages = async (req, res) => {
         }
 
         const data = users.map(user => ({
-            user,
+            user,platform,
             messages: messageMap[user._id.toString()] || []
         }));
 
