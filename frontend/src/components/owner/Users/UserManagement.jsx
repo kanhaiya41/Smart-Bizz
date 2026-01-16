@@ -1,228 +1,148 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Search, MoreVertical, MessageSquare, Clock, Trash2, Edit3, ExternalLink } from "lucide-react";
 import "./UserManagement.css";
 import { useApi } from "../../../api/useApi";
 import businessOwnerApi from "../../../api/apiService";
-import { useEffect } from "react";
-const todayMessage = [
-  {
-    "user_id": 1,
-    "user_name": "Rahul Sharma",
-    "platform": "WhatsApp",
-    "last_active": "2026-01-07 10:15 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Hi, mujhe product ki price janni hai.", "time": "10:14 AM"},
-      {"sender": "bot", "message": "Namaste Rahul! Hamara standard plan ₹999 se shuru hota hai.", "time": "10:14 AM"},
-      {"sender": "user", "message": "Theek hai, dhanyawad!", "time": "10:15 AM"}
-    ]
-  },
-  {
-    "user_id": 2,
-    "user_name": "Anjali Gupta",
-    "platform": "Instagram",
-    "last_active": "2026-01-07 10:30 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Kya ye dress red color mein available hai?", "time": "10:28 AM"},
-      {"sender": "bot", "message": "Ji Anjali, red color mein hamare paas Small aur Medium size available hain.", "time": "10:29 AM"},
-      {"sender": "bot", "message": "Kya main aapke liye order book kar doon?", "time": "10:30 AM"}
-    ]
-  },
-  {
-    "user_id": 3,
-    "user_name": "Amit Patel",
-    "platform": "Website Chat",
-    "last_active": "2026-01-07 11:00 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Order track kaise karein?", "time": "10:55 AM"},
-      {"sender": "bot", "message": "Apna Order ID share kijiye, main turant check karta hoon.", "time": "10:56 AM"},
-      {"sender": "user", "message": "ID: #99821", "time": "10:58 AM"},
-      {"sender": "bot", "message": "Aapka order ship ho chuka hai aur kal tak pahunch jayega.", "time": "11:00 AM"}
-    ]
-  },
-  {
-    "user_id": 4,
-    "user_name": "Priya Verma",
-    "platform": "Messenger",
-    "last_active": "2026-01-07 11:15 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Store kab tak open rehta hai?", "time": "11:10 AM"},
-      {"sender": "bot", "message": "Priya, hamara store subah 10 baje se raat 9 baje tak khula rehta hai.", "time": "11:11 AM"}
-    ]
-  },
-  {
-    "user_id": 5,
-    "user_name": "Vikram Singh",
-    "platform": "Telegram",
-    "last_active": "2026-01-07 11:30 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Refund status kya hai?", "time": "11:25 AM"},
-      {"sender": "bot", "message": "Vikram, aapka refund process kar diya gaya hai. 3-5 din mein account mein dikhne lagega.", "time": "11:30 AM"}
-    ]
-  },
-  {
-    "user_id": 6,
-    "user_name": "Sana Khan",
-    "platform": "WhatsApp",
-    "last_active": "2026-01-07 11:45 AM",
-    "chat_history": [
-      {"sender": "user", "message": "Offer kab khatam ho raha hai?", "time": "11:40 AM"},
-      {"sender": "bot", "message": "Sana, New Year offer aaj raat 12 baje tak hi valid hai.", "time": "11:41 AM"}
-    ]
-  },
-  {
-    "user_id": 7,
-    "user_name": "Rajesh Kumar",
-    "platform": "Website Chat",
-    "last_active": "2026-01-07 12:00 PM",
-    "chat_history": [
-      {"sender": "user", "message": "Login nahi ho raha hai.", "time": "11:55 AM"},
-      {"sender": "bot", "message": "Kya aapne 'Forgot Password' try kiya?", "time": "11:56 AM"},
-      {"sender": "user", "message": "Haan, OTP nahi aaya.", "time": "11:58 AM"}
-    ]
-  },
-  {
-    "user_id": 8,
-    "user_name": "Megha Das",
-    "platform": "Instagram",
-    "last_active": "2026-01-07 12:10 PM",
-    "chat_history": [
-      {"sender": "user", "message": "Collab ke liye kisse baat karein?", "time": "12:05 PM"},
-      {"sender": "bot", "message": "Megha, aap apna proposal info@company.com par bhej sakti hain.", "time": "12:10 PM"}
-    ]
-  },
-  {
-    "user_id": 9,
-    "user_name": "Sandeep Bose",
-    "platform": "WhatsApp",
-    "last_active": "2026-01-07 12:20 PM",
-    "chat_history": [
-      {"sender": "user", "message": "Menu bhej dijiye.", "time": "12:18 PM"},
-      {"sender": "bot", "message": "Zaroor Sandeep! Ye raha hamara digital menu link: [Link].", "time": "12:20 PM"}
-    ]
-  },
-  {
-    "user_id": 10,
-    "user_name": "Neha Joshi",
-    "platform": "Telegram",
-    "last_active": "2026-01-07 12:35 PM",
-    "chat_history": [
-      {"sender": "user", "message": "Subscription cancel karni hai.", "time": "12:30 PM"},
-      {"sender": "bot", "message": "Hamein dukh hai ki aap ja rahi hain. Kya hum wajah jaan sakte hain?", "time": "12:32 PM"},
-      {"sender": "user", "message": "Price thoda zyada hai.", "time": "12:35 PM"}
-    ]
-  }
-]
-const UserMangement = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [users,setusers]= useState([])
 
-  const handleConnection = (type) => {
-    console.log("Connect:", type);
-  };
+const UserManagement = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("All");
 
-  const {loading:userLoading , error : userError , request:getAllUsers} = useApi(businessOwnerApi.getUsers)
+  const { loading: userLoading, error: userError, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
 
-  useEffect(()=>{
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const res = await getAllUsers();
+        // Agar API data de raha hai toh wo set hoga, warna empty array
+        setUsers(res?.data || []);
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+    loadUsers();
+  }, []);
 
-    const loadUsers = async()=>{
-         try {
-          const res  = await getAllUsers()
-          setusers(res?.data || [])
-          
-         } catch (error) {
-          console.log(error);
-         }
-    }
-    loadUsers()
-  } , [])
+  // SAFE FILTER LOGIC: Case insensitive aur null checks ke saath
+  const filteredUsers = users.filter(user => {
+    const userName = user?.name?.toLowerCase() || "";
+    const userPlatform = user?.platform?.toLowerCase() || "";
+    const filterKey = activeFilter.toLowerCase();
+
+    const matchesSearch = userName.includes(searchTerm.toLowerCase());
+    const matchesPlatform = filterKey === "all" || userPlatform === filterKey;
+
+    return matchesSearch && matchesPlatform;
+  });
+
   return (
     <div className="UserPageDiv">
-      {/* HEADER */}
-      <div className="user-heading">
-        <p>User Management</p>
-      </div>
-
-      {/* TABLE */}
-      <div className="account-content-div">
-        <div className="user-content-div-heading">
-          <p><input type="checkbox" /> </p> 
-          <p > Account Name</p>
-          <p>Account Id</p>
-          <p>Platform</p>
-          <p>Last Active</p>
-          <p>Contacts</p>
-          <p>Action</p>
+      {/* HEADER - Wahi Image 1 Wala Clean Style */}
+      <div className="user-header-main">
+        <div className="header-left">
+          <h1>User Management</h1>
+          <p>Monitor customer interactions and channel activity</p>
         </div>
-
-
-
-
-                  {userLoading && (
-            <div className="loadingDiv">
-              <p>Loading...</p>
-            </div>
-          )}
-
-          {!userLoading && userError && (
-            <div className="errorDiv">
-              <p>Error loading accounts</p>
-            </div>
-          )}
-
-       {!userLoading && !userError  && users.map((item, index) => {
-        const lastMessage = item?.messages[0]?.text
-        const sender = item?.messages[0]?.sender
-        return    <div className="account-content-div-body-card" key={item.user_id}>
-            <p><input type="checkbox" /></p>
-            <p>{item?.name}</p>
-            <p>{item?.uniqueId}</p>
-            <p>{item?.platform}</p>
-            <p>{`${lastMessage} (${sender})`}</p>
-            <p>{item.last_active}</p>
-            <p className="action-text">Edit | Delete</p>
-          </div>
-       })}
-      </div>
-
-      {/* POPUP */}
-      {isPopupOpen && (
-        <div className="popup-overlay" onClick={() => setIsPopupOpen(false)}>
-          <div className="popup" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setIsPopupOpen(false)}>
-              ✕
-            </button>
-
-            <h5>Add Your Profile</h5>
-            <p className="popup-subtitle">
-              Choose a social profile you'd like to manage
-            </p>
-
-            <div className="social-pages-images">
-              <div
-                className="social-pages-div"
-                onClick={() => handleConnection("facebook")}
-              >
-                <p>Facebook Page</p>
-              </div>
-
-              <div
-                className="social-pages-div"
-                onClick={() => handleConnection("instagram")}
-              >
-                <p>Instagram Page</p>
-              </div>
-
-              <div
-                className="social-pages-div"
-                onClick={() => handleConnection("whatsapp")}
-              >
-                <p>WhatsApp Page</p>
-              </div>
-            </div>
+        <div className="user-header-right">
+          <div className="search-wrapper-user">
+            <Search size={18} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
-      )}
+      </div>
+
+      {/* FILTERS */}
+      <div className="user-filter-row">
+        {["All", "WhatsApp", "Instagram", "Messenger"].map((f) => (
+          <button
+            key={f}
+            className={`filter-pill ${activeFilter === f ? 'active' : ''}`}
+            onClick={() => setActiveFilter(f)}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      {/* USER LIST CONTAINER */}
+      <div className="user-table-container">
+        <div className="user-table-header">
+          <div className="col-check"><input type="checkbox" /></div>
+          <div className="col-info">Customer Details</div>
+          <div className="col-plt">Platform</div>
+          <div className="col-msg">Last Message</div>
+          <div className="col-status">Activity</div>
+          <div className="col-act">Actions</div>
+        </div>
+
+        <div className="user-table-body">
+          {userLoading ? (
+            <div className="state-msg"><div className="loader-mini"></div> Loading...</div>
+          ) : filteredUsers.length > 0 ? (
+            filteredUsers.map((item, idx) => {
+              // Safe message extraction
+              const lastMsgObj = item?.messages?.[0];
+              const msgText = lastMsgObj?.text || "No conversation yet";
+              const sender = lastMsgObj?.sender === "user" ? "Client" : "Bot";
+
+              return (
+                // ... (Logic remains same, focusing on the return map)
+
+                <div className="user-row" key={item._id || idx}>
+                  <div className="col-check"><input type="checkbox" /></div>
+                  <div className="col-info">
+                    <div className="user-profile-meta">
+                      {/* Avatar ko gradient ya better color dena */}
+                      <div className="avatar-circle">{item.name ? item.name[0] : "?"}</div>
+                      <div className="name-id">
+                        <strong>{item.name || "Unknown User"}</strong>
+                        <span>ID: {item.uniqueId || "N/A"}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-plt">
+                    <span className={`plt-badge ${item.platform?.toLowerCase().replace(" ", "")}`}>
+                      {item.platform || "Direct"}
+                    </span>
+                  </div>
+                  <div className="col-msg">
+                    <div className="msg-preview-box">
+                      <MessageSquare size={14} className="msg-icon-sub" />
+                      <p><strong>{item?.messages?.[0]?.sender === "user" ? "Client" : "Bot"}:</strong> {item?.messages?.[0]?.text || "No history"}</p>
+                    </div>
+                  </div>
+
+                  {/* ACTIVITY FIELD FIXED */}
+                  <div className="col-status">
+                    <div className="activity-status-wrapper">
+                      <div className="pulse-indicator online"></div>
+                      <span className="time-text">{item.last_active || "Just Now"}</span>
+                    </div>
+                  </div>
+
+                  <div className="col-act">
+                    <div className="action-icons">
+                      <button className="icon-btn edit"><Edit3 size={15} /></button>
+                      <button className="icon-btn delete"><Trash2 size={15} /></button>
+                      <button className="icon-btn more"><MoreVertical size={15} /></button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="state-msg">No users found matching your search/filter.</div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default UserMangement;
+export default UserManagement;

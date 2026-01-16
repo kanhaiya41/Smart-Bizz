@@ -1,64 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Search, Plus, MoreVertical, X, Globe, UserCheck, MessageCircle, Instagram } from "lucide-react";
+import { Search, Plus, MoreVertical, X, Globe, Instagram, MessageCircle, ExternalLink } from "lucide-react";
 import "./Account.css";
 
-// Dummy images (Jo tumne import kiye hain wahi use honge)
 import fbimg from '../../../assets/fb.png'
 import instaimg from '../../../assets/insta.png'
 import whtsimg from '../../../assets/whtsp.png'
 import { useApi } from "../../../api/useApi";
 import businessOwnerApi from "../../../api/apiService";
 
-const connectedAccounts = [
-  { accountName: "Instagram Business", accountId: "IG_982134", platform: "Instagram", contacts: "1.2k", status: "Connected" },
-  { accountName: "WhatsApp Support", accountId: "WA_554321", platform: "WhatsApp", contacts: "856", status: "Active" },
-  { accountName: "Facebook Messenger", accountId: "FBM_778812", platform: "Messenger", contacts: "430", status: "Active" },
-  { accountName: "Instagram Marketing", accountId: "IG_221908", platform: "Instagram", contacts: "2.9k", status: "Connected" },
-];
-
 const AccountsPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [tenants, setTenants] = useState([]);
+  const [filter, setFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleConnection = (type) => {
-    const userId = "693ef33a3dfcb0a4a11c0ad4";
-    const state = encodeURIComponent(JSON.stringify({ type, userId }));
-
-    const oauthUrl =
-      "https://www.facebook.com/v18.0/dialog/oauth" +
-      "?client_id=" + import.meta.env.VITE_META_APP_ID +
-      "&redirect_uri=" + encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI) +
-      "&response_type=code" +
-      "&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management" +
-      "&state=" + state;
-
-    window.location.href = oauthUrl;
-  };
-
-  const {
-    request: fetchTenants,
-    error: tenantsError,
-    loading: tenantsLoading
-  } = useApi(businessOwnerApi.getTenants);
+  const { request: fetchTenants, loading: tenantsLoading } = useApi(businessOwnerApi.getTenants);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const res = await fetchTenants();
-        console.log("re",res);
-        
-        setTenants(res?.data|| []);
-      } catch (err) {
-        console.error(err);
-      }
+        setTenants(res?.data || []);
+      } catch (err) { console.error(err); }
     };
-
     loadData();
   }, []);
 
+  const filteredTenants = tenants.filter(item => {
+    const matchesFilter = filter === "All" || item.type.toLowerCase() === filter.toLowerCase();
+    const matchesSearch = item.businessName.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   return (
     <div className="AccountsPageDiv">
+      {/* HEADER: Wapis Image 1 wala clean layout */}
       <div className="account-header-main">
         <div className="header-left">
           <h1>Account Management</h1>
@@ -67,101 +43,76 @@ const AccountsPage = () => {
         <div className="account-heading-filter">
           <div className="search-wrapper">
             <Search size={18} className="search-icon" />
-            <input type="search" placeholder="Search accounts..." />
+            <input
+              type="search"
+              placeholder="Search accounts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           <button className="add-account-btn" onClick={() => setIsPopupOpen(true)}>
             <Plus size={18} /> Add New Account
           </button>
         </div>
-      </div>false
+      </div>
 
-      <div className="account-table-container">
-        <div className="account-table-header">
-          <p><input type="checkbox" /> Account Name</p>
-          <p>Account ID</p>
-          <p>Platform</p>
-          <p>Contacts</p>
-          <p>Status</p>
-          <p>Action</p>
+      {/* FILTER ROW: Properly spaced */}
+      <div className="platform-filter-row">
+        {["All", "Facebook", "Instagram", "WhatsApp"].map((p) => (
+          <button
+            key={p}
+            className={`filter-pill ${filter === p ? 'active' : ''}`}
+            onClick={() => setFilter(p)}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
+      {/* CARDS GRID: Modern but clean alignment */}
+      {/* // ... (Imports and Logic same as before) */}
+
+<div className="accounts-modern-grid">
+  {tenantsLoading ? (
+     <div className="loader-container"><p>Loading accounts...</p></div>
+  ) : filteredTenants.map((item, index) => (
+    <div className="account-card-premium" key={index}>
+      {/* Top Section: Platform & Options */}
+      <div className="card-top-row">
+        <div className={`platform-badge ${item.type.toLowerCase()}`}>
+          {item.type === "instagram" ? <Instagram size={12}/> : <MessageCircle size={12}/>}
+          {item.type}
         </div>
+        <button className="more-options-btn"><MoreVertical size={18}/></button>
+      </div>
 
-        <div className="account-table-body">
+      {/* Middle Section: Profile Info */}
+      <div className="card-profile-section">
+        <div className="avatar-wrapper">
+          <div className="main-avatar">{item.businessName[0]}</div>
+          <div className="status-indicator-dot online"></div>
+        </div>
+        <h3>{item.businessName}</h3>
+        <p className="account-id-text">ID: {item.type === "instagram" ? item.page.igBusinessId : item.page.pageId}</p>
+      </div>
 
-                  {tenantsLoading && (
-            <div className="loadingDiv">
-              <p>Loading...</p>
-            </div>
-          )}
-
-          {!tenantsLoading && tenantsError && (
-            <div className="errorDiv">
-              <p>Error loading accounts</p>
-            </div>
-          )}
-
-          {!tenantsLoading && !tenantsError  && tenants.map((item, index) => (
-            <div className="account-row" key={index}>
-              <p className="acc-name-cell">
-                <input type="checkbox" />
-                <div className="acc-avatar">{item?.businessName[0]}</div>
-                <span>{item?.businessName}</span>
-              </p>
-              <p className="id-cell">{item.type === "instagram" ? item.page.igBusinessId :item.page.pageId }</p>
-              <p className="platform-cell">
-                <span className={`platform-tag ${item?.type.toLowerCase()}`}>
-                  {item?.type}
-                </span>
-              </p>
-              <p className="contact-cell"><Globe size={14} /> {item.contacts}</p>
-              <p><span className="status-pill">Active</span></p>
-              <p className="action-cell">
-                <button className="manage-btn">Manage</button>
-                <MoreVertical size={18} className="more-icon" />
-              </p>
-            </div>
-          ))}
+      {/* Stats Section */}
+      <div className="card-stats-row">
+        <div className="stat-pill">
+          <Globe size={14} />
+          <span>{item.contacts || "0"} Contacts</span>
         </div>
       </div>
 
-      {isPopupOpen && (
-        <div className="popup-overlay" onClick={() => setIsPopupOpen(false)}>
-          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
-            <button className="popup-close-x" onClick={() => setIsPopupOpen(false)}>
-              <X size={20} />
-            </button>
-            <div className="popup-header">
-              <h3>Connect New Profile</h3>
-              <p>Select a platform to integrate with your dashboard</p>
-            </div>
-
-            <div className="social-options-list">
-              <div className="social-option-item" onClick={() => handleConnection("facebook")}>
-                <div className="social-icon-bg fb"><img src={fbimg} alt="FB" /></div>
-                <div className="social-text">
-                  <strong>Facebook Page</strong>
-                  <span>Manage messenger and post comments</span>
-                </div>
-              </div>
-
-              <div className="social-option-item" onClick={() => handleConnection("instagram")}>
-                <div className="social-icon-bg insta"><img src={instaimg} alt="IG" /></div>
-                <div className="social-text">
-                  <strong>Instagram Business</strong>
-                  <span>Handle DMs and business insights</span>
-                </div>
-              </div>
-
-              <div className="social-option-item" onClick={() => handleConnection("whatsApp")}>
-                <div className="social-icon-bg wats"><img src={whtsimg} alt="WA" /></div>
-                <div className="social-text">
-                  <strong>WhatsApp Business</strong>
-                  <span>Send notifications and support messages</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Action Section */}
+      <div className="card-action-footer">
+        <button className="manage-btn-premium">
+          Manage Account <ExternalLink size={14} />
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
     </div>
   );
 };
