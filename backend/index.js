@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
-
+import path from "path";
 import dbConnect from "./utills/dbConnect.js";
 import authApp from "./routes/authRoutes.js";
 import webhooks from "./routes/webhooks.js";
@@ -20,6 +20,11 @@ app.use(cors({
     origin:'http://localhost:5173',
     credentials: true
 }));
+
+app.use(
+  "/uploads",
+  express.static(path.join(process.cwd(), "uploads"))
+);
 
 app.use(express.json());
 

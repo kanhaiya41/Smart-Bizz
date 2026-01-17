@@ -1,11 +1,10 @@
 
 import axios from "axios";
-import Tenant from "../models/Tenant.js";
 import { searchUserData } from "../services/embedding.service.js";
-
 import Gemini_Model from "../utills/gemini.js";
+import Conversation from "../models/Message.js";
+import Tenant from "../models/Tenant.js";
 import User from "../models/User.js";
-import Message from "../models/Message.js"
 
 async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
     // FIX: Use 'me/messages' or ensure igBusinessId is the correct Page/Business ID
@@ -62,6 +61,9 @@ export const reciveWebhook = (req, res) => {
 
 };
 
+
+
+
 export const metaEvents = async (req, res) => {
   try {
     const objectType = req.body.object;
@@ -69,14 +71,16 @@ export const metaEvents = async (req, res) => {
 
     const messaging = req.body.entry?.[0]?.messaging?.[0];
 
+    // ignore echoes / non-text
     if (!messaging?.message?.text || messaging.message.is_echo) {
       return res.sendStatus(200);
     }
 
-    const senderId = messaging.sender.id;
-    const recipientId = messaging.recipient.id;
+    const senderId = messaging.sender.id;       // CUSTOMER ID
+    const recipientId = messaging.recipient.id; // PAGE ID
     const userText = messaging.message.text;
 
+    // 🔹 Find Tenant (page / ig business)
     const tenant = await Tenant.findOne(
       platform === "facebook"
         ? { "page.pageId": recipientId }
@@ -85,46 +89,71 @@ export const metaEvents = async (req, res) => {
 
     if (!tenant) return res.sendStatus(200);
 
+    // 🔹 BUSINESS OWNER
+    const business = await User.findById(tenant.owner);
+    if (!business) return res.sendStatus(200);
 
-    let user = await User.findOne({ uniqueId: senderId, platform });
+    // 🔹 FIND OR CREATE CONVERSATION
+    let conversation = await Conversation.findOne({
+      businessId: business._id,
+      tenantId: tenant._id,
+      "customer.externalId": senderId
+    });
 
-    if (!user) {
-      user = await saveUserProfile(
-        senderId,
-        tenant.page.accessToken,
-        tenant.owner,
-        platform
-      );
+    if (!conversation) {
+      conversation = await Conversation.create({
+        businessId: business._id,
+        tenantId: tenant._id,
+        customer: {
+          externalId: senderId,
+          name: "Unknown",
+          username: "",
+          profileImage: ""
+        },
+        messages: [],
+        lastMessageAt: new Date()
+      });
     }
 
-    await Message.create({
-      userId: user._id,
-      tenantId: tenant._id,
-      platform,
-      sender: "user",
+    // 🔹 SAVE USER MESSAGE
+    conversation.messages.push({
+      senderType: "customer",
       text: userText
     });
 
-   
+    conversation.lastMessage = {
+      text: userText,
+      senderType: "customer"
+    };
+    conversation.lastMessageAt = new Date();
+
+    await conversation.save();
+
+    // 🔹 AI REPLY
     const result = await Gemini_Model.generateContent({
       contents: [{ role: "user", parts: [{ text: userText }] }]
     });
 
     const replyText =
       result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Thanks for your message 🙂";
+      "Thanks for your message";
 
-
+    // 🔹 SEND MESSAGE TO META
     await replyToUser(senderId, replyText, tenant.page.accessToken);
 
-  
-    await Message.create({
-      userId: user._id,
-      tenantId: tenant._id,
-      platform,
-      sender: "bot",
+    // 🔹 SAVE BOT MESSAGE
+    conversation.messages.push({
+      senderType: "bot",
       text: replyText
     });
+
+    conversation.lastMessage = {
+      text: replyText,
+      senderType: "bot"
+    };
+    conversation.lastMessageAt = new Date();
+
+    await conversation.save();
 
     return res.sendStatus(200);
 

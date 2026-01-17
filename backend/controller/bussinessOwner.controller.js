@@ -1,7 +1,8 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import Tenant from "../models/Tenant.js";
-
+import Conversation from "../models/Message.js";
+import Inventory from "../models/Inventory.js";
 
 export const getProfile = async (req, res) => {
     try {
@@ -19,66 +20,50 @@ export const getProfile = async (req, res) => {
 };
 
 
+
 export const getAllMessages = async (req, res) => {
-    try {
-        const ownerId = req.user.id;
-        const platform = req.query.platform
-        const filter = req.query.filter
-    
-        console.log(req.user);
+  try {
+    const ownerId = req.user.id;
+    const platform = req.query.platform; // optional: "instagram" | "facebook" | "whatsapp"
+    const filter = req.query.filter;     // optional: "today"
 
-        let query ={ owner: ownerId }
+    // 1 Find all tenants for this business owner
+    let tenantQuery = { owner: ownerId };
+    if (platform) tenantQuery.platform = platform;
 
-        if(platform)
-            { query.platform = platform }
+    const tenants = await Tenant.find(tenantQuery).select("_id platform");
 
-if (filter) { 
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);   // day start
-
-  const end = new Date();
-  end.setHours(23, 59, 59, 999); // day end
-
-  query.updatedAt = { 
-    $gte: start, 
-    $lte: end 
-  };
-}
-
-       
-        const users = await User.find(query)
-            .select("-passwordHash")
-            .lean();
-
-           
-            
-
-        const userIds = users.map(u => u._id);
-
-        const messages = await Message.find({
-            userId: { $in: userIds }
-        })
-            .sort({ createdAt: 1 })
-            .lean();
-
- 
-        const messageMap = {};
-        for (const msg of messages) {
-            const key = msg.userId.toString();
-            if (!messageMap[key]) messageMap[key] = [];
-            messageMap[key].push(msg);
-        }
-
-        const data = users.map(user => ({
-            user,platform,
-            messages: messageMap[user._id.toString()] || []
-        }));
-
-        return res.json({ success: true, data });
-
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+    if (!tenants || tenants.length === 0) {
+      return res.json({ success: true, data: [] });
     }
+
+    const tenantIds = tenants.map(t => t._id);
+
+    //  Build conversation query
+    let convQuery = { tenantId: { $in: tenantIds } };
+
+    if (filter === "today") {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date();
+      end.setHours(23, 59, 59, 999);
+
+      convQuery.lastMessageAt = { $gte: start, $lte: end };
+    }
+
+    // Fetch conversations (Inbox)
+    const conversations = await Conversation.find(convQuery)
+      .select("customer lastMessage lastMessageAt tenantId")
+      .sort({ lastMessageAt: -1 })
+      .lean();
+
+    return res.json({ success: true, data: conversations });
+
+  } catch (err) {
+    console.error("getAllMessages Error:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const todayMessage = async(req,res)=>{
@@ -98,4 +83,23 @@ export const getAllTeanants = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
+
+export const getInventory = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    const inventories = await Inventory.find({ ownerId });
+
+    return res.json({
+      success: true,
+      data: inventories
+    });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+ 
 

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FileText, Search, Trash2, Eye, UploadCloud, FileSpreadsheet, BookOpen, ClipboardList } from "lucide-react";
 import "./Inventory.css";
+import { useApi } from "../../../api/useApi";
+import businessOwnerApi from "../../../api/apiService";
 
 const inventoryRecords = [
   { id: "REC-001", name: "Medicine Inventory", type: "PDF", size: "2.3 MB", category: "Inventory" },
@@ -11,6 +13,35 @@ const inventoryRecords = [
 
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
+const [file, setFile] = useState(null);
+const {
+  request: uploadInventory,
+  loading,
+  error
+} = useApi(businessOwnerApi.uploadInventory);
+
+const handleSaveFile = async (e) => {
+  const selectedFile = e.target.files[0];
+
+  if (!selectedFile) {
+    alert("Please select a file");
+    return;
+  }
+
+  if (selectedFile.size > 10 * 1024 * 1024) {
+    alert("File too large (max 10MB)");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  try {
+    await uploadInventory(formData);
+    alert("Inventory uploaded successfully");
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <div className="inventory-div">
@@ -42,9 +73,9 @@ const Inventory = () => {
         <div className="upload-card inventory-border">
           <div className="card-badge inventory-bg">Stock Data</div>
           <div className="file-drop-area">
-            <input type="file" id="inventory-upload" hidden />
+            <input type="file" accept=".csv, .json" id="inventory-upload" onChange={handleSaveFile} hidden />
             <label htmlFor="inventory-upload" className="drop-label">
-              <div className="icon-circle inventory-icon">
+              <div className="icon-circle inventory-icon">handleSaveFile
                 <ClipboardList size={28} color="#10b981" />
               </div>
               <h3>Upload Inventory</h3>

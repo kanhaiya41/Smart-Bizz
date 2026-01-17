@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
 
     }],
 
-    messages : [{
+messages : [{
     sender: {
     type: String, // "user" | "business" | "bot"
   },
@@ -46,17 +46,13 @@ const UserSchema = new mongoose.Schema({
   replyMessage :{
     type: String, // "user" | "business" | "bot"
   },
-
-
   replyBy:
   {
     type: String, // "user" | "business" | "bot"
   },
-
-
     }],
 
-    role: {
+  role: {
         type: String,
         enum: ['owner', 'admin', 'viewer'],
         default: 'owner'
