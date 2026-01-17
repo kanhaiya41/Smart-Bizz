@@ -8,13 +8,31 @@ const embedder = await pipeline(
 );
 
 export async function getEmbedding(text) {
-  const output = await embedder(text, {
-    pooling: "mean",
-    normalize: true,
-  });
+  try {
+    // Guard: empty / invalid text
+    if (!text || typeof text !== "string" || text.trim().length === 0) {
+      throw new Error("Empty text for embedding");
+    }
 
-  return Array.from(output.data);
+    const output = await embedder(text, {
+      pooling: "mean",
+      normalize: true,
+    });
+
+    if (!output || !output.data) {
+      throw new Error("Invalid embedding output");
+    }
+
+    return Array.from(output.data);
+  } catch (error) {
+    console.error("Embedding Error:", error.message || error);
+
+    // IMPORTANT:
+    // Do NOT crash upload → return null
+    return null;
+  }
 }
+
 
 export async function searchUserData(userId, query, limit = 5) {
   try {

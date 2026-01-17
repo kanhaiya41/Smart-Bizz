@@ -6,8 +6,12 @@ const inventorySchema = new mongoose.Schema({
     required: true
   },
 
-  source: {
+  name: {
     type: String // original filename
+  },
+
+  size : {
+     type: String
   },
 
   fileType: {

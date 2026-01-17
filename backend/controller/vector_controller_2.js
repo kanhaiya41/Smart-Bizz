@@ -28,37 +28,53 @@ export async function saveFileToDisk(file) {
 
 
 export async function parseCSV(buffer) {
-  const csvText = buffer.toString("utf-8");
+  try {
+    
+     const csvText = buffer.toString("utf-8");
 
   const jsonArray = await csv({
     ignoreEmpty: true,
     trim: true
   }).fromString(csvText);
 
-  return jsonArray; // array of objects (dynamic keys)
+  return jsonArray; 
+  } catch (error) {
+      console.log(error);
+        throw new Error("Invalid CSV format");
+  
+  }
+// array of objects (dynamic keys)
 }
 
 export function parseJSON(buffer) {
-  const text = buffer.toString("utf-8");
-  const data = JSON.parse(text);
+  try {
+    const text = buffer.toString("utf-8");
+    const data = JSON.parse(text);
 
-  // Always convert to array
-  if (Array.isArray(data)) return data;
+    // Case 1: already array of objects
+    if (Array.isArray(data)) {
+      if (!data.every(item => typeof item === "object" && item !== null)) {
+        throw new Error("JSON array must contain objects only");
+      }
+      return data;
+    }
 
-  if (typeof data === "object") {
-    return Object.values(data);
+    // Case 2: single object → wrap in array
+    if (typeof data === "object" && data !== null) {
+      return [data];
+    }
+
+    throw new Error("Invalid JSON structure");
+  } catch (error) {
+    console.error("JSON Parse Error:", error);
+    throw new Error("Invalid JSON format");
   }
-
-  throw new Error("Invalid JSON format");
 }
 
 
 export async function parseInventoryFile(file) {
-  const ext = file.originalname.split(".").pop().toLowerCase();
-  console.log(file);
-  console.log(file.buffer);
-  
-
+  try {
+    const ext = file.originalname.split(".").pop().toLowerCase();
   if (ext === "csv") {
     return {
       type: "csv",
@@ -72,26 +88,42 @@ export async function parseInventoryFile(file) {
       records: parseJSON(file.buffer)
     };
   }
-
-  throw new Error("Unsupported file type");
+  } catch (error) {
+      console.log(error);
+      throw new Error("Unsupported file type");
+  }
+  
 }
 
 
 export function recordToText(record) {
-  let text = "";
+  try {
+    if (typeof record !== "object" || record === null) {
+      return "";
+    }
 
-  for (const [key, value] of Object.entries(record)) {
-    if (value === null || value === undefined) continue;
+    let text = "";
 
-    text += `${key}: ${String(value)} | `;
+    for (const [key, value] of Object.entries(record)) {
+      if (value === null || value === undefined) continue;
+
+      if (typeof value === "object") {
+        text += `${key}: ${JSON.stringify(value)} | `;
+      } else {
+        text += `${key}: ${String(value)} | `;
+      }
+    }
+
+    return text.trim();
+  } catch (error) {
+    console.error("recordToText error:", error);
+    return ""; // NEVER throw here
   }
-
-  return text.trim();
 }
 
 
-
 export function recordsToChunks(records, chunkSize = 20) {
+  try {
   const chunks = [];
   let currentChunk = [];
 
@@ -109,6 +141,13 @@ export function recordsToChunks(records, chunkSize = 20) {
   }
 
   return chunks;
+}
+catch (error) {
+  console.log(error);
+  
+  throw new Error(`Error: ${error.message || error}`);
+}
+
 }
 
 
@@ -128,15 +167,33 @@ export async function uploadInventory(req, res) {
     // Parse file
     const { type, records } = await parseInventoryFile(file);
 
-    //  Save RAW data in MongoDB    
+
+    console.log("Check 1");
+    
+
+    //  Save RAW data in MongoDB   
+    
+    let size;
+let sizeUnit;
+
+if (file.size < 1024 * 1024) {
+  size = (file.size / 1024).toFixed(2);
+  sizeUnit = "KB";
+} else {
+  size = (file.size / (1024 * 1024)).toFixed(2);
+  sizeUnit = "MB";
+}
     const inventoryDoc = await Inventory.create({
       ownerId,
-      source: file.originalname,
+      name: path.parse(file.originalname).name,
+      size: `${size} ${sizeUnit}`,
       filePath: savedFile.path,
       fileType: type,
       rawData: records,
       recordCount: records.length
     });
+
+        console.log("Check 2");
 
     // Convert to embedding chunks
     const chunks = recordsToChunks(records);
@@ -147,6 +204,11 @@ export async function uploadInventory(req, res) {
     const points = [];
     for (let i = 0; i < chunks.length; i++) {
       const vector = await getEmbedding(chunks[i]);
+
+  if (!vector) {
+  console.warn(`Skipping embedding for chunk ${i + 1}`);
+  continue;
+}
 
       points.push({
         id: crypto.randomUUID(),
@@ -162,8 +224,8 @@ export async function uploadInventory(req, res) {
     }
 
     await qdrant.upsert(COLLECTION, { points });
-
-    res.json({
+    console.log("Check 2");
+   return res.status(200).json({
       success: true,
       file: savedFile.filename,
       records: records.length,
@@ -172,6 +234,6 @@ export async function uploadInventory(req, res) {
 
   } catch (err) {    
     console.error(err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }

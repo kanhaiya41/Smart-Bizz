@@ -3,22 +3,30 @@ import { FileText, Search, Trash2, Eye, UploadCloud, FileSpreadsheet, BookOpen, 
 import "./Inventory.css";
 import { useApi } from "../../../api/useApi";
 import businessOwnerApi from "../../../api/apiService";
+import { toast } from "react-toastify";
 
-const inventoryRecords = [
-  { id: "REC-001", name: "Medicine Inventory", type: "PDF", size: "2.3 MB", category: "Inventory" },
-  { id: "REC-002", name: "Refund Policy v1", type: "PDF", size: "1.1 MB", category: "Rulesheet" },
-  { id: "REC-003", name: "Prescription Rules", type: "PDF", size: "900 KB", category: "Rulesheet" },
-  { id: "REC-004", name: "Pricing Sheet", type: "CSV", size: "650 KB", category: "Inventory" },
-];
+// const inventoryRecords = [
+//   { id: "REC-001", name: "Medicine Inventory", type: "PDF", size: "2.3 MB", category: "Inventory" },
+//   { id: "REC-002", name: "Refund Policy v1", type: "PDF", size: "1.1 MB", category: "Rulesheet" },
+//   { id: "REC-003", name: "Prescription Rules", type: "PDF", size: "900 KB", category: "Rulesheet" },
+//   { id: "REC-004", name: "Pricing Sheet", type: "CSV", size: "650 KB", category: "Inventory" },
+// ];
 
 const Inventory = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-const [file, setFile] = useState(null);
+const [searchTerm, setSearchTerm] = useState("");
+const [refresh, setRefresh] = useState(false);
+const [inventoryRecords , setinventoryRecords] = useState([])
 const {
   request: uploadInventory,
+  loading:loadingUpload,
+  error:errorUpload
+} = useApi(businessOwnerApi.uploadInventory);
+
+ const {
+  request: getAllInventory,
   loading,
   error
-} = useApi(businessOwnerApi.uploadInventory);
+} =   useApi(businessOwnerApi.getInventory)
 
 const handleSaveFile = async (e) => {
   const selectedFile = e.target.files[0];
@@ -37,11 +45,35 @@ const handleSaveFile = async (e) => {
   formData.append("file", selectedFile);
   try {
     await uploadInventory(formData);
-    alert("Inventory uploaded successfully");
+    setRefresh((prev)=>!prev)
+    toast.success("Inventory uploaded successfully");
+
   } catch (err) {
     console.error(err);
   }
 };
+
+useEffect(() => {
+  if (errorUpload) {
+    toast.error(errorUpload);
+  }
+}, [errorUpload]);
+
+
+useEffect(()=>{
+  const loadInventory = async ()=>{
+  try {
+    const res = await getAllInventory()
+    setinventoryRecords(res?.data)
+  } catch (error) {
+    console.log(error);
+    toast.error("Internal Server Error")
+    
+  }
+  }
+loadInventory()
+} , [refresh])
+
 
   return (
     <div className="inventory-div">
@@ -86,11 +118,18 @@ const handleSaveFile = async (e) => {
       </div>
 
       {/* LIST SECTION */}
+     
+    {loadingUpload && (
+  <div className="state-msg">
+    <div className="loader-mini"></div> Uploading...
+  </div>
+)}
+       {!loadingUpload && !errorUpload &&  (
       <div className="inventory-content-card">
         <div className="inventory-list-filter">
           <div className="filter-text">
             <h3>Library Assets</h3>
-            <span className="count-tag">{inventoryRecords.length} Documents</span>
+            <span className="count-tag">{inventoryRecords?.length} Documents</span>
           </div>
           <div className="search-box-modern">
             <Search size={18} color="#94a3b8" />
@@ -112,43 +151,67 @@ const handleSaveFile = async (e) => {
             <span className="text-center">Actions</span>
           </div>
 
-          <div className="inventory-scroll-area">
-            {inventoryRecords
-              .filter(item => 
-                item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.category.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((item) => (
-                <div className="inventory-row-card" key={item.id}>
-                  <span className="id-text">{item.id}</span>
-                  
-                  <div className="name-with-icon">
-                    <div className={`category-indicator ${item.category.toLowerCase()}`}>
-                      {item.category === "Rulesheet" ? <BookOpen size={14}/> : <ClipboardList size={14}/>}
-                    </div>
-                    <div className="file-info-main">
-                      <span className="file-name">{item.name}</span>
-                      <span className="file-category-label">{item.category}</span>
-                    </div>
-                  </div>
+<div className="inventory-scroll-area">
 
-                  <span>
-                    <span className={`type-badge ${item.type.toLowerCase()}`}>
-                      {item.type}
-                    </span>
-                  </span>
-                  
-                  <span className="size-text">{item.size}</span>
-                  
-                  <div className="action-buttons">
-                    <button className="icon-btn view"><Eye size={16} /></button>
-                    <button className="icon-btn delete"><Trash2 size={16} /></button>
-                  </div>
-                </div>
-              ))}
+  {loading && (
+    <div className="state-msg">
+      <div className="loader-mini"></div> Loading...
+    </div>
+  )}
+
+  {!loading && error && (
+    <div className="state-msg">Error: {error}</div>
+  )}
+
+  {!loading && !error && inventoryRecords.length === 0 && (
+    <div className="state-msg">No Inventory Found</div>
+  )}
+
+  {!loading && !error && inventoryRecords.length > 0 && (
+    inventoryRecords
+      .filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .map((item, index) => (
+        <div className="inventory-row-card" key={item._id || index}>
+          <span className="id-text">{`REC-00${index + 1}`}</span>
+
+          <div className="name-with-icon">
+            <div className="category-indicator">
+              <BookOpen size={14} />
+            </div>
+
+            <div className="file-info-main">
+              <span className="file-name">{item.name}</span>
+              <span className="file-category-label">{item.name}</span>
+            </div>
+          </div>
+
+          <span className={`type-badge ${item.fileType?.toLowerCase()}`}>
+            {item.fileType}
+          </span>
+
+          <span className="size-text">{item.size}</span>
+
+          <div className="action-buttons">
+            <button className="icon-btn view">
+              <Eye size={16} />
+            </button>
+            <button className="icon-btn delete">
+              <Trash2 size={16} />
+            </button>
           </div>
         </div>
+      ))
+  )}
+
+</div>
+
+        </div>
       </div>
+         )}   
+       
+
     </div>
   );
 };
