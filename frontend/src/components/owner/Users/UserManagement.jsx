@@ -81,65 +81,92 @@ const UserManagement = () => {
           <div className="col-act">Actions</div>
         </div>
 
-        <div className="user-table-body">
-          {userLoading ? (
-            <div className="state-msg"><div className="loader-mini"></div> Loading...</div>
-          ) : filteredUsers.length > 0 ? (
-            filteredUsers.map((item, idx) => {
-              // Safe message extraction
-              const lastMsgObj = item?.messages?.[0];
-              const msgText = lastMsgObj?.text || "No conversation yet";
-              const sender = lastMsgObj?.sender === "user" ? "Client" : "Bot";
+<div className="user-table-body">
+  {userLoading ? (
+    <div className="state-msg">
+      <div className="loader-mini"></div> Loading...
+    </div>
+  ) : filteredUsers.length > 0 ? (
+    filteredUsers.map((item, idx) => {
+      const customerName = item?.customer?.name || "Unknown User";
+      const customerId = item?.customer?.externalId || "N/A";
 
-              return (
-                // ... (Logic remains same, focusing on the return map)
+      const lastMsgText = item?.lastMessage?.text || "No conversation yet";
+      const sender =
+        item?.lastMessage?.senderType === "user" ? "Client" : "Bot";
+        const platform = item.platform || "-/"
 
-                <div className="user-row" key={item._id || idx}>
-                  <div className="col-check"><input type="checkbox" /></div>
-                  <div className="col-info">
-                    <div className="user-profile-meta">
-                      {/* Avatar ko gradient ya better color dena */}
-                      <div className="avatar-circle">{item.name ? item.name[0] : "?"}</div>
-                      <div className="name-id">
-                        <strong>{item.name || "Unknown User"}</strong>
-                        <span>ID: {item.uniqueId || "N/A"}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-plt">
-                    <span className={`plt-badge ${item.platform?.toLowerCase().replace(" ", "")}`}>
-                      {item.platform || "Direct"}
-                    </span>
-                  </div>
-                  <div className="col-msg">
-                    <div className="msg-preview-box">
-                      <MessageSquare size={14} className="msg-icon-sub" />
-                      <p><strong>{item?.messages?.[0]?.sender === "user" ? "Client" : "Bot"}:</strong> {item?.messages?.[0]?.text || "No history"}</p>
-                    </div>
-                  </div>
+      return (
+        <div className="user-row" key={item._id || idx}>
+          {/* CHECK */}
+          <div className="col-check">
+            <input type="checkbox" />
+          </div>
 
-                  {/* ACTIVITY FIELD FIXED */}
-                  <div className="col-status">
-                    <div className="activity-status-wrapper">
-                      <div className="pulse-indicator online"></div>
-                      <span className="time-text">{item.last_active || "Just Now"}</span>
-                    </div>
-                  </div>
+          {/* CUSTOMER INFO */}
+          <div className="col-info">
+            <div className="user-profile-meta">
+              <div className="avatar-circle">
+                {customerName[0]}
+              </div>
+              <div className="name-id">
+                <strong>{customerName}</strong>
+                <span>ID: {customerId}</span>
+              </div>
+            </div>
+          </div>
 
-                  <div className="col-act">
-                    <div className="action-icons">
-                      <button className="icon-btn edit"><Edit3 size={15} /></button>
-                      <button className="icon-btn delete"><Trash2 size={15} /></button>
-                      <button className="icon-btn more"><MoreVertical size={15} /></button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="state-msg">No users found matching your search/filter.</div>
-          )}
+          {/* PLATFORM */}
+          <div className="col-plt">
+            <span className="plt-badge whatsapp">
+              {platform}
+            </span>
+          </div>
+
+          {/* LAST MESSAGE */}
+          <div className="col-msg">
+            <div className="msg-preview-box">
+              <MessageSquare size={14} className="msg-icon-sub" />
+              <p>
+                <strong>{sender}:</strong> {lastMsgText}
+              </p>
+            </div>
+          </div>
+
+          {/* ACTIVITY */}
+          <div className="col-status">
+            <div className="activity-status-wrapper">
+              <div className="pulse-indicator online"></div>
+              <span className="time-text">
+                {new Date(item.lastMessageAt).toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="col-act">
+            <div className="action-icons">
+              <button className="icon-btn edit">
+                <Edit3 size={15} />
+              </button>
+              <button className="icon-btn delete">
+                <Trash2 size={15} />
+              </button>
+              <button className="icon-btn more">
+                <MoreVertical size={15} />
+              </button>
+            </div>
+          </div>
         </div>
+      );
+    })
+  ) : (
+    <div className="state-msg">
+      No users found matching your search/filter.
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );

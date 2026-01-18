@@ -32,6 +32,16 @@ const AccountsPage = () => {
     return matchesFilter && matchesSearch;
   });
 
+  const handlePlatformSelect = (platform) => {
+  console.log("Selected platform:", platform);
+ 
+  // Close popup
+  setIsPopupOpen(false);
+
+
+};
+
+
   return (
     <div className="AccountsPageDiv">
       {/* HEADER: Wapis Image 1 wala clean layout */}
@@ -113,6 +123,59 @@ const AccountsPage = () => {
     </div>
   ))}
 </div>
+{isPopupOpen && (
+  <div className="platform-modal-overlay">
+    <div className="platform-modal">
+      
+      {/* HEADER */}
+      <div className="modal-header">
+        <h3>Add New Account</h3>
+        <button
+          className="close-btn"
+          onClick={() => setIsPopupOpen(false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* PLATFORM CARDS */}
+      <div className="platform-grid">
+
+        {/* INSTAGRAM */}
+        <div
+          className="platform-card instagram"
+          onClick={() => handlePlatformSelect("instagram")}
+        >
+          <img src={instaimg} alt="Instagram" />
+          <h4>Instagram</h4>
+          <p>Connect Instagram Business Account</p>
+        </div>
+
+        {/* FACEBOOK */}
+        <div
+          className="platform-card facebook"
+          onClick={() => handlePlatformSelect("facebook")}
+        >
+          <img src={fbimg} alt="Facebook" />
+          <h4>Facebook</h4>
+          <p>Connect Facebook Page</p>
+        </div>
+
+        {/* WHATSAPP */}
+        <div
+          className="platform-card whatsapp"
+          onClick={() => handlePlatformSelect("whatsapp")}
+        >
+          <img src={whtsimg} alt="WhatsApp" />
+          <h4>WhatsApp</h4>
+          <p>Connect WhatsApp Business</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

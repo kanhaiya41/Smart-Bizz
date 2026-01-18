@@ -1,8 +1,9 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import Tenant from "../models/Tenant.js";
-import Conversation from "../models/Message.js";
+import Conversation from "../models/Conversation.js";
 import Inventory from "../models/Inventory.js";
+import { platform } from "os";
 
 export const getProfile = async (req, res) => {
     try {
@@ -95,7 +96,8 @@ export const getAllUsers = async (req, res) => {
         lastMessage: 1,
         lastMessageAt: 1,
         tenantId: 1,
-        createdAt: 1
+        createdAt: 1,
+        platform:1
       });
 
     return res.status(200).json({

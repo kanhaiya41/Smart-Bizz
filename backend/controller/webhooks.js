@@ -5,8 +5,7 @@ import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import Tenant from "../models/Tenant.js";
 import User from "../models/User.js";
-import { AutoModelForTextToWaveform } from "@xenova/transformers";
-import { qdrant, searchUserData } from "../services/qdrant.service.js";
+import {searchUserData } from "../services/qdrant.service.js";
 import { defualtRulesheet } from "../utills/jswToken.js";
 
 
@@ -35,6 +34,62 @@ async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
     return false;
   }
 }
+
+
+export async function getSocialUserProfile({
+  platform,
+  userId,
+  accessToken,
+}) {
+  try {
+    let url = "";
+    let params = {};
+
+    // FACEBOOK MESSENGER USER
+    if (platform === "facebook") {
+      url = `https://graph.facebook.com/v19.0/${userId}`;
+      params = {
+        fields: "name,profile_pic",
+        access_token: accessToken,
+      };
+    }
+
+    // 🟣 INSTAGRAM USER (Messaging API)
+    else if (platform === "instagram") {
+      url = `https://graph.facebook.com/v19.0/${userId}`;
+      params = {
+        fields: "username,profile_pic",
+        access_token: accessToken,
+      };
+    } else {
+      throw new Error("Unsupported platform");
+    }
+
+    const response = await axios.get(url, { params });
+
+    return {
+      success: true,
+      platform,
+      data: {
+        name: response.data.name || response.data.username || "Unknown",
+        image: response.data.profile_pic || null,
+        userId,
+      },
+    };
+  } catch (error) {
+    console.error(
+      `${platform.toUpperCase()} API Error:`,
+      error.response?.data || error.message
+    );
+
+    return {
+      success: false,
+      platform,
+      error: error.response?.data || "Failed to fetch user profile",
+    };
+  }
+}
+
 
 
 
@@ -106,12 +161,15 @@ export const metaEvents = async (req, res) => {
     });
 
     if (!conversation) {
+      const profile = await getSocialUserProfile({platform:platform,userId: senderId , accessToken :tenant?.page?.accessToken});
       conversation = await Conversation.create({
         businessId: business._id,
         tenantId: tenant._id,
+        platform: platform,
         customer: {
           externalId: senderId,
-          name: "Unknown"
+          name: profile.data?.name,
+          profileImage: profile.data.image
         },
         lastMessageAt: new Date()
       });
@@ -215,6 +273,7 @@ const result = await Gemini_Model.generateContent({
     return res.sendStatus(200);
   }
 };
+
 
 
 

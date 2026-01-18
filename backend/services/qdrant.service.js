@@ -41,7 +41,7 @@ export async function searchUserData(data) {
       vector: queryVector,
       limit,
       with_payload: true,
-      with_vector: false, // 🔒 DO NOT RETURN VECTOR
+      with_vector: false, //DO NOT RETURN VECTOR
       filter: {
         must: [
           {

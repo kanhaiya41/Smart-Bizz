@@ -31,8 +31,8 @@ app.use(express.json());
 
 dbConnect();
 
-app.get("/", (req, res) => {
-    res.send("all runs");
+app.get("/", async(req, res) => {
+    return res.send("All Runs");
 });
 
 app.use("/auth", authApp);

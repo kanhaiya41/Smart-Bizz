@@ -18,6 +18,10 @@ const ConversationSchema = new mongoose.Schema({
     default: "open"
   },
 
+  platform: {
+    type: String,
+  },
+
   lastMessage: {
     text: String,
     senderType: String
