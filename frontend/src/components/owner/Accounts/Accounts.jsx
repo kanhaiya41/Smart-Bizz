@@ -42,12 +42,15 @@ const AccountsPage = () => {
     };
     loadData();
   }, []);
+  
 
   const filteredTenants = tenants.filter(item => {
     const matchesFilter = filter === "All" || item?.type?.toLowerCase() === filter.toLowerCase();
     const matchesSearch = item.businessName.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+
 
   return (
     <div className="AccountsPageDiv">

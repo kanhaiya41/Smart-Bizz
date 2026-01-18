@@ -53,36 +53,43 @@ const handleSaveFile = async (e) => {
   }
 };
 
-useEffect(() => {
-  const loadInventory = async () => {
-    try {
-      const res = await getAllInventory();
-      setinventoryRecords(res?.data);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load inventory");
-    }
-  };
+const { request: delInventory, loading: deleteLoading } =
+  useApi(businessOwnerApi.deleteInventory);
 
-  const timer = setTimeout(loadInventory, 1000);
+const loadInventory = async () => {
+  try {
+    const res = await getAllInventory();
+    setinventoryRecords(res?.data);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to load inventory");
+  }
+};
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    loadInventory();
+  }, 1000);
+
   return () => clearTimeout(timer);
 }, [refresh]);
 
+const handleDeleteInventory = async (id) => {
+  const isConfirmed = window.confirm(
+    "Are you sure you want to delete this Inventory?"
+  );
 
+  if (!isConfirmed) return;
 
-useEffect(()=>{
-  const loadInventory = async ()=>{
   try {
-    const res = await getAllInventory()
-    setinventoryRecords(res?.data)
+    await delInventory(id);
+    toast.success("Inventory deleted successfully");
+    loadInventory(); // now works
   } catch (error) {
-    console.log(error);
-    toast.error("Internal Server Error")
-    
+    console.error("Delete failed:", error);
+    toast.error("Failed to delete inventory");
   }
-  }
-loadInventory()
-} , [refresh])
+};
 
 
   return (
@@ -207,7 +214,7 @@ loadInventory()
             <button className="icon-btn view">
               <Eye size={16} />
             </button>
-            <button className="icon-btn delete">
+            <button onClick={()=>handleDeleteInventory(item?._id)} className="icon-btn delete">
               <Trash2 size={16} />
             </button>
           </div>

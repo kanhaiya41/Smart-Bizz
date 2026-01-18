@@ -3,7 +3,8 @@ import User from "../models/User.js";
 import Tenant from "../models/Tenant.js";
 import Conversation from "../models/Conversation.js";
 import Inventory from "../models/Inventory.js";
-import { platform } from "os";
+import { COLLECTION, qdrant } from "../services/qdrant.service.js";
+
 
 export const getProfile = async (req, res) => {
     try {
@@ -114,8 +115,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-
-
 export const getSingleChat = async (req, res) => {
   try {
     const businessId = req.user.id;
@@ -188,6 +187,43 @@ export const getInventory = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const deleteInventory = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({ message: "Inventory id required" });
+    }
+
+    /*  Delete from MongoDB */
+    const inventory = await Inventory.findByIdAndDelete(id);
+
+    if (!inventory) {
+      return res.status(404).json({ message: "Inventory not found" });
+    }
+
+    /*  Delete related vectors from Qdrant */
+    await qdrant.delete(COLLECTION, {
+      filter: {
+        must: [
+          {
+            key: "inventoryId",
+            match: { value: id },
+          },
+        ],
+      },
+    });
+
+    return res.status(200).json({
+      message: "Inventory deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete Inventory Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 
  
