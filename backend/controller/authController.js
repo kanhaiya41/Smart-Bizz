@@ -158,6 +158,7 @@ export const socialConnection = async (req, res) => {
       const tenant = await Tenant.create({
         owner: userId,
         businessName: page.name,
+        platform:type,
         page: {
           pageId: page.id,
           accessToken: page.access_token
@@ -226,6 +227,7 @@ const instagramConnection = async (pages, userId, type) => {
   const tenant = await Tenant.create({
     owner: userId,
     businessName: igPage.pageName,
+    platform : type,
     page: {
       pageId: igPage.pageId,
       igBusinessId: igPage.igBusinessId,

@@ -25,6 +25,10 @@ const TenantSchema = new mongoose.Schema({
         tokenExpiresAt: Date
     },
 
+        platform: {
+        type: String,
+    },
+
     settings: {
         autoReplyEnabled: { type: Boolean, default: true },
         model: { type: String, default: 'gemini-small' }

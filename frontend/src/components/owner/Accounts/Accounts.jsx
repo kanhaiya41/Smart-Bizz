@@ -16,6 +16,23 @@ const AccountsPage = () => {
 
   const { request: fetchTenants, loading: tenantsLoading } = useApi(businessOwnerApi.getTenants);
 
+
+    const handlePlatformSelect = (type) => {
+    const userId = "693ef33a3dfcb0a4a11c0ad4";
+    const state = encodeURIComponent(JSON.stringify({ type, userId }));
+
+    const oauthUrl =
+      "https://www.facebook.com/v18.0/dialog/oauth" +
+      "?client_id=" + import.meta.env.VITE_META_APP_ID +
+      "&redirect_uri=" + encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI) +
+      "&response_type=code" +
+      "&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management" +
+      "&state=" + state;
+
+    window.location.href = oauthUrl;
+    setIsPopupOpen(false)
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -27,20 +44,10 @@ const AccountsPage = () => {
   }, []);
 
   const filteredTenants = tenants.filter(item => {
-    const matchesFilter = filter === "All" || item.type.toLowerCase() === filter.toLowerCase();
+    const matchesFilter = filter === "All" || item?.type?.toLowerCase() === filter.toLowerCase();
     const matchesSearch = item.businessName.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
-
-  const handlePlatformSelect = (platform) => {
-  console.log("Selected platform:", platform);
- 
-  // Close popup
-  setIsPopupOpen(false);
-
-
-};
-
 
   return (
     <div className="AccountsPageDiv">
@@ -89,9 +96,9 @@ const AccountsPage = () => {
     <div className="account-card-premium" key={index}>
       {/* Top Section: Platform & Options */}
       <div className="card-top-row">
-        <div className={`platform-badge ${item.type.toLowerCase()}`}>
-          {item.type === "instagram" ? <Instagram size={12}/> : <MessageCircle size={12}/>}
-          {item.type}
+        <div className={`platform-badge ${item?.platform?.toLowerCase()}`}>
+          {item.platform === "instagram" ? <Instagram size={12}/> : <MessageCircle size={12}/>}
+          {item.platform}
         </div>
         <button className="more-options-btn"><MoreVertical size={18}/></button>
       </div>
@@ -103,7 +110,7 @@ const AccountsPage = () => {
           <div className="status-indicator-dot online"></div>
         </div>
         <h3>{item.businessName}</h3>
-        <p className="account-id-text">ID: {item.type === "instagram" ? item.page.igBusinessId : item.page.pageId}</p>
+        <p className="account-id-text">ID: {item.platform === "instagram" ? item.page.igBusinessId : item.page.pageId}</p>
       </div>
 
       {/* Stats Section */}
