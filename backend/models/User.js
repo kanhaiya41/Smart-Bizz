@@ -35,22 +35,11 @@ const UserSchema = new mongoose.Schema({
 
     }],
 
-messages : [{
-    sender: {
-    type: String, // "user" | "business" | "bot"
-  },
-  message: {
-    type: String, // "user" | "business" | "bot"
-  },
 
-  replyMessage :{
-    type: String, // "user" | "business" | "bot"
-  },
-  replyBy:
-  {
-    type: String, // "user" | "business" | "bot"
-  },
-    }],
+    rulesheet : {
+      type :Object,
+      default : null
+    },
 
   role: {
         type: String,

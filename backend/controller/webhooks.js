@@ -1,40 +1,41 @@
 
 import axios from "axios";
-import { searchUserData } from "../services/embedding.service.js";
 import Gemini_Model from "../utills/gemini.js";
-import Conversation from "../models/Message.js";
+import Conversation from "../models/Conversation.js";
+import Message from "../models/Message.js";
 import Tenant from "../models/Tenant.js";
 import User from "../models/User.js";
+import { AutoModelForTextToWaveform } from "@xenova/transformers";
+import { qdrant, searchUserData } from "../services/qdrant.service.js";
+import { defualtRulesheet } from "../utills/jswToken.js";
+
 
 async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
-    // FIX: Use 'me/messages' or ensure igBusinessId is the correct Page/Business ID
-    // Hackathon ke liye 'me/messages' sabse safe aur working endpoint hai
-    const url = `https://graph.facebook.com/v19.0/me/messages`;
+  const url = `https://graph.facebook.com/v19.0/me/messages`;
 
-    const payload = {
-        recipient: {
-            id: userId // Ye wahi senderId hai jo webhook se mili
-        },
-        message: {
-            text: text
-        }
-    };
+  const payload = {
+    recipient: { id: userId },
+    message: { text }
+  };
 
-    try {
-        const result = await axios.post(url, payload, {
-            params: { access_token: PAGE_ACCESS_TOKEN }
-        });
+  try {
+    const result = await axios.post(url, payload, {
+      params: { access_token: PAGE_ACCESS_TOKEN }
+    });
 
-        if (result.status === 200) {
-            console.log("Message successfully sent to:", userId);
-            return true;
-        }
-    } catch (error) {
-        // Isse aapko exact pata chalega ki Meta kya error de raha hai
-        console.error("❌ Send Error Details:", error.response?.data || error.message);
-        return false;
+    if (result.status === 200) {
+      console.log("Message sent to:", userId);
+      return true;
     }
+  } catch (error) {
+    console.error(
+      "Meta Send Error:",
+      error.response?.data || error.message
+    );
+    return false;
+  }
 }
+
 
 
 export const reciveWebhook = (req, res) => {
@@ -62,25 +63,29 @@ export const reciveWebhook = (req, res) => {
 };
 
 
-
-
 export const metaEvents = async (req, res) => {
   try {
+
+    console.log(req.body);
+    
     const objectType = req.body.object;
     const platform = objectType === "page" ? "facebook" : "instagram";
 
     const messaging = req.body.entry?.[0]?.messaging?.[0];
+    console.log(messaging);
+    
+    
 
-    // ignore echoes / non-text
+    // Ignore echoes / non-text
     if (!messaging?.message?.text || messaging.message.is_echo) {
       return res.sendStatus(200);
     }
 
-    const senderId = messaging.sender.id;       // CUSTOMER ID
-    const recipientId = messaging.recipient.id; // PAGE ID
+    const senderId = messaging.sender.id;       // CUSTOMER
+    const recipientId = messaging.recipient.id; // PAGE / IG
     const userText = messaging.message.text;
 
-    // 🔹 Find Tenant (page / ig business)
+    // 🔹 FIND TENANT
     const tenant = await Tenant.findOne(
       platform === "facebook"
         ? { "page.pageId": recipientId }
@@ -106,54 +111,102 @@ export const metaEvents = async (req, res) => {
         tenantId: tenant._id,
         customer: {
           externalId: senderId,
-          name: "Unknown",
-          username: "",
-          profileImage: ""
+          name: "Unknown"
         },
-        messages: [],
         lastMessageAt: new Date()
       });
     }
 
-    // 🔹 SAVE USER MESSAGE
-    conversation.messages.push({
+    // 🔹 SAVE CUSTOMER MESSAGE
+    await Message.create({
+      conversationId: conversation._id,
       senderType: "customer",
       text: userText
     });
 
-    conversation.lastMessage = {
-      text: userText,
-      senderType: "customer"
-    };
-    conversation.lastMessageAt = new Date();
-
-    await conversation.save();
-
-    // 🔹 AI REPLY
-    const result = await Gemini_Model.generateContent({
-      contents: [{ role: "user", parts: [{ text: userText }] }]
+    // 🔹 UPDATE CONVERSATION METADATA
+    await Conversation.findByIdAndUpdate(conversation._id, {
+      lastMessage: {
+        text: userText,
+        senderType: "customer"
+      },
+      lastMessageAt: new Date()
     });
+
+// Get business-specific searchable data
+const bussinessOnwerData = await searchUserData({
+  userId: business._id,
+  query: userText
+});
+
+//  Safe defaults
+const safeRulesheet = business?.rulesheet || defualtRulesheet || {};
+const safeData = bussinessOnwerData || {};
+
+// Stringify properly (VERY IMPORTANT)
+const rulesheetStr = JSON.stringify(safeRulesheet, null, 2);
+const dataStr = JSON.stringify(safeData, null, 2);
+
+//  Strong, controlled prompt
+const prompt = `
+You are a BUSINESS AI assistant.
+
+STRICT INSTRUCTIONS:
+- You MUST follow the RULESHEET exactly.
+- You MUST answer ONLY using RULESHEET and DATA.
+- DO NOT guess or create new information.
+- If the answer is not found, use fallbackRule.
+
+RULESHEET:
+${rulesheetStr}
+
+DATA:
+${dataStr}
+
+User Question:
+${userText}
+`;
+
+// AI reply
+const result = await Gemini_Model.generateContent({
+  contents: [
+    {
+      role: "user",
+      parts: [{ text: prompt }]
+    }
+  ]
+});
+
+    console.log("bussinessOnwerData", bussinessOnwerData);
+    
 
     const replyText =
       result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "Thanks for your message";
 
-    // 🔹 SEND MESSAGE TO META
-    await replyToUser(senderId, replyText, tenant.page.accessToken);
+    // 🔹 SEND TO META
+    const sent = await replyToUser(
+      senderId,
+      replyText,
+      tenant.page.accessToken
+    );
 
-    // 🔹 SAVE BOT MESSAGE
-    conversation.messages.push({
-      senderType: "bot",
-      text: replyText
-    });
+    // 🔹 SAVE BOT MESSAGE ONLY IF SENT
+    if (sent) {
+      await Message.create({
+        conversationId: conversation._id,
+        senderType: "bot",
+        text: replyText
+      });
 
-    conversation.lastMessage = {
-      text: replyText,
-      senderType: "bot"
-    };
-    conversation.lastMessageAt = new Date();
-
-    await conversation.save();
+      await Conversation.findByIdAndUpdate(conversation._id, {
+        lastMessage: {
+          text: replyText,
+          senderType: "bot"
+        },
+        lastMessageAt: new Date()
+      });
+    }
 
     return res.sendStatus(200);
 
@@ -162,6 +215,7 @@ export const metaEvents = async (req, res) => {
     return res.sendStatus(200);
   }
 };
+
 
 
 

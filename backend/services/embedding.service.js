@@ -22,6 +22,8 @@ export async function getEmbedding(text) {
     if (!output || !output.data) {
       throw new Error("Invalid embedding output");
     }
+    console.log("check 5");
+    
 
     return Array.from(output.data);
   } catch (error) {
@@ -34,40 +36,40 @@ export async function getEmbedding(text) {
 }
 
 
-export async function searchUserData(userId, query, limit = 5) {
-  try {
+// export async function searchUserData(userId, query, limit = 5) {
+//   try {
 
-    if (!userId || !query) {
-      console.log("User Id and Query is Needed");
-      return null
-    }
-    const queryVector = await getEmbedding(query);
+//     if (!userId || !query) {
+//       console.log("User Id and Query is Needed");
+//       return null
+//     }
+//     const queryVector = await getEmbedding(query);
 
-    const result = await qdrant.search(COLLECTION, {
-      vector: queryVector,
-      limit,
-      with_payload: true,
-      with_vector: true,
-      filter: {
-        must: [
-          {
-            key: "userId",
-            match: { value: userId },
-          },
-        ],
-      },
-    });
+//     const result = await qdrant.search(COLLECTION, {
+//       vector: queryVector,
+//       limit,
+//       with_payload: true,
+//       with_vector: true,
+//       filter: {
+//         must: [
+//           {
+//             key: "userId",
+//             match: { value: userId },
+//           },
+//         ],
+//       },
+//     });
 
-    const finalAnswer = result.map(r => ({
-      queryVector: queryVector,
-      score: r.score,
-      vector: r.vector, // This is the line ---- we miss
-      ...r.payload,
-    }))
+//     const finalAnswer = result.map(r => ({
+//       queryVector: queryVector,
+//       score: r.score,
+//       vector: r.vector, // This is the line ---- we miss
+//       ...r.payload,
+//     }))
 
-    return finalAnswer
-  } catch (err) {
-    console.error("SEARCH ERROR:", err);
-    return null
-  }
-}
+//     return finalAnswer
+//   } catch (err) {
+//     console.error("SEARCH ERROR:", err);
+//     return null
+//   }
+// }

@@ -163,7 +163,7 @@ export async function uploadInventory(req, res) {
     }
 
     //  Save file for UI
-    const savedFile = await saveFileToDisk(file);
+    // const savedFile = await saveFileToDisk(file);
     // Parse file
     const { type, records } = await parseInventoryFile(file);
 
@@ -187,7 +187,6 @@ if (file.size < 1024 * 1024) {
       ownerId,
       name: path.parse(file.originalname).name,
       size: `${size} ${sizeUnit}`,
-      filePath: savedFile.path,
       fileType: type,
       rawData: records,
       recordCount: records.length
@@ -227,7 +226,7 @@ if (file.size < 1024 * 1024) {
     console.log("Check 2");
    return res.status(200).json({
       success: true,
-      file: savedFile.filename,
+      // file: savedFile.filename,
       records: records.length,
       vectors: points.length
     });

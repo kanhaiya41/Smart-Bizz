@@ -54,10 +54,20 @@ const handleSaveFile = async (e) => {
 };
 
 useEffect(() => {
-  if (errorUpload) {
-    toast.error(errorUpload);
-  }
-}, [errorUpload]);
+  const loadInventory = async () => {
+    try {
+      const res = await getAllInventory();
+      setinventoryRecords(res?.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load inventory");
+    }
+  };
+
+  const timer = setTimeout(loadInventory, 1000);
+  return () => clearTimeout(timer);
+}, [refresh]);
+
 
 
 useEffect(()=>{
@@ -107,7 +117,7 @@ loadInventory()
           <div className="file-drop-area">
             <input type="file" accept=".csv, .json" id="inventory-upload" onChange={handleSaveFile} hidden />
             <label htmlFor="inventory-upload" className="drop-label">
-              <div className="icon-circle inventory-icon">handleSaveFile
+              <div className="icon-circle inventory-icon">
                 <ClipboardList size={28} color="#10b981" />
               </div>
               <h3>Upload Inventory</h3>

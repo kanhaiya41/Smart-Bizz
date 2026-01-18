@@ -75,11 +75,89 @@ export const getProfile = async (req, res) => {
 //   }
 // };
 
-export const getAllMessages = async(req,res)=>{
-    
-}
+// controllers/chatController.js
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const businessId = req.user.id; // from auth middleware
+    const tenantId = req.query.tenantId; // optional (page / account)
+
+    let filter = { businessId };
+
+    if (tenantId) {
+      filter.tenantId = tenantId;
+    }
+
+    const conversations = await Conversation.find(filter)
+      .sort({ lastMessageAt: -1 })
+      .select({
+        customer: 1,
+        lastMessage: 1,
+        lastMessageAt: 1,
+        tenantId: 1,
+        createdAt: 1
+      });
+
+    return res.status(200).json({
+      success: true,
+      data: conversations
+    });
+
+  } catch (err) {
+    console.error("getAllUsers error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch users"
+    });
+  }
+};
 
 
+
+export const getSingleChat = async (req, res) => {
+  try {
+    const businessId = req.user.id;
+    const conversationId = req.params.conversationId;
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 30;
+    const skip = (page - 1) * limit;
+
+    //Security check (VERY IMPORTANT)
+    const conversation = await Conversation.findOne({
+      _id: conversationId,
+      businessId
+    });
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found"
+      });
+    }
+
+    const messages = await Message.find({ conversationId })
+      .sort({ createdAt: -1 }) // latest first
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(200).json({
+      success: true,
+      conversation: {
+        id: conversation._id,
+        customer: conversation.customer
+      },
+      messages
+    });
+
+  } catch (err) {
+    console.error("getSingleChat error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch chat"
+    });
+  }
+};
 export const getAllTeanants = async (req, res) => {
     try {
         const ownerId = req.user.id;

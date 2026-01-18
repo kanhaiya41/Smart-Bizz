@@ -6,7 +6,6 @@ import path from "path";
 import dbConnect from "./utills/dbConnect.js";
 import authApp from "./routes/authRoutes.js";
 import webhooks from "./routes/webhooks.js";
-import vectorApp from "./routes/vector.routes.js";
 import superAdminApp from "./routes/superAdmin.routes.js";
 import bussinessOwnerApp from "./routes/bussinessOwner.rotue.js";
 import { initSocket } from "./utills/socket.js";
@@ -38,7 +37,6 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authApp);
 app.use("/webhook", webhooks);
-app.use("/vector_db", vectorApp);
 app.use("/super-admin", superAdminApp);
 app.use("/owner", bussinessOwnerApp);
 

@@ -9,6 +9,9 @@ export const useApi = (apiFn) => {
       setLoading(true);
       setError(null);
       const res = await apiFn(...args);
+      console.log(res.status);
+      console.log(res);
+      
       return res.data;
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
