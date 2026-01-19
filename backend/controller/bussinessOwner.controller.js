@@ -115,10 +115,56 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const getAllTodayConversation = async (req, res) => {
+  try {
+    const businessId = req.user.id; // from auth middleware
+    const tenantId = req.query.tenantId; // optional (page / account)
+
+
+const start = new Date();
+start.setHours(0, 0, 0, 0);
+
+const end = new Date();
+end.setHours(23, 59, 59, 999);
+
+let filter = {
+  businessId,
+  updatedAt: { $gte: start, $lte: end }
+}
+
+    if (tenantId) {
+      filter.tenantId = tenantId;
+    }
+
+    const conversations = await Conversation.find(filter)
+      .sort({ lastMessageAt: -1 })
+      .select({
+        customer: 1,
+        lastMessage: 1,
+        lastMessageAt: 1,
+        tenantId: 1,
+        createdAt: 1,
+        platform:1
+      });
+
+    return res.status(200).json({
+      success: true,
+      data: conversations
+    });
+
+  } catch (err) {
+    console.error("getAllUsers error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch users"
+    });
+  }
+};
+
 export const getSingleChat = async (req, res) => {
   try {
     const businessId = req.user.id;
-    const conversationId = req.params.conversationId;
+    const conversationId = req.query.conversationId;
 
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 30;
@@ -142,13 +188,11 @@ export const getSingleChat = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
+    
+
     return res.status(200).json({
       success: true,
-      conversation: {
-        id: conversation._id,
-        customer: conversation.customer
-      },
-      messages
+      data : messages
     });
 
   } catch (err) {
@@ -224,6 +268,47 @@ export const deleteInventory = async (req, res) => {
   }
 };
 
+
+export const toggleAutoReply = async (req, res) => {
+  try {
+    const { conversationId } = req.query;
+    const { autoReplyEnabled } = req.body;
+
+    if (typeof autoReplyEnabled !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "autoReplyEnabled must be true or false"
+      });
+    }
+
+    const conversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      { autoReplyEnabled },
+      { new: true }
+    );
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Auto reply updated successfully",
+      autoReplyEnabled: conversation.autoReplyEnabled,
+      conversationId: conversation._id
+    });
+
+  } catch (error) {
+    console.error("Toggle Auto Reply Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+};
 
 
  

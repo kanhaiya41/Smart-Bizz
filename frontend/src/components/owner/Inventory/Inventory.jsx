@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import { FileText, Search, Trash2, Eye, UploadCloud, FileSpreadsheet, BookOpen, ClipboardList } from "lucide-react";
 import "./Inventory.css";
 import { useApi } from "../../../api/useApi";
@@ -16,6 +17,8 @@ const Inventory = () => {
 const [searchTerm, setSearchTerm] = useState("");
 const [refresh, setRefresh] = useState(false);
 const [inventoryRecords , setinventoryRecords] = useState([])
+
+const navigate = useNavigate()
 const {
   request: uploadInventory,
   loading:loadingUpload,
@@ -96,7 +99,13 @@ const handleDeleteInventory = async (id) => {
     <div className="inventory-div">
       <div className="inventory-header-section">
         <div className="inventory-heading">
-          <h1>Knowledge Center</h1>
+          <div className="inventory-heading-div">
+  <h1>Knowledge Center</h1>
+        <button onClick={()=>navigate("/rule-sheet")} className="add-account-btn">
+           Add Rule Sheet
+          </button>
+          </div>
+        
           <p>Train your AI by uploading business rules and inventory data</p>
         </div>
       </div>
@@ -104,7 +113,7 @@ const handleDeleteInventory = async (id) => {
       {/* TWO TYPES OF UPLOAD SECTIONS */}
       <div className="upload-grid-double">
         {/* CATEGORY 1: RULES SHEETS */}
-        <div className="upload-card rules-border">
+        {/* <div className="upload-card rules-border">
           <div className="card-badge rules-bg">AI Training Rules</div>
           <div className="file-drop-area">
             <input type="file" id="rules-upload" hidden />
@@ -116,7 +125,7 @@ const handleDeleteInventory = async (id) => {
               <p>Bot will learn your business policies</p>
             </label>
           </div>
-        </div>
+        </div> */}
 
         {/* CATEGORY 2: INVENTORY FILES */}
         <div className="upload-card inventory-border">

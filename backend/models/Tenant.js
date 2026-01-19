@@ -30,7 +30,7 @@ const TenantSchema = new mongoose.Schema({
     },
 
     settings: {
-        autoReplyEnabled: { type: Boolean, default: true },
+              autoReplyEnabled: { type: Boolean, default: true },
         model: { type: String, default: 'gemini-small' }
     }
 }, { timestamps: true });

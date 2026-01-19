@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './OwnerDashboard.css';
 import { CircleChart, RevenueChart } from './utils.Rvenue.chart';
 import { MessageCircle, Instagram, Facebook, ChevronDown, Search, Bell, X, Send } from 'lucide-react';
+import { useApi } from '../../../api/useApi';
+import businessOwnerApi from '../../../api/apiService';
+import { toast } from "react-toastify";
+import moment from "moment"
+
 
 const OwnerDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // Chat state
+  const [conversation, setConversation] = useState([]);
+  const [users, setUsers] = useState([]);
 
   // Dummy Data (Same as yours, keeping it for logic)
   const topQueriesData = [
@@ -12,31 +19,49 @@ const OwnerDashboard = () => {
     { id: 2, query: "Refund Process Kya Hai?", count: 320, platform: "Messenger" },
     { id: 3, query: "Price List & Catalog", count: 280, platform: "Instagram" },
   ];
+  
+    const { loading: userLoading, error: userError, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
+    const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
+    const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
+  
+    const loadUsers = async () => {
+        try {
+          const res = await todayConversationbyUsers();
+          // Agar API data de raha hai toh wo set hoga, warna empty array
+          setUsers(res?.data || []);
+        } catch (error) {
+          console.error("API Error:", error);
+        }
+      };
 
-  const todayMessage = [
-    {
-      "user_id": 1,
-      "user_name": "Rahul Sharma",
-      "platform": "WhatsApp",
-      "last_active": "10:15 AM",
-      "chat_history": [
-        { "sender": "user", "message": "Hi, mujhe product ki price janni hai.", "time": "10:14 AM" },
-        { "sender": "bot", "message": "Namaste Rahul! Hamara standard plan ₹999 se shuru hota hai.", "time": "10:14 AM" },
-        { "sender": "user", "message": "Theek hai, dhanyawad!", "time": "10:15 AM" }
-      ]
-    },
-    {
-      "user_id": 2,
-      "user_name": "Anjali Gupta",
-      "platform": "Instagram",
-      "last_active": "10:30 AM",
-      "chat_history": [
-        { "sender": "user", "message": "Kya ye dress red color mein available hai?", "time": "10:28 AM" },
-        { "sender": "bot", "message": "Ji Anjali, red color mein hamare paas Small aur Medium available hain.", "time": "10:29 AM" }
-      ]
-    }
-  ];
+    const handleLoadSingleConversation = async (conversationId) => {
+        try {
+          const res = await singleLoadConversation(conversationId);
+          // Agar API data de raha hai toh wo set hoga, warna empty array
+          setConversation(res?.data || []);
+        } catch (error) {
+          console.error("API Error:", error);
+        }
+      };
+        
+    const handleToggleAutoReply = async (conversationId , toogleValue) => {
+        try {
+          const res = await toggleAutoReply(conversationId,toogleValue);
+          toast.success(res?.message)
 
+        } catch (error) {
+          console.error("API Error:", error);
+        }
+      };
+    useEffect(() => {
+      loadUsers();
+    }, []);
+
+    useEffect(()=>{
+      if(userError || singleComversationError){
+        toast.error(singleComversationError)
+      }
+    },[userError , singleComversationError])
   return (
     <div className='dashboard-wrapper'>
       <header className='main-header'>
@@ -106,27 +131,62 @@ const OwnerDashboard = () => {
             </div>
 
             <div className='messages-list-container'>
-              {todayMessage.map((user, index) => (
+              {userLoading && (
+                  <div className="state-msg">
+      <div className="loader-mini"></div> Loading...
+    </div>
+              )}
+              {
+               
+              }
+              { !userLoading && users.length > 0  ?
+              users.map((user, index) => (
                 <div key={index} 
-                     className={`message-item-card ${selectedUser?.user_id === user.user_id ? 'active-chat' : ''}`}
-                     onClick={() => setSelectedUser(user)}>
-                  <div className='user-info-box'>
+                     className={`message-item-card ${selectedUser?._id === user._id ? 'active-chat' : ''}`}
+                     onClick={() => {
+                      handleLoadSingleConversation(user?._id)
+                     
+                    }
+                      }>
+                  <div className='user-info-box' onClick={()=> setSelectedUser(user)}>
                     <div className='avatar-main'>
-                      {user.user_name.charAt(0)}
-                      <div className={`platform-dot ${user.platform.toLowerCase().replace(' ', '')}`}></div>
+                      {user?.customer?.name.charAt(0)}
+                      <div className={`platform-dot ${user?.customer?.externalId.toLowerCase().replace(' ', '')}`}></div>
                     </div>
                     <div className='user-details'>
-                      <span className='u-name-bold'>{user.user_name}</span>
+                      <span className='u-name-bold'>{user?.customer?.name}</span>
                       <span className='u-platform-name'>{user.platform}</span>
                     </div>
                   </div>
                   <div className='message-snippet'>
-                    <p>{user.chat_history[user.chat_history.length - 1].message}</p>
-                    <span className='msg-time'>{user.last_active}</span>
+                    <p>{user?.lastMessage?.text}</p>
+                    <span className='msg-time'>{user.lastMessageAt}</span>
                   </div>
-                  <button className='action-btn-mini'>Open</button>
+                  <button className='action-btn-mini' onClick={()=> setSelectedUser(user)}>Open</button>
+<label className="switch">
+  <input
+    type="checkbox"
+    checked={user?.autoReplyEnabled}
+    onChange={(e) =>
+    
+{
+  const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
+    if(isConfirmed){
+handleToggleAutoReply(user?._id, e.target.checked)
+    }
+        
+      }
+    }
+  />
+  <span className="slider"></span>
+</label>
+
                 </div>
-              ))}
+              )) : (
+                    <div className="state-msg">
+      No users found matching your search/filter.
+    </div>
+              )}
             </div>
           </div>
 
@@ -143,12 +203,13 @@ const OwnerDashboard = () => {
                 </div>
               </div>
             ) : (
+
               <div className='chat-view animate-slide-in'>
                 <div className='chat-header'>
                   <div className='chat-user-info'>
-                    <div className='avatar-sm-chat'>{selectedUser.user_name.charAt(0)}</div>
+                    <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>
                     <div>
-                      <h4>{selectedUser.user_name}</h4>
+                      <h4>{selectedUser.customer?.name}</h4>
                       <span>Online • {selectedUser.platform}</span>
                     </div>
                   </div>
@@ -158,12 +219,23 @@ const OwnerDashboard = () => {
                 </div>
 
                 <div className='chat-messages-area'>
-                  {selectedUser.chat_history.map((msg, idx) => (
-                    <div key={idx} className={`chat-bubble ${msg.sender}`}>
-                      <p>{msg.message}</p>
-                      <span>{msg.time}</span>
+                  {loadingSingleConversation && (
+                                      <div className="state-msg">
+      <div className="loader-mini"></div> Loading...
+    </div>
+                  )}
+                  {! loadingSingleConversation && conversation.length > 0 ?
+                   conversation.map((msg, idx) => (
+                    <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
+                      <p>{msg.text}</p>
+                      <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="state-msg">
+      No Chats Are Found.
+    </div>
+          
+                  )}
                 </div>
 
                 <div className='chat-input-wrapper'>

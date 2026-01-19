@@ -10,7 +10,9 @@ const ConversationSchema = new mongoose.Schema({
     profileImage: String,
     email: String,
     phone: String
+
   },
+  autoReplyEnabled: { type: Boolean, default: true },
 
   status: {
     type: String,
@@ -26,7 +28,8 @@ const ConversationSchema = new mongoose.Schema({
     text: String,
     senderType: String
   },
-  lastMessageAt: Date
+  lastMessageAt: Date,
+  isDeleted: { type: Boolean, default: false },
 
 }, { timestamps: true });
 
