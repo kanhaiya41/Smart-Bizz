@@ -9,11 +9,13 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* THE FIX: SOLID STICKY HEADER */
 .main-header {
-  height: 80px;
+  height: 50px;
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
@@ -145,7 +147,7 @@
 .dashboard-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 30px 40px;
+  padding: 5px 40px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -159,7 +161,7 @@
 }
 
 .page-title-section {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .page-title-section h1 {
@@ -185,20 +187,44 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
-.revenue-info h5 {
-  font-size: 20px;
+.revenue-info h3 {
+  font-size: 15px;
   font-weight: 800;
   color: #1e293b;
-  margin: 4px 0;
+  /* margin: 4px 0; */
+}
+
+.label {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .trend-up {
   color: #22c55e;
   font-weight: 700;
   font-size: 12px;
+}
+
+.trend-down {
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.trend-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.comparison {
+  font-size: 11px;
+  color: #94a3b8;
 }
 
 .view-report-btn {
@@ -219,14 +245,80 @@
 .chart-timeline {
   color: #94a3b8;
   font-size: 13px;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
 .bar-wrapper {
   height: 150px;
   width: 100%;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
+
+/* Filter Styles */
+.filter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.filter-tab {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.filter-tab:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+.filter-tab.active {
+  background: #fff;
+  color: #4f46e5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.date-range-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.date-input {
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #fff;
+  width: 120px;
+  color: #1e293b;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.date-input::placeholder {
+  color: #94a3b8;
+}
+
 
 /* ==========================================================================
    GRIDS & CARDS
@@ -235,8 +327,8 @@
 .stats-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .details-grid {
@@ -665,4 +757,76 @@
 .active-chat {
   border-color: #4f46e5 !important;
   background: #f5f3ff !important;
+}
+
+/* ICON COLORS - Direct Identification */
+.icon-wa { color: #25D366 !important; } /* WhatsApp Green */
+.icon-ig { color: #E1306C !important; } /* Instagram Pink */
+.icon-fb { color: #1877F2 !important; } /* Facebook Blue */
+
+/* Platform Icon Wrappers */
+.platform-icon-wrap {
+    background: #f8fafc;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 12px;
+}
+
+/* User Platform Tag in List */
+.u-platform-tag {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 2px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.u-platform-tag.whatsapp { background: #ecfdf5; color: #059669; }
+.u-platform-tag.instagram { background: #fdf2f8; color: #db2777; }
+.u-platform-tag.facebook { background: #eff6ff; color: #2563eb; }
+
+/* Status Dot on Avatar */
+.platform-status-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* List Item Spacing */
+.message-item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.message-item-card:hover { background: #f8fafc; }
+
+.msg-preview-text {
+    flex: 1;
+    margin: 0 20px;
+    font-size: 13px;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
