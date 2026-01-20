@@ -125,7 +125,6 @@ export const login = async (req, res) => {
 
 
 
-
 export const socialConnection = async (req, res) => {
   try {
     const { code, state } = req.query;
@@ -141,24 +140,28 @@ export const socialConnection = async (req, res) => {
     // Exchange code for token
     const { access_token: userAccessToken } = await exchangeCodeForToken(code);
 
-    // Get pages
-    const { data } = await axios.get(
-      "https://graph.facebook.com/v18.0/me/accounts",
-      { params: { access_token: userAccessToken } }
-    );
+    if (type === "whatsapp") {
+      await whatsappConnection(userId, userAccessToken);
+    }
+    else if (type === "instagram") {
+      const { data } = await axios.get(
+        "https://graph.facebook.com/v18.0/me/accounts",
+        { params: { access_token: userAccessToken } }
+      );
+      await instagramConnection(data.data, userId, type);
+    }
+    else {
+      const { data } = await axios.get(
+        "https://graph.facebook.com/v18.0/me/accounts",
+        { params: { access_token: userAccessToken } }
+      );
 
-    const pages = data.data;
-    if (!pages?.length) throw new Error("No pages found");
-
-    if (type === "instagram") {
-      await instagramConnection(pages, userId, type);
-    } else {
-      const page = pages[0];
+      const page = data.data[0];
 
       const tenant = await Tenant.create({
         owner: userId,
         businessName: page.name,
-        platform:type,
+        platform: type,
         page: {
           pageId: page.id,
           accessToken: page.access_token
@@ -175,9 +178,7 @@ export const socialConnection = async (req, res) => {
     return res.redirect(process.env.FRONTEND_SUCCESS_URL);
 
   } catch (err) {
-    console.log(err);
-    
-    console.error("SOCIAL CONNECT ERROR:", err.message);
+    console.error("SOCIAL CONNECT ERROR:", err);
     return res.status(500).send(err.message);
   }
 };
@@ -238,6 +239,59 @@ const instagramConnection = async (pages, userId, type) => {
   await User.findByIdAndUpdate(userId, {
     $push: {
       tenants: { name: type, tenantId: tenant._id }
+    }
+  });
+
+  return tenant;
+};
+
+const whatsappConnection = async (userId, accessToken) => {
+
+  //  Get Business Managers
+  const bmRes = await axios.get(
+    "https://graph.facebook.com/v18.0/me/businesses",
+    { params: { access_token: accessToken } }
+  );
+
+  const business = bmRes.data.data[0];
+  if (!business) throw new Error("No Business Manager found");
+
+  // Get WhatsApp Business Accounts
+  const wabaRes = await axios.get(
+    `https://graph.facebook.com/v18.0/${business.id}/owned_whatsapp_business_accounts`,
+    { params: { access_token: accessToken } }
+  );
+
+  const waba = wabaRes.data.data[0];
+  if (!waba) throw new Error("No WhatsApp Business Account found");
+
+  // Get Phone Numbers
+  const phoneRes = await axios.get(
+    `https://graph.facebook.com/v18.0/${waba.id}/phone_numbers`,
+    { params: { access_token: accessToken } }
+  );
+
+  const phone = phoneRes.data.data[0];
+  if (!phone) throw new Error("No WhatsApp phone number found");
+
+  // Save tenant
+  const tenant = await Tenant.create({
+    owner: userId,
+    businessName: business.name,
+    platform: "whatsapp",
+    whatsapp: {
+      businessId: business.id,
+      wabaId: waba.id,
+      phoneNumberId: phone.id,
+      displayPhone: phone.display_phone_number,
+      accessToken
+    }
+  });
+
+  // Attach to user
+  await User.findByIdAndUpdate(userId, {
+    $push: {
+      tenants: { name: "whatsapp", tenantId: tenant._id }
     }
   });
 

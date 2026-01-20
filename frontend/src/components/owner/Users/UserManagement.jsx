@@ -10,8 +10,6 @@ const UserManagement = () => {
   const [activeFilter, setActiveFilter] = useState("All");
 
   const { loading: userLoading, error: userError, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
-
-  useEffect(() => {
     const loadUsers = async () => {
       try {
         const res = await getAllUsers();
@@ -21,6 +19,7 @@ const UserManagement = () => {
         console.error("API Error:", error);
       }
     };
+  useEffect(() => {
     loadUsers();
   }, []);
 

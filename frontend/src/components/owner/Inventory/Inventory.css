@@ -309,3 +309,8 @@
   background: #e2e8f0;
   border-radius: 10px;
 }
+
+.inventory-heading-div{
+  display: flex;
+  justify-content: space-between;
+}

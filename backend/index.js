@@ -9,6 +9,7 @@ import webhooks from "./routes/webhooks.js";
 import superAdminApp from "./routes/superAdmin.routes.js";
 import bussinessOwnerApp from "./routes/bussinessOwner.rotue.js";
 import { initSocket } from "./utills/socket.js";
+import axios from "axios";
 
 dotenv.config();
 
@@ -30,6 +31,99 @@ app.use(
 app.use(express.json());
 
 dbConnect();
+
+
+// app.get("/auth/callback", async (req, res) => {
+//   try {
+//     const { code } = req.query;
+
+//     // Exchange code for access token
+//     const tokenRes = await axios.get(
+//       "https://graph.facebook.com/v18.0/oauth/access_token",
+//       {
+//         params: {
+//           client_id: process.env.META_APP_ID,
+//           redirect_uri: process.env.META_REDIRECT_URI,
+//           client_secret: process.env.META_APP_SECRET,
+//           code: code
+//         }
+//       }
+//     );
+
+//     const tokenData = tokenRes.data;   //axios already parses JSON
+
+//     if (!tokenData.access_token) {
+//       return res.status(400).json(tokenData);
+//     }
+
+//     const accessToken = tokenData.access_token;
+
+//     // Fetch business + WABA + phone numbers
+//     const result = await fetchBusinessData(accessToken);
+
+//     res.json({
+//       success: true,
+//       token: accessToken,
+//       data: result
+//     });
+
+//   } catch (err) {
+//     console.error("OAuth Error:", err.response?.data || err.message);
+//     res.status(500).json({
+//       success: false,
+//       error: err.response?.data || err.message
+//     });
+//   }
+// });
+
+// async function getBusinesses(accessToken) {
+//   const res = await fetch(
+//     `https://graph.facebook.com/v18.0/me/businesses?access_token=${accessToken}`
+//   );
+//   const data = await res.json();
+//   return data.data;
+// }
+
+
+// async function getPhoneNumbers(wabaId, accessToken) {
+//   const res = await fetch(
+//     `https://graph.facebook.com/v18.0/${wabaId}/phone_numbers?access_token=${accessToken}`
+//   );
+//   const data = await res.json();
+//   return data.data;
+// }
+
+// async function getWABAs(businessId, accessToken) {
+//   const res = await fetch(
+//     `https://graph.facebook.com/v18.0/${businessId}/owned_whatsapp_business_accounts?access_token=${accessToken}`
+//   );
+//   const data = await res.json();
+//   return data.data;
+// }
+
+// async function fetchBusinessData(accessToken) {
+//   const businesses = await getBusinesses(accessToken);
+
+//   let results = [];
+
+//   for (const business of businesses) {
+//     const wabas = await getWABAs(business.id, accessToken);
+
+//     for (const waba of wabas) {
+//       const phones = await getPhoneNumbers(waba.id, accessToken);
+
+//       results.push({
+//         businessId: business.id,
+//         businessName: business.name,
+//         wabaId: waba.id,
+//         phoneNumbers: phones
+//       });
+//     }
+//   }
+
+//   return results;
+// }
+
 
 app.get("/", async(req, res) => {
     return res.send("All Runs");

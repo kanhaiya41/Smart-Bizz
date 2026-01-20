@@ -1,228 +1,920 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>AI Business Rules Configuration</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f4f7;
-  padding: 20px;
-}
-.container {
-  max-width: 1000px;
-  background: #fff;
-  margin: auto;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.1);
-}
-h2, h3 {
-  margin-bottom: 15px;
-}
-label {
-  font-weight: bold;
-  margin-top: 15px;
-  display: block;
-}
-select, input, textarea {
-  width: 100%;
-  margin-top: 6px;
-  padding: 8px;
-}
-textarea {
-  min-height: 80px;
-}
-button {
-  margin-top: 25px;
-  padding: 12px 20px;
-  background: #007bff;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background: #0056b3;
-}
-pre {
-  background: #111;
-  color: #0f0;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 5px;
-  overflow-x: auto;
-}
-.note {
-  font-size: 14px;
-  color: #555;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBizz - AI Rules Configuration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #4dabf7;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .progress-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px;
+            width: 300px;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active {
+            background-color: #4dabf7;
+            transform: scale(1.1);
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            height: 2px;
+            width: 240px;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: 1;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #4dabf7;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .form-nav {
+            display: flex;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .nav-item {
+            flex: 1;
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            background-color: #edf2f7;
+        }
+        
+        .nav-item.active {
+            color: #1e3c72;
+            background-color: white;
+        }
+        
+        .nav-item.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #1e3c72;
+        }
+        
+        .form-section {
+            padding: 30px;
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #4dabf7;
+        }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #4dabf7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .input-hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item input {
+            width: auto;
+        }
+        
+        .rule-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4dabf7;
+        }
+        
+        .rule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .rule-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .add-rule-btn, .add-product-btn {
+            background-color: #4dabf7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .add-rule-btn:hover, .add-product-btn:hover {
+            background-color: #339af0;
+        }
+        
+        .remove-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .remove-btn:hover {
+            background-color: #ff5252;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background-color: #f8f9fa;
+            color: #555;
+        }
+        
+        .btn-prev:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn-next {
+            background-color: #1e3c72;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: #2a5298;
+        }
+        
+        .btn-submit {
+            background-color: #20c997;
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background-color: #12b886;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .notification-badge {
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .progress-container {
+                width: 100%;
+            }
+            
+            .form-nav {
+                flex-direction: column;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h1>SmartBizz AI Rules</h1>
+                        <p>Configure your AI assistant behavior and response rules</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-step active" data-step="1">1</div>
+                        <div class="progress-step" data-step="2">2</div>
+                        <div class="progress-step" data-step="3">3</div>
+                        <div class="progress-step" data-step="4">4</div>
+                        <div class="progress-step" data-step="5">5</div>
+                        <div class="progress-step" data-step="6">6</div>
+                        <div class="progress-line">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="form-container">
+            <div class="form-nav">
+                <div class="nav-item active" data-target="section1">
+                    <i class="fas fa-store"></i> Business Basics
+                </div>
+                <div class="nav-item" data-target="section2">
+                    <i class="fas fa-comment-dots"></i> AI Behaviour
+                </div>
+                <div class="nav-item" data-target="section4">
+                    <i class="fas fa-ban"></i> Do's & Don'ts
+                </div>
+            </div>
+            
+            <!-- Section 1: Business Basics -->
+            <div class="form-section active" id="section1">
+                <h2 class="section-title"><i class="fas fa-store"></i> Business Basics</h2>
+                <p class="section-description">Provide basic information about your business so AI can understand what your business is and who it serves.</p>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="businessName">Business Name *</label>
+                        <input type="text" id="businessName" placeholder="Enter your business name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessType">Business Type *</label>
+                        <select id="businessType">
+                            <option value="">Select business type</option>
+                            <option value="retail">Retail</option>
+                            <option value="service">Service Provider</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="restaurant">Restaurant/Food</option>
+                            <option value="consulting">Consulting</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="businessDescription">Business Description *</label>
+                    <textarea id="businessDescription" placeholder="Describe your business in detail. What products/services do you offer? What makes you unique?"></textarea>
+                    <div class="input-hint">This will help AI understand your business context better.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="targetCustomers">Target Customers *</label>
+                    <textarea id="targetCustomers" placeholder="Describe your ideal customers. Include demographics, interests, needs, etc."></textarea>
+                    <div class="input-hint">Example: "Young professionals aged 25-40, tech-savvy, value convenience"</div>
+                </div>
+            </div>
+            
+            <!-- Section 2: AI Behaviour & Language -->
+            <div class="form-section" id="section2">
+                <h2 class="section-title"><i class="fas fa-comment-dots"></i> AI Behaviour & Language</h2>
+                <p class="section-description">Set how your AI should communicate with customers. Control the tone, style, and language preferences.</p>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="aiPersonality">AI Personality *</label>
+                        <select id="aiPersonality">
+                            <option value="">Select AI personality</option>
+                            <option value="friendly">Friendly & Casual</option>
+                            <option value="professional">Professional & Formal</option>
+                            <option value="enthusiastic">Enthusiastic & Energetic</option>
+                            <option value="helpful">Helpful & Supportive</option>
+                            <option value="humorous">Humorous & Witty</option>
+                        </select>
+                        <div class="input-hint">How should your AI sound to customers?</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responseStyle">Response Style *</label>
+                        <select id="responseStyle">
+                            <option value="">Select response style</option>
+                            <option value="concise">Concise & Direct</option>
+                            <option value="detailed">Detailed & Thorough</option>
+                            <option value="conversational">Conversational & Engaging</option>
+                            <option value="technical">Technical & Precise</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="languagePreference">Language Preference *</label>
+                        <select id="languagePreference">
+                            <option value="english">English</option>
+                            <option value="hindi">Hindi</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="french">French</option>
+                            <option value="bilingual">Bilingual (English + Hindi)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tone Restrictions</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="noSlang">
+                                <label for="noSlang">No slang/informal language</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="noJargon">
+                                <label for="noJargon">Avoid technical jargon</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="noEmojis">
+                                <label for="noEmojis">No emojis</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="noPromises">
+                                <label for="noPromises">Avoid making promises</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: Product / Service Knowledge -->
+            
+            <!-- Section 4: Do's & Don'ts -->
+            <div class="form-section" id="section4">
+                <h2 class="section-title"><i class="fas fa-ban"></i> Do's & Don'ts</h2>
+                <p class="section-description">Define boundaries for your AI to avoid wrong promises or misinformation.</p>
+                
+                <div class="form-group">
+                    <label>What AI CAN Do</label>
+                    <textarea id="canDo" placeholder="Examples: Provide product information, Answer FAQs, Schedule appointments, Process returns within policy"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>What AI CANNOT Do</label>
+                    <textarea id="cannotDo" placeholder="Examples: Offer discounts without authorization, Compare with competitors, Make promises about delivery times, Share customer data"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Restrictions</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="discountAllowed">
+                            <label for="discountAllowed">Discounts allowed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="competitorComparison">
+                            <label for="competitorComparison">Competitor comparison allowed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="priceNegotiation">
+                            <label for="priceNegotiation">Price negotiation allowed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="futurePromises">
+                            <label for="futurePromises">Can make promises about future features</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="button-container">
+                <button class="btn btn-prev" id="prevBtn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                
+                <div>
+                    <button class="btn btn-next" id="nextBtn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-submit hidden" id="submitBtn">
+                        <i class="fas fa-check-circle"></i> Submit AI Rules
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>SmartBizz AI Rules Configuration Guide | Designed for Business Owners</p>
+            <p>All data entered is securely stored and only used for configuring your AI assistant.</p>
+        </footer>
+    </div>
 
-<div class="container">
-<h2>AI Rules Setup – Business Owner Panel</h2>
-
-<!-- BASIC INFO -->
-<label>Business Name</label>
-<input id="name" placeholder="Business name" />
-
-<label>Business Domain</label>
-<select id="domain">
-  <option value="general">General</option>
-  <option value="healthcare">Healthcare / Clinic</option>
-  <option value="ecommerce">E-commerce</option>
-  <option value="restaurant">Restaurant / Cafe</option>
-  <option value="real_estate">Real Estate</option>
-  <option value="services">Service Business</option>
-</select>
-
-<label>Communication Tone</label>
-<select id="tone">
-  <option value="professional">Professional</option>
-  <option value="friendly">Friendly</option>
-  <option value="formal">Formal</option>
-</select>
-
-<label>Primary Language</label>
-<select id="language">
-  <option value="english">English</option>
-  <option value="hinglish">Hinglish</option>
-  <option value="hindi">Hindi</option>
-</select>
-
-<hr>
-
-<!-- SALES & PRICING -->
-<h3>Sales & Pricing</h3>
-
-<label>Can AI answer pricing?</label>
-<select id="pricing">
-  <option value="no">No – Escalate to human</option>
-  <option value="yes">Yes – Allowed</option>
-</select>
-
-<label>Can AI offer discounts?</label>
-<select id="discount">
-  <option value="no">No</option>
-  <option value="yes">Yes (pre-approved only)</option>
-</select>
-
-<label>Can AI confirm orders / bookings?</label>
-<select id="orders">
-  <option value="no">No – Human confirmation required</option>
-  <option value="yes">Yes</option>
-</select>
-
-<hr>
-
-<!-- CUSTOMER HANDLING -->
-<h3>Customer Handling</h3>
-
-<label>Angry / Negative comments</label>
-<select id="angry">
-  <option value="apologize_dm">Apologize + move to DM</option>
-  <option value="handoff">Immediate handoff to human</option>
-</select>
-
-<label>Refund / Cancellation requests</label>
-<select id="refund">
-  <option value="handoff">Always escalate</option>
-  <option value="policy">Reply with policy only</option>
-</select>
-
-<label>Competitor comparison questions</label>
-<select id="competitor">
-  <option value="neutral">Neutral response only</option>
-  <option value="avoid">Avoid & redirect</option>
-</select>
-
-<hr>
-
-<!-- AVAILABILITY -->
-<h3>Availability Rules</h3>
-
-<label>Outside business hours</label>
-<select id="afterHours">
-  <option value="auto_reply">Send auto-reply</option>
-  <option value="wait">Wait for human</option>
-</select>
-
-<label>Maximum response length</label>
-<select id="length">
-  <option value="short">Short (1–2 lines)</option>
-  <option value="medium">Medium</option>
-  <option value="long">Detailed</option>
-</select>
-
-<hr>
-
-<!-- CUSTOM OWNER RULES -->
-<h3>Owner Custom Rules (Optional)</h3>
-<textarea id="customRules"
-placeholder="Example:
-- Never mention competitors by name
-- Always greet customers by name
-- Do not promise delivery dates
-"></textarea>
-
-<button onclick="buildRules()">Generate Rulesheet</button>
-
-<pre id="output"></pre>
-
-</div>
-
-<script>
-function buildRules() {
-  const domain = document.getElementById("domain").value;
-
-  let restricted = ["legal_advice"];
-  if (domain === "healthcare") restricted.push("medical_advice");
-
-  const rulesheet = {
-    business: {
-      name: document.getElementById("name").value || "Unnamed",
-      domain: domain
-    },
-    communication: {
-      tone: document.getElementById("tone").value,
-      language: document.getElementById("language").value,
-      emoji_usage: "minimal",
-      response_length: document.getElementById("length").value
-    },
-    sales: {
-      pricing_allowed: document.getElementById("pricing").value === "yes",
-      discount_allowed: document.getElementById("discount").value === "yes",
-      order_confirmation: document.getElementById("orders").value === "yes"
-    },
-    customer_handling: {
-      angry_customers: document.getElementById("angry").value,
-      refunds: document.getElementById("refund").value,
-      competitor_questions: document.getElementById("competitor").value
-    },
-    availability: {
-      after_hours: document.getElementById("afterHours").value
-    },
-    safety: {
-      restricted_topics: restricted
-    },
-    owner_custom_rules: document.getElementById("customRules").value
-        .split("\n")
-        .filter(r => r.trim() !== ""),
-    meta: {
-      version: "v1",
-      generated_at: new Date().toISOString()
-    }
-  };
-
-  document.getElementById("output").textContent =
-    JSON.stringify(rulesheet, null, 2);
-}
-</script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation variables
+            const navItems = document.querySelectorAll('.nav-item');
+            const formSections = document.querySelectorAll('.form-section');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressFill = document.getElementById('progressFill');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            let currentSection = 0;
+            const totalSections = formSections.length;
+            
+            // Update progress bar
+            function updateProgress() {
+                const percentage = (currentSection / (totalSections - 1)) * 100;
+                progressFill.style.width = `${percentage}%`;
+                
+                // Update active progress steps
+                progressSteps.forEach((step, index) => {
+                    if (index <= currentSection) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+                
+                // Show/hide buttons
+                if (currentSection === 0) {
+                    prevBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                }
+                
+                if (currentSection === totalSections - 1) {
+                    nextBtn.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+            }
+            
+            // Navigate to section
+            function goToSection(index) {
+                // Hide all sections
+                formSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Remove active from all nav items
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Show target section and activate nav
+                formSections[index].classList.add('active');
+                navItems[index].classList.add('active');
+                
+                currentSection = index;
+                updateProgress();
+            }
+            
+            // Next button click
+            nextBtn.addEventListener('click', function() {
+                if (currentSection < totalSections - 1) {
+                    goToSection(currentSection + 1);
+                }
+            });
+            
+            // Previous button click
+            prevBtn.addEventListener('click', function() {
+                if (currentSection > 0) {
+                    goToSection(currentSection - 1);
+                }
+            });
+            
+            // Nav item click
+            navItems.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    goToSection(index);
+                });
+            });
+            
+            // Add product/service functionality
+            const addProductBtn = document.getElementById('addProductBtn');
+            const productsContainer = document.getElementById('productsContainer');
+            let productCount = 1;
+            
+            addProductBtn.addEventListener('click', function() {
+                productCount++;
+                const productHTML = `
+                    <div class="rule-item product-item">
+                        <div class="rule-header">
+                            <div class="rule-title">Product/Service #${productCount}</div>
+                            <button class="remove-btn remove-product"><i class="fas fa-trash"></i> Remove</button>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Product/Service Name *</label>
+                                <input type="text" class="product-name" placeholder="Enter product/service name">
+                            </div>
+                            <div class="form-group">
+                                <label>Price (optional)</label>
+                                <input type="text" class="product-price" placeholder="e.g., $19.99 or Starting from $50">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Description *</label>
+                            <textarea class="product-description" placeholder="Describe the product/service in detail"></textarea>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Variants (optional)</label>
+                                <input type="text" class="product-variants" placeholder="e.g., Size: S, M, L; Color: Red, Blue">
+                            </div>
+                            <div class="form-group">
+                                <label>Availability</label>
+                                <select class="product-availability">
+                                    <option value="in-stock">In Stock</option>
+                                    <option value="out-of-stock">Out of Stock</option>
+                                    <option value="pre-order">Pre-order</option>
+                                    <option value="limited">Limited Stock</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                productsContainer.insertAdjacentHTML('beforeend', productHTML);
+                
+                // Add event listener to new remove button
+                const newRemoveBtn = productsContainer.lastElementChild.querySelector('.remove-product');
+                newRemoveBtn.addEventListener('click', function() {
+                    this.closest('.product-item').remove();
+                    // Update product numbers
+                    updateProductNumbers();
+                });
+            });
+            
+            // Remove product event delegation
+            productsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-product') || 
+                    e.target.closest('.remove-product')) {
+                    const removeBtn = e.target.classList.contains('remove-product') ? 
+                        e.target : e.target.closest('.remove-product');
+                    removeBtn.closest('.product-item').remove();
+                    updateProductNumbers();
+                }
+            });
+            
+            // Update product numbers after removal
+            function updateProductNumbers() {
+                const productItems = document.querySelectorAll('.product-item');
+                productItems.forEach((item, index) => {
+                    const title = item.querySelector('.rule-title');
+                    title.textContent = `Product/Service #${index + 1}`;
+                });
+                productCount = productItems.length;
+            }
+            
+            // Add if-then rule functionality
+            const addRuleBtn = document.getElementById('addRuleBtn');
+            const rulesContainer = document.getElementById('rulesContainer');
+            let ruleCount = 1;
+            
+            addRuleBtn.addEventListener('click', function() {
+                ruleCount++;
+                const ruleHTML = `
+                    <div class="rule-item">
+                        <div class="rule-header">
+                            <div class="rule-title">Rule #${ruleCount}</div>
+                            <button class="remove-btn remove-rule"><i class="fas fa-trash"></i> Remove</button>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>WHEN customer asks about... *</label>
+                                <input type="text" class="rule-condition" placeholder="e.g., discount, refund, delivery time">
+                            </div>
+                            <div class="form-group">
+                                <label>THEN AI should reply with... *</label>
+                                <input type="text" class="rule-action" placeholder="e.g., 'Please contact our sales team for discounts'">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                rulesContainer.insertAdjacentHTML('beforeend', ruleHTML);
+                
+                // Add event listener to new remove button
+                const newRemoveBtn = rulesContainer.lastElementChild.querySelector('.remove-rule');
+                newRemoveBtn.addEventListener('click', function() {
+                    this.closest('.rule-item').remove();
+                    // Update rule numbers
+                    updateRuleNumbers();
+                });
+            });
+            
+            // Remove rule event delegation
+            rulesContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-rule') || 
+                    e.target.closest('.remove-rule')) {
+                    const removeBtn = e.target.classList.contains('remove-rule') ? 
+                        e.target : e.target.closest('.remove-rule');
+                    removeBtn.closest('.rule-item').remove();
+                    updateRuleNumbers();
+                }
+            });
+            
+            // Update rule numbers after removal
+            function updateRuleNumbers() {
+                const ruleItems = document.querySelectorAll('.rule-item:not(.product-item)');
+                ruleItems.forEach((item, index) => {
+                    const title = item.querySelector('.rule-title');
+                    title.textContent = `Rule #${index + 1}`;
+                });
+                ruleCount = ruleItems.length;
+            }
+            
+            // Form submission
+            submitBtn.addEventListener('click', function() {
+                // Collect all form data
+                const formData = {
+                    business: {
+                        name: document.getElementById('businessName').value,
+                        type: document.getElementById('businessType').value,
+                        description: document.getElementById('businessDescription').value,
+                        targetCustomers: document.getElementById('targetCustomers').value
+                    },
+                    aiBehaviour: {
+                        personality: document.getElementById('aiPersonality').value,
+                        responseStyle: document.getElementById('responseStyle').value,
+                        language: document.getElementById('languagePreference').value,
+                        restrictions: {
+                            noSlang: document.getElementById('noSlang').checked,
+                            noJargon: document.getElementById('noJargon').checked,
+                            noEmojis: document.getElementById('noEmojis').checked,
+                            noPromises: document.getElementById('noPromises').checked
+                        }
+                    },
+                    products: [],
+                    dosAndDonts: {
+                        canDo: document.getElementById('canDo').value,
+                        cannotDo: document.getElementById('cannotDo').value,
+                        restrictions: {
+                            discountAllowed: document.getElementById('discountAllowed').checked,
+                            competitorComparison: document.getElementById('competitorComparison').checked,
+                            priceNegotiation: document.getElementById('priceNegotiation').checked,
+                            futurePromises: document.getElementById('futurePromises').checked
+                        }
+                    },
+                    rules: [],
+                    handover: {
+                        escalationKeywords: document.getElementById('escalationKeywords').value,
+                        notificationMethod: document.getElementById('notificationMethod').value,
+                        aiPauseRules: document.getElementById('aiPauseRules').value,
+                        handoverMessage: document.getElementById('handoverMessage').value
+                    }
+                };
+                
+                // Collect products
+                document.querySelectorAll('.product-item').forEach(item => {
+                    const product = {
+                        name: item.querySelector('.product-name').value,
+                        price: item.querySelector('.product-price').value,
+                        description: item.querySelector('.product-description').value,
+                        variants: item.querySelector('.product-variants').value,
+                        availability: item.querySelector('.product-availability').value
+                    };
+                    formData.products.push(product);
+                });
+                
+                // Collect if-then rules
+                document.querySelectorAll('.rule-item:not(.product-item)').forEach(item => {
+                    const rule = {
+                        condition: item.querySelector('.rule-condition').value,
+                        action: item.querySelector('.rule-action').value
+                    };
+                    formData.rules.push(rule);
+                });
+                
+                // Show success message (in a real app, this would be sent to a server)
+                alert('AI Rules Configuration Submitted Successfully!\n\nYour AI assistant has been configured with the provided rules. In a real application, this data would be saved to your account and applied to your AI assistant.');
+                
+                // Reset form (optional)
+                // document.querySelector('form').reset();
+                // goToSection(0);
+            });
+            
+            // Initialize progress
+            updateProgress();
+        });
+    </script>
 </body>
 </html>
