@@ -17,21 +17,41 @@ const AccountsPage = () => {
   const { request: fetchTenants, loading: tenantsLoading } = useApi(businessOwnerApi.getTenants);
 
 
-    const handlePlatformSelect = (type) => {
-    const userId = "693ef33a3dfcb0a4a11c0ad4";
-    const state = encodeURIComponent(JSON.stringify({ type, userId }));
+const handlePlatformSelect = (type) => {
+  const userId = "693ef33a3dfcb0a4a11c0ad4";
+  const state = encodeURIComponent(JSON.stringify({ type, userId }));
 
-    const oauthUrl =
-      "https://www.facebook.com/v18.0/dialog/oauth" +
-      "?client_id=" + import.meta.env.VITE_META_APP_ID +
-      "&redirect_uri=" + encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI) +
-      "&response_type=code" +
-      "&scope=pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_messages,business_management" +
-      "&state=" + state;
+  let scope = "";
 
-    window.location.href = oauthUrl;
-    setIsPopupOpen(false)
-  };
+  if (type === "facebook" || type === "instagram") {
+    scope = [
+      "pages_show_list",
+      "pages_read_engagement",
+      "instagram_basic",
+      "instagram_manage_messages",
+      "business_management"
+    ].join(",");
+  }
+
+  if (type === "whatsapp") {
+    scope = [
+      "whatsapp_business_management",
+      "whatsapp_business_messaging",
+      "business_management"
+    ].join(",");
+  }
+
+  const oauthUrl =
+    "https://www.facebook.com/v18.0/dialog/oauth" +
+    "?client_id=" + import.meta.env.VITE_META_APP_ID +
+    "&redirect_uri=" + encodeURIComponent(import.meta.env.VITE_META_REDIRECT_URI) +
+    "&response_type=code" +
+    "&scope=" + scope +
+    "&state=" + state;
+
+  window.location.href = oauthUrl;
+  setIsPopupOpen(false);
+};
 
   useEffect(() => {
     const loadData = async () => {
@@ -113,7 +133,18 @@ const AccountsPage = () => {
           <div className="status-indicator-dot online"></div>
         </div>
         <h3>{item.businessName}</h3>
-        <p className="account-id-text">ID: {item.platform === "instagram" ? item.page.igBusinessId : item.page.pageId}</p>
+<p className="account-id-text">
+  ID: {
+    item.platform === "instagram"
+      ? item.page?.igBusinessId
+      : item.platform === "facebook"
+      ? item.page?.pageId
+      : item.platform === "whatsapp"
+      ? item.whatsapp?.phoneNumberId
+      : "N/A"
+  }
+</p>
+
       </div>
 
       {/* Stats Section */}

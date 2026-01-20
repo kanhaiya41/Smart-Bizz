@@ -6,8 +6,43 @@ import Message from "../models/Message.js";
 import Tenant from "../models/Tenant.js";
 import User from "../models/User.js";
 import {searchUserData } from "../services/qdrant.service.js";
-import { defualtRulesheet } from "../utills/jswToken.js";
+import { compactRules } from "../utills/jswToken.js";
 
+
+export const verifyMetaWebhook = (req, res) => {
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === process.env.META_VERIFY_TOKEN) {
+    console.log("META WEBHOOK VERIFIED");
+    return res.status(200).send(challenge);
+  }
+
+  return res.sendStatus(403);
+};
+
+export const metaWebhookEvents = async (req, res) => {
+  try {
+    const body = req.body;
+
+    // Facebook & Instagram
+    if (body.object === "page" || body.object === "instagram") {
+      return await metaEvents(req, res);
+    }
+
+    // WhatsApp
+    if (body.object === "whatsapp_business_account") {
+      return await metaWhatsAppEvents(req, res);
+    }
+
+    return res.sendStatus(200);
+
+  } catch (err) {
+    console.error("META WEBHOOK ERROR:", err);
+    return res.sendStatus(200);
+  }
+};
 
 async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
   const url = `https://graph.facebook.com/v19.0/me/messages`;
@@ -35,8 +70,7 @@ async function replyToUser(userId, text, PAGE_ACCESS_TOKEN) {
   }
 }
 
-
-export async function getSocialUserProfile({
+async function getSocialUserProfile({
   platform,
   userId,
   accessToken,
@@ -54,7 +88,7 @@ export async function getSocialUserProfile({
       };
     }
 
-    // 🟣 INSTAGRAM USER (Messaging API)
+    //INSTAGRAM USER (Messaging API)
     else if (platform === "instagram") {
       url = `https://graph.facebook.com/v19.0/${userId}`;
       params = {
@@ -89,47 +123,12 @@ export async function getSocialUserProfile({
     };
   }
 }
-
-
-
-
-export const reciveWebhook = (req, res) => {
-    try {
-
-        console.log("VERIFY REQUEST:", req.query);
-        const mode = req.query["hub.mode"];
-        const token = req.query["hub.verify_token"];
-        const challenge = req.query["hub.challenge"];
-
-        console.log("VERIFY REQUEST:", req.query);
-        console.log("events:", req.body);
-
-        if (mode === "subscribe" && token === process.env.VERIFY_TOKEN) {
-            console.log("Webhook verified ");
-            return res.status(200).send(challenge);
-        }
-
-        return res.sendStatus(403);
-    } catch (error) {
-        console.log("Error", error);
-        return res.status(500).send({ "message": "Internal Server Error" });
-    }
-
-};
-
-
-export const metaEvents = async (req, res) => {
-  try {
-
-    console.log(req.body);
-    
+const metaEvents = async (req, res) => {
+  try {    
     const objectType = req.body.object;
     const platform = objectType === "page" ? "facebook" : "instagram";
 
-    const messaging = req.body.entry?.[0]?.messaging?.[0];
-    console.log(messaging);
-    
-    
+    const messaging = req.body.entry?.[0]?.messaging?.[0];    
 
     // Ignore echoes / non-text
     if (!messaging?.message?.text || messaging.message.is_echo) {
@@ -197,8 +196,11 @@ const bussinessOnwerData = await searchUserData({
   query: userText
 });
 
+console.log(bussinessOnwerData);
+
+
 //  Safe defaults
-const safeRulesheet = business?.rulesheet || defualtRulesheet || {};
+const safeRulesheet = business?.rulesheet || compactRules || {};
 const safeData = bussinessOnwerData || {};
 
 // Stringify properly (VERY IMPORTANT)
@@ -273,6 +275,174 @@ const result = await Gemini_Model.generateContent({
     return res.sendStatus(200);
   }
 };
+
+const metaWhatsAppEvents = async (req, res) => {
+  try {
+    const entry = req.body.entry?.[0];
+    const changes = entry?.changes?.[0];
+    const value = changes?.value;
+
+    // Ignore status updates
+    if (!value?.messages) {
+      return res.sendStatus(200);
+    }
+
+    const message = value.messages[0];
+
+    // Only handle text messages
+    if (message.type !== "text") {
+      return res.sendStatus(200);
+    }
+
+    const customerPhone = message.from; // customer number
+    const userText = message.text.body;
+    const phoneNumberId = value.metadata.phone_number_id;
+
+    // 🔹 FIND TENANT BY PHONE NUMBER ID
+    const tenant = await Tenant.findOne({
+      "whatsapp.phoneNumberId": phoneNumberId
+    });
+
+    if (!tenant) return res.sendStatus(200);
+
+    const business = await User.findById(tenant.owner);
+    if (!business) return res.sendStatus(200);
+
+    // 🔹 FIND OR CREATE CONVERSATION
+    let conversation = await Conversation.findOne({
+      businessId: business._id,
+      tenantId: tenant._id,
+      "customer.externalId": customerPhone
+    });
+
+    if (!conversation) {
+      conversation = await Conversation.create({
+        businessId: business._id,
+        tenantId: tenant._id,
+        platform: "whatsapp",
+        customer: {
+          externalId: customerPhone,
+          phone: customerPhone,
+          name: message.profile?.name || "WhatsApp User"
+        },
+        lastMessageAt: new Date()
+      });
+    }
+
+    // 🔹 SAVE CUSTOMER MESSAGE
+    await Message.create({
+      conversationId: conversation._id,
+      senderType: "customer",
+      text: userText
+    });
+
+    await Conversation.findByIdAndUpdate(conversation._id, {
+      lastMessage: {
+        text: userText,
+        senderType: "customer"
+      },
+      lastMessageAt: new Date()
+    });
+
+    // 🔹 FETCH BUSINESS DATA
+    const bussinessOnwerData = await searchUserData({
+      userId: business._id,
+      query: userText
+    });
+
+    const safeRulesheet = business?.rulesheet || compactRules || {};
+    const safeData = bussinessOnwerData || {};
+
+    const rulesheetStr = JSON.stringify(safeRulesheet, null, 2);
+    const dataStr = JSON.stringify(safeData, null, 2);
+
+    const prompt = `
+You are a BUSINESS AI assistant.
+
+STRICT INSTRUCTIONS:
+- You MUST follow the RULESHEET exactly.
+- You MUST answer ONLY using RULESHEET and DATA.
+- DO NOT guess or create new information.
+- If the answer is not found, use fallbackRule.
+
+RULESHEET:
+${rulesheetStr}
+
+DATA:
+${dataStr}
+
+User Question:
+${userText}
+`;
+
+    // 🔹 AI RESPONSE
+const result = await Gemini_Model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }]
+    });
+
+    const replyText =
+      result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Thanks for your message";
+
+    // 🔹 SEND MESSAGE TO WHATSAPP
+    const sent = await sendWhatsAppMessage({
+      phoneNumberId: tenant.whatsapp.phoneNumberId,
+      accessToken: tenant.whatsapp.accessToken,
+      to: customerPhone,
+      text: replyText
+    });
+
+    // 🔹 SAVE BOT MESSAGE
+    if (sent) {
+      await Message.create({
+        conversationId: conversation._id,
+        senderType: "bot",
+        text: replyText
+      });
+
+      await Conversation.findByIdAndUpdate(conversation._id, {
+        lastMessage: {
+          text: replyText,
+          senderType: "bot"
+        },
+        lastMessageAt: new Date()
+      });
+    }
+
+    return res.sendStatus(200);
+
+  } catch (err) {
+    console.error("WhatsApp Webhook Error:", err);
+    return res.sendStatus(200);
+  }
+};
+
+const sendWhatsAppMessage = async ({ phoneNumberId, accessToken, to, text }) => {
+  try {
+    const url = `https://graph.facebook.com/v18.0/${phoneNumberId}/messages`;
+
+    await axios.post(
+      url,
+      {
+        messaging_product: "whatsapp",
+        to,
+        text: { body: text }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    return true;
+  } catch (err) {
+    console.error("WhatsApp Send Error:", err.response?.data || err.message);
+    return false;
+  }
+};
+
 
 
 

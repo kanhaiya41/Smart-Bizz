@@ -23,7 +23,7 @@ export async function ensureCollection() {
 
 export async function searchUserData(data) {
   try {
-    const { userId, query, limit = 3 } = data;
+    const { userId, query, limit = 2 } = data;
 
     //  Validation (NO res usage)
     if (!userId || !query) {
