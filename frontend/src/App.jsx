@@ -11,25 +11,25 @@ import AccountsPage from "./components/owner/Accounts/Accounts.jsx";
 import UserMangement from "./components/owner/Users/UserManagement.jsx";
 import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.jsx";
 import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
-import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
 
 function App() {
   return (
     <Router>
-  <Routes>
+      <Routes>
 
-    <Route path="/" element={<Sidebar></Sidebar>}>
-    <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
-    <Route path="inventory" element={<Inventory/>}></Route>
-    <Route path="accounts" element={<AccountsPage/>}></Route>
-    <Route path="users" element={<UserMangement/>}></Route>
-    <Route path="profile" element={<ProfileManagement/>}></Route>
-    <Route path="support-help" element={<SupportAndHelp/>}></Route>
+        <Route path="/" element={<Sidebar></Sidebar>}>
+          <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
+          <Route path="inventory" element={<Inventory />}></Route>
+          <Route path="accounts" element={<AccountsPage />}></Route>
+          <Route path="users" element={<UserMangement />}></Route>
+          <Route path="profile" element={<ProfileManagement />}></Route>
+          <Route path="support-help" element={<SupportAndHelp />}></Route>
     <Route path="rule-sheet" element={<Rulesheet/>}></Route>
 
-    </Route>
+        </Route>
+        <Route path="login" element={<AuthPage></AuthPage>}></Route>
 
-  </Routes>
+      </Routes>
     </Router>
   );
 }
