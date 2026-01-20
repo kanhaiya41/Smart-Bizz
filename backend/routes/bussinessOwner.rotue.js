@@ -1,11 +1,13 @@
 import express from "express";
-import {deleteInventory, getAllTeanants, getAllTodayConversation, getAllUsers, getInventory, getProfile, getSingleChat, toggleAutoReply } from "../controller/bussinessOwner.controller.js";
+import {deleteInventory,updateUserProfile, getAllTeanants, getAllTodayConversation, getAllUsers, getInventory, getProfile, getSingleChat, toggleAutoReply } from "../controller/bussinessOwner.controller.js";
 import { verifyToken } from "../utills/jswToken.js";
 import { uploadInventory } from "../controller/vector_controller_2.js";
- import upload from "../utills/multer.js";
+ import upload, { ImagesUploader } from "../utills/multer.js";
 
 const router = express.Router();
 
+
+router.put("/profile", verifyToken, ImagesUploader.single("profilePhoto"), updateUserProfile);
 router.get("/getProfile", verifyToken, getProfile)
 router.get("/all-users", verifyToken, getAllUsers)
 router.get("/today-conversation", verifyToken, getAllTodayConversation)

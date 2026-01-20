@@ -10,6 +10,7 @@ const businessOwnerApi = {
   uploadInventory: (data) => API.post("owner/upload-inventry", data),
   getInventory: () => API.get("owner/get-inventory"),
   deleteInventory: (id) => API.delete(`owner/del-inventory?id=${id}`),
+  updateProfile: (data) => API.put(`owner/profile`, data),
 };
 
 export default businessOwnerApi;
