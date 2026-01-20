@@ -11,7 +11,8 @@ import AccountsPage from "./components/owner/Accounts/Accounts.jsx";
 import UserMangement from "./components/owner/Users/UserManagement.jsx";
 import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.jsx";
 import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
-
+import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
+import AuthPage from "./components/auth/AuthPage.jsx";
 function App() {
   return (
     <Router>
@@ -27,6 +28,7 @@ function App() {
     <Route path="rule-sheet" element={<Rulesheet/>}></Route>
 
         </Route>
+        
         <Route path="login" element={<AuthPage></AuthPage>}></Route>
 
       </Routes>
