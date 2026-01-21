@@ -21,6 +21,66 @@ export const getProfile = async (req, res) => {
     }
 };
 
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // from auth middleware
+
+    const {
+      firstName,
+      lastName,
+      email,
+      contact,
+      dob,
+      address,
+    } = req.body;
+
+    const updatePayload = {};
+
+     if (req.file) {
+      updatePayload.profilePhoto = `/uploads/profile/${req.file.filename}`;
+    }
+
+    // 🔹 Basic Info
+    if (firstName) updatePayload.firstName = firstName;
+    if (lastName) updatePayload.lastName = lastName;
+    if (email) updatePayload.email = email;
+    if (contact) updatePayload.contact = contact;
+    if (dob) updatePayload.dob = dob;
+
+    // 🔹 Address (nested update)
+    if (address && typeof address === "object") {
+      Object.keys(address).forEach((key) => {
+        updatePayload[`address.${key}`] = address[key];
+      });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updatePayload },
+      { new: true, runValidators: true }
+    ).select("-passwordHash");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 
 
 // export const getAllMessages = async (req, res) => {
