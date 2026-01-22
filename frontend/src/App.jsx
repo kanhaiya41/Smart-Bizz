@@ -13,6 +13,7 @@ import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.
 import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
 import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
 import AuthPage from "./components/auth/AuthPage.jsx";
+import Landingpage from "./components/landing_page/Landingpage.jsx";
 function App() {
   return (
     <Router>
@@ -25,10 +26,10 @@ function App() {
           <Route path="users" element={<UserMangement />}></Route>
           <Route path="profile" element={<ProfileManagement />}></Route>
           <Route path="support-help" element={<SupportAndHelp />}></Route>
-    <Route path="rule-sheet" element={<Rulesheet/>}></Route>
+          <Route path="rule-sheet" element={<Rulesheet />}></Route>
 
         </Route>
-        
+        <Route path="overview" element={<Landingpage/>}></Route>
         <Route path="login" element={<AuthPage></AuthPage>}></Route>
 
       </Routes>
