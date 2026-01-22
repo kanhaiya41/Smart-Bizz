@@ -11,14 +11,14 @@ const MENU_CONFIG = {
     { name: "Subscription", path: "/subscription", icon: "ri-vip-crown-2-line" },
   ],
   owner: [
-    { name: "Dashboard", path: "/dashboard", icon: "ri-grid-fill" },
-    { name: "Inventory", path: "/inventory", icon: "ri-box-3-line" },
-    { name: "Accounts", path: "/accounts", icon: "ri-wallet-3-line" },
-    { name: "Users", path: "/users", icon: "ri-group-line" },
+    { name: "Dashboard", path: "/owner/dashboard", icon: "ri-grid-fill" },
+    { name: "Inventory", path: "/owner/inventory", icon: "ri-box-3-line" },
+    { name: "Accounts", path: "/owner/accounts", icon: "ri-wallet-3-line" },
+    { name: "Users", path: "/owner/users", icon: "ri-group-line" },
   ],
   others: [
-    { name: "Profile", path: "/profile", icon: "ri-user-3-line" },
-    { name: "Help", path: "/support-help", icon: "ri-question-line" },
+    { name: "Profile", path: "/owner/profile", icon: "ri-user-3-line" },
+    { name: "Help", path: "/owner/support-help", icon: "ri-question-line" },
   ],
 };
 

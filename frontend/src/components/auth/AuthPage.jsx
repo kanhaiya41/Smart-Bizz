@@ -40,7 +40,7 @@ const {
       toast.success("Login Success")
       localStorage.setItem("token", res?.token)
       localStorage.setItem("role", res?.user?.role)
-      navigate("/dashboard");
+      navigate("/owner/dashboard");
       setLoginData({
         email:'',
         password:''

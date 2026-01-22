@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css"
 // Components
-
 import Login from "./components/Login/Login";
 import OwnerDashboard from "./components/owner/own dashboard/OwnerDashboard";
 import Inventory from "./components/owner/Inventory/Inventory";
@@ -13,12 +12,15 @@ import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.
 import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
 import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
 import AuthPage from "./components/auth/AuthPage.jsx";
+import LandingPage from "./components/LandingPage/LandingPage.jsx";
 function App() {
   return (
     <Router>
       <Routes>
-
-        <Route path="/" element={<Sidebar></Sidebar>}>
+         <Route path="/" element={<LandingPage></LandingPage>}></Route>
+        <Route path="login" element={<AuthPage></AuthPage>}></Route>
+        <Route path="/owner" element={<Sidebar></Sidebar>}>
+          <Route index element={<OwnerDashboard></OwnerDashboard>}></Route>
           <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
           <Route path="inventory" element={<Inventory />}></Route>
           <Route path="accounts" element={<AccountsPage />}></Route>
@@ -26,9 +28,7 @@ function App() {
           <Route path="profile" element={<ProfileManagement />}></Route>
           <Route path="support-help" element={<SupportAndHelp />}></Route>
           <Route path="rule-sheet" element={<Rulesheet />}></Route>
-
         </Route>
-        <Route path="login" element={<AuthPage></AuthPage>}></Route>
 
       </Routes>
     </Router>

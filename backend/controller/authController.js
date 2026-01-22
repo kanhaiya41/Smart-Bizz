@@ -142,14 +142,33 @@ export const socialConnection = async (req, res) => {
     const { access_token: userAccessToken } = await exchangeCodeForToken(code);
 
     if (type === "whatsapp") {
-      await whatsappConnection(userId, userAccessToken);
+     const result =  await whatsappConnection(userId, userAccessToken);
+      if (result.alreadyConnected) {
+  return res.redirect(
+    `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+  );
+}
+
+return res.redirect(
+  `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+);
     }
     else if (type === "instagram") {
       const { data } = await axios.get(
         "https://graph.facebook.com/v18.0/me/accounts",
         { params: { access_token: userAccessToken } }
       );
-      await instagramConnection(data.data, userId, type);
+      const result = await instagramConnection(pages, userId, type);
+
+if (result.alreadyConnected) {
+  return res.redirect(
+    `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+  );
+}
+
+return res.redirect(
+  `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+);
     }
     else {
       const { data } = await axios.get(
@@ -158,6 +177,18 @@ export const socialConnection = async (req, res) => {
       );
 
       const page = data.data[0];
+
+      if(page.id){
+        const find = Tenant.findOne({"page.pageId" :page.id })
+
+        if (find){
+          
+return res.redirect(
+  `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${type}`
+);
+
+        }
+      }
 
       const tenant = await Tenant.create({
         owner: userId,
@@ -186,7 +217,6 @@ export const socialConnection = async (req, res) => {
 
 
 const instagramConnection = async (pages, userId, type) => {
-  // Run all API calls in parallel
   const igResults = await Promise.all(
     pages.map(async (page) => {
       try {
@@ -223,13 +253,21 @@ const instagramConnection = async (pages, userId, type) => {
     throw new Error("No Instagram business account linked");
   }
 
-  // Pick first IG linked page
   const igPage = igPages[0];
+
+  // FIX: await added
+  const existingTenant = await Tenant.findOne({
+    "page.igBusinessId": igPage.igBusinessId
+  });
+
+  if (existingTenant) {
+    return { alreadyConnected: true, platform: type };
+  }
 
   const tenant = await Tenant.create({
     owner: userId,
     businessName: igPage.pageName,
-    platform : type,
+    platform: type,
     page: {
       pageId: igPage.pageId,
       igBusinessId: igPage.igBusinessId,
@@ -243,12 +281,11 @@ const instagramConnection = async (pages, userId, type) => {
     }
   });
 
-  return tenant;
+  return { success: true, tenantId: tenant._id, platform: type };
 };
 
-const whatsappConnection = async (userId, accessToken) => {
 
-  //  Get Business Managers
+const whatsappConnection = async (userId, accessToken) => {
   const bmRes = await axios.get(
     "https://graph.facebook.com/v18.0/me/businesses",
     { params: { access_token: accessToken } }
@@ -257,7 +294,6 @@ const whatsappConnection = async (userId, accessToken) => {
   const business = bmRes.data.data[0];
   if (!business) throw new Error("No Business Manager found");
 
-  // Get WhatsApp Business Accounts
   const wabaRes = await axios.get(
     `https://graph.facebook.com/v18.0/${business.id}/owned_whatsapp_business_accounts`,
     { params: { access_token: accessToken } }
@@ -266,7 +302,6 @@ const whatsappConnection = async (userId, accessToken) => {
   const waba = wabaRes.data.data[0];
   if (!waba) throw new Error("No WhatsApp Business Account found");
 
-  // Get Phone Numbers
   const phoneRes = await axios.get(
     `https://graph.facebook.com/v18.0/${waba.id}/phone_numbers`,
     { params: { access_token: accessToken } }
@@ -275,7 +310,15 @@ const whatsappConnection = async (userId, accessToken) => {
   const phone = phoneRes.data.data[0];
   if (!phone) throw new Error("No WhatsApp phone number found");
 
-  // Save tenant
+  // ✅ FIX: await added
+  const existingTenant = await Tenant.findOne({
+    "whatsapp.wabaId": waba.id
+  });
+
+  if (existingTenant) {
+    return { alreadyConnected: true, platform: "whatsapp" };
+  }
+
   const tenant = await Tenant.create({
     owner: userId,
     businessName: business.name,
@@ -289,12 +332,12 @@ const whatsappConnection = async (userId, accessToken) => {
     }
   });
 
-  // Attach to user
   await User.findByIdAndUpdate(userId, {
     $push: {
       tenants: { name: "whatsapp", tenantId: tenant._id }
     }
   });
 
-  return tenant;
+  return { success: true, tenantId: tenant._id, platform: "whatsapp" };
 };
+

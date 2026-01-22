@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 
 * {
   margin: 0;
@@ -6,8 +8,12 @@
 }
 
 body, html {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0 ;
+  height: auto;
+  width: auto;
+  font-family: 'Poppins', sans-serif;
+
 }
 
 
@@ -24,6 +30,11 @@ body, html {
     --danger-color: #ef4444;
     --border-radius: 8px;
     --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+         --purple: #9246FF;
+    --neon-yellow: #F1FF00;
+    --green: #008459;
+    --dark: #0b0b0b;
+
 }
 
 .newbutton{
@@ -37,9 +48,4 @@ body, html {
 .newbutton:hover{
   background-color: lightgrey;
   color: black;
-}
-body{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
