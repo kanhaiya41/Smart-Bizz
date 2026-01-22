@@ -291,3 +291,16 @@
   overflow: hidden;
   line-height: 1.4;
 }
+
+.chatDiv{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 9999;
+}
+
+.chat-viewanimate-slide-in{
+background-color: white;
+height: 100vh;
+width: 450px;
+}

@@ -1,15 +1,24 @@
-import { useState, useEffect } from "react";
-import { Search, MoreVertical, MessageSquare, Clock, Trash2, Edit3, ExternalLink } from "lucide-react";
+import { useState, useEffect,useRef } from "react";
+import {MoreVertical, MessageSquare, Search ,Bell, X, Send  } from "lucide-react";
+// import { MessageCircle, Instagram, Facebook, ChevronDown,  } from 'lucide-react';
 import "./UserManagement.css";
 import { useApi } from "../../../api/useApi";
+import { toast } from "react-toastify";
 import businessOwnerApi from "../../../api/apiService";
+import moment from "moment";
 
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
+    const [conversation, setConversation] = useState([]);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [selectedUser, setSelectedUser] = useState(null); // Chat state
+  const chatRef = useRef(null);
+
 
   const { loading: userLoading, error: userError, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
+      const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
+          const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
     const loadUsers = async () => {
       try {
         const res = await getAllUsers();
@@ -19,9 +28,31 @@ const UserManagement = () => {
         console.error("API Error:", error);
       }
     };
+
+  const handleToggleAutoReply = async (conversationId , toogleValue) => {
+            try {
+              const res = await toggleAutoReply(conversationId,toogleValue);
+              toast.success(res?.message)
+    
+            } catch (error) {
+              console.error("API Error:", error);
+            }
+          };
+
+const handleLoadSingleConversation = async (conversationId) => {
+        try {
+          const res = await singleLoadConversation(conversationId);
+          // Agar API data de raha hai toh wo set hoga, warna empty array
+          setConversation(res?.data || []);
+        } catch (error) {
+          navigate("/login")
+          console.error("API Error:", error);
+        }
+      };
   useEffect(() => {
     loadUsers();
   }, []);
+
 
   // SAFE FILTER LOGIC: Case insensitive aur null checks ke saath
   const filteredUsers = users.filter(user => {
@@ -36,7 +67,9 @@ const UserManagement = () => {
   });
 
   return (
-    <div className="UserPageDiv">
+    <div 
+         onClick={() => setSelectedUser(null)}
+    className="UserPageDiv">
       {/* HEADER - Wahi Image 1 Wala Clean Style */}
       <div className="user-header-main">
         <div className="header-left">
@@ -70,7 +103,9 @@ const UserManagement = () => {
       </div>
 
       {/* USER LIST CONTAINER */}
+
       <div className="user-table-container">
+     <div className="user-table-container">
         <div className="user-table-header">
           <div className="col-check"><input type="checkbox" /></div>
           <div className="col-info">Customer Details</div>
@@ -96,7 +131,9 @@ const UserManagement = () => {
         const platform = item.platform || "-/"
 
       return (
-        <div className="user-row" key={item._id || idx}>
+        <div
+              onClick={(e) => e.stopPropagation()}
+         className="user-row" key={item._id || idx}>
           {/* CHECK */}
           <div className="col-check">
             <input type="checkbox" />
@@ -108,7 +145,11 @@ const UserManagement = () => {
               <div className="avatar-circle">
                 {customerName[0]}
               </div>
-              <div className="name-id">
+              <div style={{
+                cursor:'pointer'
+              }} onClick={()=>{
+                   handleLoadSingleConversation(item?._id)
+                 setSelectedUser(item)}} className="name-id">
                 <strong>{customerName}</strong>
                 <span>ID: {customerId}</span>
               </div>
@@ -145,12 +186,23 @@ const UserManagement = () => {
           {/* ACTIONS */}
           <div className="col-act">
             <div className="action-icons">
-              <button className="icon-btn edit">
-                <Edit3 size={15} />
-              </button>
-              <button className="icon-btn delete">
-                <Trash2 size={15} />
-              </button>
+<label className="switch">
+  <input
+    type="checkbox"
+    checked={item?.autoReplyEnabled}
+    onChange={(e) =>
+    
+{
+  const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
+    if(isConfirmed){
+handleToggleAutoReply(item?._id, e.target.checked)
+    }
+        
+      }
+    }
+  />
+  <span className="slider"></span>
+</label>
               <button className="icon-btn more">
                 <MoreVertical size={15} />
               </button>
@@ -167,6 +219,55 @@ const UserManagement = () => {
 </div>
 
       </div>
+      {selectedUser && (
+        <div className="chatDiv"> 
+        <div 
+      onClick={(e) => e.stopPropagation()}
+         className='chat-viewanimate-slide-in'>
+                <div className='chat-header'>
+                  <div className='chat-user-info'>
+                    <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>
+                    <div>
+                      <h4>{selectedUser?.customer?.name}</h4>
+                      <span>Online • {selectedUser.platform}</span>
+                    </div>
+                  </div>
+                  <button className='close-chat' onClick={() => setSelectedUser(null)}>
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className='chat-messages-area'>
+                  {loadingSingleConversation && (
+                                      <div className="state-msg">
+      <div className="loader-mini"></div> Loading...
+    </div>
+                  )}
+                  {! loadingSingleConversation && conversation.length > 0 ?
+                   conversation.map((msg, idx) => (
+                    <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
+                      <p>{msg.text}</p>
+                      <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
+                    </div>
+                  )) : (
+                    <div className="state-msg">
+      No Chats Are Found.
+    </div>
+          
+                  )}
+                </div>
+
+                <div className='chat-input-wrapper'>
+                  <input type="text" placeholder="Type a message..." />
+                  <button className='send-btn'><Send size={16}/></button>
+                </div>
+              </div></div>
+
+      )}
+
+      </div>
+
+ 
     </div>
   );
 };

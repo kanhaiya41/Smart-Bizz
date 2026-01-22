@@ -189,7 +189,7 @@ end.setHours(23, 59, 59, 999);
 
 let filter = {
   businessId,
-  updatedAt: { $gte: start, $lte: end }
+  lastMessageAt: { $gte: start, $lte: end }
 }
 
     if (tenantId) {
