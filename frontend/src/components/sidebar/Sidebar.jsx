@@ -72,7 +72,17 @@ const Sidebar = () => {
         </nav>
 
         <div className="sidebar-footer">
-            <button className="btn-logout" onClick={() => {localStorage.clear(); navigate("/")}}>
+            <button className="btn-logout" onClick={() => {
+              const isConfirmed = window.confirm("Are you Sure you want logged Out!")
+              if(isConfirmed){
+                localStorage.clear();
+   return    navigate("/login")}
+   return;
+ 
+              }
+
+         
+              }>
                 <i className="ri-logout-circle-r-line"></i>
                 <span>Logout</span>
             </button>

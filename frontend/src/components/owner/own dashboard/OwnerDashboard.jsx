@@ -6,12 +6,15 @@ import { useApi } from '../../../api/useApi';
 import businessOwnerApi from '../../../api/apiService';
 import { toast } from "react-toastify";
 import moment from "moment"
+import { useNavigate } from 'react-router-dom';
 
 
 const OwnerDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // Chat state
   const [conversation, setConversation] = useState([]);
   const [users, setUsers] = useState([]);
+
+  const navigate = useNavigate()
 
   // Dummy Data (Same as yours, keeping it for logic)
   const topQueriesData = [
@@ -30,6 +33,7 @@ const OwnerDashboard = () => {
           // Agar API data de raha hai toh wo set hoga, warna empty array
           setUsers(res?.data || []);
         } catch (error) {
+          navigate("/login")
           console.error("API Error:", error);
         }
       };
@@ -40,6 +44,7 @@ const OwnerDashboard = () => {
           // Agar API data de raha hai toh wo set hoga, warna empty array
           setConversation(res?.data || []);
         } catch (error) {
+          navigate("/login")
           console.error("API Error:", error);
         }
       };

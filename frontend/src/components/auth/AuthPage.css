@@ -141,3 +141,12 @@
 
 .toggle-msg { text-align: center; margin-top: 30px; font-size: 14px; color: #64748b; }
 .toggle-msg button { background: none; border: none; color: #4f46e5; font-weight: 800; cursor: pointer; margin-left: 5px; }
+
+
+.error-text{
+    display: flex;
+    color: red;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
