@@ -1,6 +1,10 @@
 import API from "./axiosInstance";
 
 const businessOwnerApi = {
+  login: (data) => API.post("auth/login",data),
+  signup: (data) => API.post("auth/signup",data),
+
+
   getTenants: () => API.get("owner/get-all-teanants"),
   getUsers: () => API.get("owner/all-users"),
   todayConversationbyUsers: () => API.get("owner/today-conversation"),

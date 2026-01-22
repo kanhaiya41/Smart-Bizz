@@ -35,10 +35,10 @@ export async function exchangeCodeForToken(code) {
 /* ===================== SIGN UP ===================== */
 export const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstName,lastName, email, password } = req.body;
 
     // 1. Validation
-    if (!name || !email || !password) {
+    if (!firstName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -54,14 +54,15 @@ export const signup = async (req, res) => {
 
     // 4. Create user
     const user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       passwordHash,
       role: 'owner' // default
     });
 
     // 5. JWT token
-    const token =await  generateToken({id :user._id , name :user.name , email:user.email})
+    const token =await  generateToken({id :user._id , firstName :user.name , email:user.email})
 
     res.status(201).json({
       message: "Signup successful",
@@ -93,24 +94,24 @@ export const login = async (req, res) => {
     // 2. Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Email Not Found" });
     }
 
     // 3. Compare password
     const isMatch = await bcrypt.compare(String(password), user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Password is Incorrect" });
     }
 
     // 4. JWT token
-    const token = await generateToken({id :user._id , name :user.name , email:user.email})
+    const token = await generateToken({id :user._id , name :user.firstName , email:user.email})
 
     res.status(200).json({
       message: "Login successful",
       token,
       user: {
         id: user._id,
-        name: user.name,
+        firstName: user.firstName,
         email: user.email,
         role: user.role,
         tenants: user.tenants
