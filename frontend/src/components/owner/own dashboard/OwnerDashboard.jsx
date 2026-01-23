@@ -7,7 +7,9 @@ import businessOwnerApi from '../../../api/apiService';
 import { toast } from "react-toastify";
 import moment from "moment"
 import { useNavigate } from 'react-router-dom';
-
+import fbimg from '../../../assets/fb.png'
+import instaimg from '../../../assets/insta.png'
+import whtsimg from '../../../assets/whtsp.png'
 
 const OwnerDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // Chat state
@@ -22,54 +24,54 @@ const OwnerDashboard = () => {
     { id: 2, query: "Refund Process Kya Hai?", count: 320, platform: "Messenger" },
     { id: 3, query: "Price List & Catalog", count: 280, platform: "Instagram" },
   ];
-  
-    const { loading: userLoading, error: userError, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
-    const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
-    const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
-  
-    const loadUsers = async () => {
-        try {
-          const res = await todayConversationbyUsers();
-          // Agar API data de raha hai toh wo set hoga, warna empty array
-          setUsers(res?.data || []);
-        } catch (error) {
-          navigate("/login")
-          console.error("API Error:", error);
-        }
-      };
 
-    const handleLoadSingleConversation = async (conversationId) => {
-        try {
-          const res = await singleLoadConversation(conversationId);
-          // Agar API data de raha hai toh wo set hoga, warna empty array
-          setConversation(res?.data || []);
-        } catch (error) {
-          navigate("/login")
-          console.error("API Error:", error);
-        }
-      };
-        
-    const handleToggleAutoReply = async (conversationId , toogleValue) => {
-        try {
-          const res = await toggleAutoReply(conversationId,toogleValue);
-          toast.success(res?.message)
+  const { loading: userLoading, error: userError, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
+  const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
+  const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
 
-        } catch (error) {
-          console.error("API Error:", error);
-        }
-      };
-    useEffect(() => {
-      loadUsers();
-    }, []);
+  const loadUsers = async () => {
+    try {
+      const res = await todayConversationbyUsers();
+      // Agar API data de raha hai toh wo set hoga, warna empty array
+      setUsers(res?.data || []);
+    } catch (error) {
+      navigate("/login")
+      console.error("API Error:", error);
+    }
+  };
 
-    useEffect(()=>{
-      if(userError || singleComversationError){
-        toast.error(singleComversationError)
-      }
-    },[userError , singleComversationError])
+  const handleLoadSingleConversation = async (conversationId) => {
+    try {
+      const res = await singleLoadConversation(conversationId);
+      // Agar API data de raha hai toh wo set hoga, warna empty array
+      setConversation(res?.data || []);
+    } catch (error) {
+      navigate("/login")
+      console.error("API Error:", error);
+    }
+  };
+
+  const handleToggleAutoReply = async (conversationId, toogleValue) => {
+    try {
+      const res = await toggleAutoReply(conversationId, toogleValue);
+      toast.success(res?.message)
+
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  };
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  useEffect(() => {
+    if (userError || singleComversationError) {
+      toast.error(singleComversationError)
+    }
+  }, [userError, singleComversationError])
   return (
     <div className='dashboard-wrapper'>
-      <header className='main-header'>
+      {/* <header className='main-header'>
         <div className='search-container'>
           <Search size={18} color="#94a3b8" />
           <input type="text" placeholder='Search analytics, messages...' />
@@ -90,13 +92,13 @@ const OwnerDashboard = () => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <div className='dashboard-main-content'>
-        <div className='page-title-section'>
+        {/* <div className='page-title-section'>
           <h1>Owner Dashboard</h1>
           <p>Real-time overview of your business performance</p>
-        </div>
+        </div> */}
 
         <div className='stats-grid'>
           <div className='glass-card revenue-section'>
@@ -112,11 +114,11 @@ const OwnerDashboard = () => {
               {topQueriesData.map((query, i) => (
                 <div key={i} className='query-row'>
                   <div className='query-main'>
-                    <span className={`platform-tag ${query.platform.toLowerCase()}`}>
-                      {query.platform === "Messenger" ? <Facebook size={12} /> :
-                        query.platform === "Instagram" ? <Instagram size={12} /> :
-                          <MessageCircle size={12} />}
-                    </span>
+                    <img
+                      src={query?.platform === 'Messenger' ? fbimg : query?.platform === 'Instagram' ? instaimg : whtsimg}
+                      alt="pf"
+                      className="iconimg"
+                    />
                     <p>{query.query}</p>
                   </div>
                   <span className='count-badge'>{query.count}</span>
@@ -137,61 +139,59 @@ const OwnerDashboard = () => {
 
             <div className='messages-list-container'>
               {userLoading && (
-                  <div className="state-msg">
-      <div className="loader-mini"></div> Loading...
-    </div>
+                <div className="state-msg">
+                  <div className="loader-mini"></div> Loading...
+                </div>
               )}
               {
-               
-              }
-              { !userLoading && users.length > 0  ?
-              users.map((user, index) => (
-                <div key={index} 
-                     className={`message-item-card ${selectedUser?._id === user._id ? 'active-chat' : ''}`}
-                     onClick={() => {
-                      handleLoadSingleConversation(user?._id)
-                     
-                    }
-                      }>
-                  <div className='user-info-box' onClick={()=> setSelectedUser(user)}>
-                    <div className='avatar-main'>
-                      {user?.customer?.name.charAt(0)}
-                      <div className={`platform-dot ${user?.customer?.externalId.toLowerCase().replace(' ', '')}`}></div>
-                    </div>
-                    <div className='user-details'>
-                      <span className='u-name-bold'>{user?.customer?.name}</span>
-                      <span className='u-platform-name'>{user.platform}</span>
-                    </div>
-                  </div>
-                  <div className='message-snippet'>
-                    <p>{user?.lastMessage?.text}</p>
-                    <span className='msg-time'>{user.lastMessageAt}</span>
-                  </div>
-                  <button className='action-btn-mini' onClick={()=> setSelectedUser(user)}>Open</button>
-<label className="switch">
-  <input
-    type="checkbox"
-    checked={user?.autoReplyEnabled}
-    onChange={(e) =>
-    
-{
-  const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
-    if(isConfirmed){
-handleToggleAutoReply(user?._id, e.target.checked)
-    }
-        
-      }
-    }
-  />
-  <span className="slider"></span>
-</label>
 
-                </div>
-              )) : (
-                    <div className="state-msg">
-      No users found matching your search/filter.
-    </div>
-              )}
+              }
+              {!userLoading && users.length > 0 ?
+                users.map((user, index) => (
+                  <div key={index}
+                    className={`message-item-card ${selectedUser?._id === user._id ? 'active-chat' : ''}`}
+                    onClick={() => {
+                      handleLoadSingleConversation(user?._id)
+
+                    }
+                    }>
+                    <div className='user-info-box' onClick={() => setSelectedUser(user)}>
+                      <div className='avatar-main'>
+                        {user?.customer?.name.charAt(0)}
+                        <div className={`platform-dot ${user?.customer?.externalId.toLowerCase().replace(' ', '')}`}></div>
+                      </div>
+                      <div className='user-details'>
+                        <span className='u-name-bold'>{user?.customer?.name}</span>
+                        <span className='u-platform-name'>{user.platform}</span>
+                      </div>
+                    </div>
+                    <div className='message-snippet'>
+                      <p>{user?.lastMessage?.text}</p>
+                      <span className='msg-time'>{user.lastMessageAt}</span>
+                    </div>
+                    <button className='action-btn-mini' onClick={() => setSelectedUser(user)}>Open</button>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={user?.autoReplyEnabled}
+                        onChange={(e) => {
+                          const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
+                          if (isConfirmed) {
+                            handleToggleAutoReply(user?._id, e.target.checked)
+                          }
+
+                        }
+                        }
+                      />
+                      <span className="slider"></span>
+                    </label>
+
+                  </div>
+                )) : (
+                  <div className="state-msg">
+                    No users found matching your search/filter.
+                  </div>
+                )}
             </div>
           </div>
 
@@ -225,27 +225,27 @@ handleToggleAutoReply(user?._id, e.target.checked)
 
                 <div className='chat-messages-area'>
                   {loadingSingleConversation && (
-                                      <div className="state-msg">
-      <div className="loader-mini"></div> Loading...
-    </div>
-                  )}
-                  {! loadingSingleConversation && conversation.length > 0 ?
-                   conversation.map((msg, idx) => (
-                    <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
-                      <p>{msg.text}</p>
-                      <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
-                    </div>
-                  )) : (
                     <div className="state-msg">
-      No Chats Are Found.
-    </div>
-          
+                      <div className="loader-mini"></div> Loading...
+                    </div>
                   )}
+                  {!loadingSingleConversation && conversation.length > 0 ?
+                    conversation.map((msg, idx) => (
+                      <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
+                        <p>{msg.text}</p>
+                        <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
+                      </div>
+                    )) : (
+                      <div className="state-msg">
+                        No Chats Are Found.
+                      </div>
+
+                    )}
                 </div>
 
                 <div className='chat-input-wrapper'>
                   <input type="text" placeholder="Type a message..." />
-                  <button className='send-btn'><Send size={16}/></button>
+                  <button className='send-btn'><Send size={16} /></button>
                 </div>
               </div>
             )}

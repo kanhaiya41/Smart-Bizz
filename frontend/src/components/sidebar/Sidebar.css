@@ -5,6 +5,16 @@
   --text-idle: #5a5c69;
   --bg-active: #f0f3ff;
   --sidebar-width: 260px;
+  --header-height: 64px;
+}
+
+/* Pura Screen Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  /* Bahar ka scroll band */
 }
 
 .layout-wrapper {
@@ -14,33 +24,198 @@
   background-color: #fff;
 }
 
+/* Sidebar Left Side Fix */
 .sidebar {
   width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
   background-color: var(--bg-sidebar);
   border-right: 1px solid #e3e6f0;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  z-index: 1001;
 }
 
-/* LOGO SECTION - Sabse upar wala part */
+/* Right side wrapper */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  background-color: #f8fafc;
+}
+
+/* Header Fix at Top */
+.main-header {
+  height: var(--header-height);
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between; /* Title left mein, controls right mein */
+  align-items: center;
+  padding: 0 40px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+/* Page Title Styling */
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Content Area - Scrollable */
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+/* Search Box ko thoda compact kiya */
+.search-container {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  width: 260px; /* Thoda chhota kiya taaki cluttered na lage */
+  transition: 0.2s;
+}
+
+.search-container input {
+  border: none;
+  background: transparent;
+  outline: none;
+  margin-left: 10px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-container:focus-within {
+  border-color: var(--primary-blue);
+  background: #fff;
+}
+
+/* Header Right Group */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notif-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.icon-btn-circle {
+  width: 40px;
+  height: 40px;
+  background: #f8fafc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.icon-btn-circle:hover {
+  background: #f1f5f9;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444;
+  color: white;
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+
+.notif-ping {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 10px;
+  width: 10px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .5;
+  }
+}
+
+.user-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.user-profile-trigger:hover {
+  background: #e2e8f0;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  background: #4f46e5;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.u-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+
+/* Sidebar Nav Styling */
 .sidebar-logo {
-  padding: 35px 24px 20px 24px;
-  /* Upper padding badhadi hai */
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
+  padding: 30px 24px;
+  border-bottom: 1px solid #eef0f7;
 }
 
 .logo-text {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--primary-blue);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
 }
 
 .sidebar-content {
   flex: 1;
-  padding: 0 16px;
+  padding: 20px 16px;
   overflow-y: auto;
 }
 
@@ -63,13 +238,18 @@
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   padding: 12px 16px;
   text-decoration: none;
   color: var(--text-idle);
   border-radius: 10px;
-  margin-bottom: 4px;
-  transition: all 0.2s ease;
+  margin-bottom: 5px;
+  transition: all 0.2s;
+}
+
+.nav-link.active {
+  background-color: var(--bg-active);
+  color: var(--text-active);
 }
 
 .nav-link i {
@@ -87,30 +267,26 @@
   color: #3a3b45;
 }
 
-.nav-link.active {
-  background-color: var(--bg-active);
-  color: var(--text-active);
-}
+
 
 /* Footer & Logout */
 .sidebar-footer {
-  padding: 20px 16px;
+  padding: 16px;
   border-top: 1px solid #e3e6f0;
 }
 
 .btn-logout {
   width: 100%;
   border: none;
-  background: transparent;
+  background: #fff1f0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 16px;
   color: #e74a3b;
   font-weight: 700;
   cursor: pointer;
   border-radius: 8px;
-  transition: 0.2s;
 }
 
 .btn-logout:hover {

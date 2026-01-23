@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import { ChevronDown, Search, Bell } from 'lucide-react';
 
 const MENU_CONFIG = {
   superAdmin: [
@@ -27,23 +28,37 @@ const Sidebar = () => {
   const userRole = localStorage.getItem("role") || "owner";
   const mainMenuItems = MENU_CONFIG[userRole] || MENU_CONFIG.owner;
 
+  const handleLogout = () => {
+    const isConfirmed = window.confirm("Are you Sure you want to Logout?");
+    if (isConfirmed) {
+      localStorage.clear();
+      navigate("/login");
+    }
+  };
+
+  const getPageTitle = () => {
+    const path = location.pathname;
+    const allItems = [...MENU_CONFIG.superAdmin, ...MENU_CONFIG.owner, ...MENU_CONFIG.others];
+    const currentItem = allItems.find(item => item.path === path);
+    return currentItem ? currentItem.name : "Dashboard";
+  };
+
   return (
-    <div className="layout-wrapper">
+    <div className="app-container">
+      {/* 1. LEFT SIDEBAR */}
       <aside className="sidebar">
-        {/* LOGO SECTION */}
         <div className="sidebar-logo">
           <h2 className="logo-text">SMARTBIZZ</h2>
         </div>
 
         <nav className="sidebar-content">
-          {/* MAIN MENU */}
           <div className="menu-group">
             <label className="group-label">MENU</label>
             <div className="nav-list">
               {mainMenuItems.map((item) => (
-                <NavLink 
-                  to={item.path} 
-                  key={item.name} 
+                <NavLink
+                  to={item.path}
+                  key={item.name}
                   className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                 >
                   <i className={item.icon}></i>
@@ -53,14 +68,13 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* OTHER SECTION */}
           <div className="menu-group">
             <label className="group-label">OTHERS</label>
             <div className="nav-list">
               {MENU_CONFIG.others.map((item) => (
-                <NavLink 
-                  to={item.path} 
-                  key={item.name} 
+                <NavLink
+                  to={item.path}
+                  key={item.name}
                   className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                 >
                   <i className={item.icon}></i>
@@ -72,26 +86,49 @@ const Sidebar = () => {
         </nav>
 
         <div className="sidebar-footer">
-            <button className="btn-logout" onClick={() => {
-              const isConfirmed = window.confirm("Are you Sure you want logged Out!")
-              if(isConfirmed){
-                localStorage.clear();
-   return    navigate("/login")}
-   return;
- 
-              }
-
-         
-              }>
-                <i className="ri-logout-circle-r-line"></i>
-                <span>Logout</span>
-            </button>
+          <button className="btn-logout" onClick={handleLogout}>
+            <i className="ri-logout-circle-r-line"></i>
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 
-      <main className="main-view">
-        <Outlet />
-      </main>
+      {/* 2. RIGHT CONTENT AREA */}
+      <div className="main-wrapper">
+        <header className='main-header'>
+          {/* LEFT: Page Title Section */}
+          <div className="header-left">
+            <h1 className="page-title">{getPageTitle()}</h1>
+          </div>
+
+          {/* RIGHT: Search & Profile */}
+          <div className='header-right'>
+            <div className='search-container'>
+              <Search size={18} color="#94a3b8" />
+              <input type="text" placeholder='Search...' />
+            </div>
+
+            <div className='notif-wrapper'>
+              <div className='icon-btn-circle'>
+                <Bell size={20} color="#64748b" />
+                <span className='notif-badge'>9+</span>
+              </div>
+            </div>
+
+            <div className='user-profile-trigger'>
+              <div className='avatar-sm'>VS</div>
+              <div className='user-text'>
+                <span className='u-name'>Vishal Saini</span>
+                <ChevronDown size={14} color="#64748b" />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="page-content">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

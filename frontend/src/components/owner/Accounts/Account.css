@@ -64,6 +64,9 @@
   color: #64748b;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
 }
 
 .filter-pill.active {
@@ -120,9 +123,20 @@
   border-radius: 8px;
 }
 
-.platform-badge.instagram { background: #fff1f2; color: #e11d48; }
-.platform-badge.facebook { background: #eff6ff; color: #2563eb; }
-.platform-badge.whatsapp { background: #f0fdf4; color: #16a34a; }
+.platform-badge.instagram {
+  background: #fff1f2;
+  color: #e11d48;
+}
+
+.platform-badge.facebook {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.platform-badge.whatsapp {
+  background: #f0fdf4;
+  color: #16a34a;
+}
 
 .more-options-btn {
   background: none;
@@ -168,7 +182,10 @@
   border-radius: 50%;
   border: 3px solid #ffffff;
 }
-.status-indicator-dot.online { background: #10b981; }
+
+.status-indicator-dot.online {
+  background: #10b981;
+}
 
 .card-profile-section h3 {
   font-size: 18px;
@@ -249,6 +266,7 @@
     transform: scale(0.9);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -301,7 +319,7 @@
 
 .platform-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 /* PLATFORM COLORS */
@@ -315,4 +333,9 @@
 
 .platform-card.whatsapp {
   border-color: #25d366;
+}
+
+.iconimg {
+  height: 14px;
+  width: 14px;
 }

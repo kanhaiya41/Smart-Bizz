@@ -62,57 +62,65 @@ const DatePicker = ({ value, onChange, placeholder, maxDate, minDate }) => {
   );
 };
 
+
+
 export const RevenueChart = () => {
   const [filter, setFilter] = useState('monthly');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const currentDate = new Date();
-  
-  const getTotalRevenue = (data) => {
-    return data.reduce((sum, item) => sum + item.current, 0).toLocaleString();
-  };
-
-  const getTrendPercentage = (data) => {
-    const currentTotal = data.reduce((sum, item) => sum + item.current, 0);
-    const previousTotal = data.reduce((sum, item) => sum + item.previous, 0);
-    return ((currentTotal - previousTotal) / previousTotal * 100).toFixed(1);
-  };
 
   const chartData = useMemo(() => {
-    if (filter === 'weekly') return weeklyData;
-    if (filter === 'monthly') return monthlyData;
-    if (filter === 'yearly') return yearlyData;
+    // Standard Filters
+    if (filter === 'weekly') {
+      return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => ({
+        day: d, current: 2000 + Math.random() * 5000, previous: 1500 + Math.random() * 4000
+      }));
+    }
+    
+    if (filter === 'yearly') {
+      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => ({
+        month: m, current: 20000 + Math.random() * 50000, previous: 15000 + Math.random() * 40000
+      }));
+    }
+
+    // Default Monthly or Custom (Before date selection)
+    if (filter === 'monthly' || (filter === 'custom' && (!startDate || !endDate))) {
+      const days = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+      return Array.from({ length: days }, (_, i) => ({
+        day: (i + 1).toString().padStart(2, '0'),
+        current: 2000 + Math.random() * 5000,
+        previous: 1500 + Math.random() * 4000,
+      }));
+    }
+
+    // Custom with Aggregation Logic
     if (filter === 'custom' && startDate && endDate) {
-      const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-      const customData = [];
-      for (let i = 0; i < Math.min(daysDiff + 1, 12); i++) {
-        const date = new Date(startDate);
-        date.setDate(startDate.getDate() + i);
-        customData.push({
-          day: date.getDate().toString().padStart(2, '0'),
-          current: 3000 + Math.random() * 3000,
-          previous: 2000 + Math.random() * 3000,
+      const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
+      
+      // Dynamic Grouping: Hum target kar rahe hain ki hamesha 15-30 candles dikhein
+      let groupSize = 1; 
+      if (diffDays > 120) groupSize = 7;      // 4 mahine se zyada -> Weekly (approx 16-20 candles)
+      else if (diffDays > 45) groupSize = 3;   // 1.5 mahine se zyada -> 3-day groups (approx 15-25 candles)
+      else groupSize = 1;                     // Choti range -> Daily candles
+
+      const aggregated = [];
+      for (let i = 0; i < Math.ceil(diffDays / groupSize); i++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + (i * groupSize));
+        aggregated.push({
+          day: groupSize === 1 ? `${d.getDate()}/${d.getMonth() + 1}` : `${d.getDate()}/${d.getMonth() + 1}..`,
+          current: (2000 + Math.random() * 5000) * groupSize,
+          previous: (1500 + Math.random() * 4000) * groupSize,
         });
       }
-      return customData;
+      return aggregated;
     }
-    return monthlyData;
+    return [];
   }, [filter, startDate, endDate]);
 
-  const getTimelineText = () => {
-    switch (filter) {
-      case 'weekly': return 'Sales from last 7 days';
-      case 'monthly': return 'Sales from 1-12 Dec, 2025';
-      case 'yearly': return 'Sales from Jan-Dec, 2025';
-      case 'custom': 
-        if (startDate && endDate) {
-          return `Sales from ${startDate.getDate()}/${startDate.getMonth()+1} to ${endDate.getDate()}/${endDate.getMonth()+1}`;
-        }
-        return 'Select date range';
-      default: return 'Sales from 1-12 Dec, 2025';
-    }
-  };
+  const getTotalRevenue = (data) => data.reduce((sum, item) => sum + item.current, 0).toLocaleString();
 
   return (
     <div className='revenue-chart-container'>
@@ -121,71 +129,78 @@ export const RevenueChart = () => {
           <span className='label'>Total Revenue</span>
           <h3>IDR {getTotalRevenue(chartData)}</h3>
           <div className='trend-badge'>
-            <span className={`trend-${getTrendPercentage(chartData) >= 0 ? 'up' : 'down'}`}>
-              {getTrendPercentage(chartData) >= 0 ? '↑' : '↓'} {Math.abs(getTrendPercentage(chartData))}%
-            </span>
+            <span className="trend-up">↑ 30.1%</span>
             <span className='comparison'>vs previous period</span>
           </div>
         </div>
-        <button className='view-report-btn'>View Report</button>
-      </div>
 
-      {/* Filter Controls */}
-      <div className='filter-controls'>
-        <div className='filter-tabs'>
-          {['weekly', 'monthly', 'yearly', 'custom'].map((tab) => (
-            <button
-              key={tab}
-              className={`filter-tab ${filter === tab ? 'active' : ''}`}
-              onClick={() => {
-                setFilter(tab);
-                setStartDate(null);
-                setEndDate(null);
-              }}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
-        
-        {filter === 'custom' && (
-          <div className='date-range-picker'>
-            <DatePicker
-              value={startDate}
-              onChange={setStartDate}
-              placeholder="Start Date"
-              maxDate={endDate || currentDate}
-            />
-            <DatePicker
-              value={endDate}
-              onChange={setEndDate}
-              placeholder="End Date"
-              minDate={startDate}
-              maxDate={currentDate}
-            />
+        <div className='header-controls-group'>
+          <div className='filter-tabs'>
+            {['weekly', 'monthly', 'yearly', 'custom'].map((tab) => (
+              <button
+                key={tab}
+                className={`filter-tab ${filter === tab ? 'active' : ''}`}
+                onClick={() => { setFilter(tab); setStartDate(null); setEndDate(null); }}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
           </div>
-        )}
+          {filter === 'custom' && (
+            <div className='date-range-picker'>
+              <DatePicker 
+                selected={startDate} 
+                onChange={(date) => setStartDate(date)} 
+                selectsStart
+                value={startDate}
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="Start Date" 
+                className="date-input"
+                dateFormat="dd/MM/yyyy"
+              />
+              <DatePicker 
+                selected={endDate} 
+                onChange={(date) => setEndDate(date)} 
+                selectsEnd
+                value={endDate}
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText="End Date" 
+                className="date-input"
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
+          )}
+          <button className='view-report-btn'>View Report</button>
+        </div>
       </div>
 
-      <p className='chart-timeline'>{getTimelineText()}</p>
+      <p className='chart-timeline' style={{ marginTop: '-10px', marginBottom: '15px' }}>
+        {filter === 'custom' && startDate && endDate 
+          ? `Showing sales from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}` 
+          : 'Sales Overview'}
+      </p>
 
       <div className='bar-wrapper'>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} barGap={8}>
+          <BarChart data={chartData} barGap={chartData.length > 20 ? 4 : 8}>
             <CartesianGrid strokeDasharray="0" vertical={false} stroke="#f1f5f9" />
-            <XAxis 
-              dataKey={filter === 'yearly' ? 'month' : 'day'} 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{fill: '#94a3b8', fontSize: 11}} 
+            <XAxis
+              dataKey={filter === 'yearly' ? 'month' : 'day'}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#94a3b8', fontSize: 10 }}
+              interval={chartData.length > 25 ? 2 : 0} 
             />
             <YAxis hide={true} />
-            <Tooltip 
-              cursor={{fill: '#f8fafc'}} 
-              contentStyle={{borderRadius: '10px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}
+            <Tooltip
+              cursor={{ fill: '#f8fafc' }}
+              contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             />
-            <Bar dataKey="current" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={8} />
-            <Bar dataKey="previous" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={8} />
+            <Bar dataKey="current" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={chartData.length > 25 ? 5 : 8} />
+            <Bar dataKey="previous" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={chartData.length > 25 ? 5 : 8} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText, Search, Trash2, Eye, UploadCloud, FileSpreadsheet, BookOpen, ClipboardList } from "lucide-react";
 import "./Inventory.css";
@@ -14,85 +14,85 @@ import { toast } from "react-toastify";
 // ];
 
 const Inventory = () => {
-const [searchTerm, setSearchTerm] = useState("");
-const [refresh, setRefresh] = useState(false);
-const [inventoryRecords , setinventoryRecords] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [inventoryRecords, setinventoryRecords] = useState([])
 
-const navigate = useNavigate()
-const {
-  request: uploadInventory,
-  loading:loadingUpload,
-  error:errorUpload
-} = useApi(businessOwnerApi.uploadInventory);
+  const navigate = useNavigate()
+  const {
+    request: uploadInventory,
+    loading: loadingUpload,
+    error: errorUpload
+  } = useApi(businessOwnerApi.uploadInventory);
 
- const {
-  request: getAllInventory,
-  loading,
-  error
-} =   useApi(businessOwnerApi.getInventory)
+  const {
+    request: getAllInventory,
+    loading,
+    error
+  } = useApi(businessOwnerApi.getInventory)
 
-const handleSaveFile = async (e) => {
-  const selectedFile = e.target.files[0];
+  const handleSaveFile = async (e) => {
+    const selectedFile = e.target.files[0];
 
-  if (!selectedFile) {
-    alert("Please select a file");
-    return;
-  }
+    if (!selectedFile) {
+      alert("Please select a file");
+      return;
+    }
 
-  if (selectedFile.size > 10 * 1024 * 1024) {
-    alert("File too large (max 10MB)");
-    return;
-  }
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      alert("File too large (max 10MB)");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("file", selectedFile);
-  try {
-    await uploadInventory(formData);
-    setRefresh((prev)=>!prev)
-    toast.success("Inventory uploaded successfully");
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    try {
+      await uploadInventory(formData);
+      setRefresh((prev) => !prev)
+      toast.success("Inventory uploaded successfully");
 
-  } catch (err) {
-    console.error(err);
-  }
-};
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-const { request: delInventory, loading: deleteLoading } =
-  useApi(businessOwnerApi.deleteInventory);
+  const { request: delInventory, loading: deleteLoading } =
+    useApi(businessOwnerApi.deleteInventory);
 
-const loadInventory = async () => {
-  try {
-    const res = await getAllInventory();
-    setinventoryRecords(res?.data);
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to load inventory");
-  }
-};
+  const loadInventory = async () => {
+    try {
+      const res = await getAllInventory();
+      setinventoryRecords(res?.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load inventory");
+    }
+  };
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    loadInventory();
-  }, 1000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadInventory();
+    }, 1000);
 
-  return () => clearTimeout(timer);
-}, [refresh]);
+    return () => clearTimeout(timer);
+  }, [refresh]);
 
-const handleDeleteInventory = async (id) => {
-  const isConfirmed = window.confirm(
-    "Are you sure you want to delete this Inventory?"
-  );
+  const handleDeleteInventory = async (id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this Inventory?"
+    );
 
-  if (!isConfirmed) return;
+    if (!isConfirmed) return;
 
-  try {
-    await delInventory(id);
-    toast.success("Inventory deleted successfully");
-    loadInventory(); // now works
-  } catch (error) {
-    console.error("Delete failed:", error);
-    toast.error("Failed to delete inventory");
-  }
-};
+    try {
+      await delInventory(id);
+      toast.success("Inventory deleted successfully");
+      loadInventory(); // now works
+    } catch (error) {
+      console.error("Delete failed:", error);
+      toast.error("Failed to delete inventory");
+    }
+  };
 
 
   return (
@@ -100,13 +100,13 @@ const handleDeleteInventory = async (id) => {
       <div className="inventory-header-section">
         <div className="inventory-heading">
           <div className="inventory-heading-div">
-  <h1>Knowledge Center</h1>
-        <button onClick={()=>navigate("/rule-sheet")} className="add-account-btn">
-           Add Rule Sheet
-          </button>
+            {/* <h1>Knowledge Center</h1> */}
+            <button onClick={() => navigate("/rule-sheet")} className="add-account-btn">
+              Add Rule Sheet
+            </button>
           </div>
-        
-          <p>Train your AI by uploading business rules and inventory data</p>
+
+          {/* <p>Train your AI by uploading business rules and inventory data</p> */}
         </div>
       </div>
 
@@ -144,99 +144,99 @@ const handleDeleteInventory = async (id) => {
       </div>
 
       {/* LIST SECTION */}
-     
-    {loadingUpload && (
-  <div className="state-msg">
-    <div className="loader-mini"></div> Uploading...
-  </div>
-)}
-       {!loadingUpload && !errorUpload &&  (
-      <div className="inventory-content-card">
-        <div className="inventory-list-filter">
-          <div className="filter-text">
-            <h3>Library Assets</h3>
-            <span className="count-tag">{inventoryRecords?.length} Documents</span>
-          </div>
-          <div className="search-box-modern">
-            <Search size={18} color="#94a3b8" />
-            <input
-              type="text"
-              placeholder="Search by name or category..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+
+      {loadingUpload && (
+        <div className="state-msg">
+          <div className="loader-mini"></div> Uploading...
         </div>
-
-        <div className="table-container">
-          <div className="table-header-grid">
-            <span>ID</span>
-            <span>Name & Category</span>
-            <span>Type</span>
-            <span>Size</span>
-            <span className="text-center">Actions</span>
-          </div>
-
-<div className="inventory-scroll-area">
-
-  {loading && (
-    <div className="state-msg">
-      <div className="loader-mini"></div> Loading...
-    </div>
-  )}
-
-  {!loading && error && (
-    <div className="state-msg">Error: {error}</div>
-  )}
-
-  {!loading && !error && inventoryRecords.length === 0 && (
-    <div className="state-msg">No Inventory Found</div>
-  )}
-
-  {!loading && !error && inventoryRecords.length > 0 && (
-    inventoryRecords
-      .filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .map((item, index) => (
-        <div className="inventory-row-card" key={item._id || index}>
-          <span className="id-text">{`REC-00${index + 1}`}</span>
-
-          <div className="name-with-icon">
-            <div className="category-indicator">
-              <BookOpen size={14} />
+      )}
+      {!loadingUpload && !errorUpload && (
+        <div className="inventory-content-card">
+          <div className="inventory-list-filter">
+            <div className="filter-text">
+              <h3>Library Assets</h3>
+              <span className="count-tag">{inventoryRecords?.length} Documents</span>
             </div>
-
-            <div className="file-info-main">
-              <span className="file-name">{item.name}</span>
-              <span className="file-category-label">{item.name}</span>
+            <div className="search-box-modern">
+              <Search size={18} color="#94a3b8" />
+              <input
+                type="text"
+                placeholder="Search by name or category..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
-          <span className={`type-badge ${item.fileType?.toLowerCase()}`}>
-            {item.fileType}
-          </span>
+          <div className="table-container">
+            <div className="table-header-grid">
+              <span>ID</span>
+              <span>Name & Category</span>
+              <span>Type</span>
+              <span>Size</span>
+              <span className="text-center">Actions</span>
+            </div>
 
-          <span className="size-text">{item.size}</span>
+            <div className="inventory-scroll-area">
 
-          <div className="action-buttons">
-            <button className="icon-btn view">
-              <Eye size={16} />
-            </button>
-            <button onClick={()=>handleDeleteInventory(item?._id)} className="icon-btn delete">
-              <Trash2 size={16} />
-            </button>
+              {loading && (
+                <div className="state-msg">
+                  <div className="loader-mini"></div> Loading...
+                </div>
+              )}
+
+              {!loading && error && (
+                <div className="state-msg">Error: {error}</div>
+              )}
+
+              {!loading && !error && inventoryRecords.length === 0 && (
+                <div className="state-msg">No Inventory Found</div>
+              )}
+
+              {!loading && !error && inventoryRecords.length > 0 && (
+                inventoryRecords
+                  .filter(item =>
+                    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((item, index) => (
+                    <div className="inventory-row-card" key={item._id || index}>
+                      <span className="id-text">{`REC-00${index + 1}`}</span>
+
+                      <div className="name-with-icon">
+                        <div className="category-indicator">
+                          <BookOpen size={14} />
+                        </div>
+
+                        <div className="file-info-main">
+                          <span className="file-name">{item.name}</span>
+                          <span className="file-category-label">{item.name}</span>
+                        </div>
+                      </div>
+
+                      <span className={`type-badge ${item.fileType?.toLowerCase()}`}>
+                        {item.fileType}
+                      </span>
+
+                      <span className="size-text">{item.size}</span>
+
+                      <div className="action-buttons">
+                        <button className="icon-btn view">
+                          <Eye size={16} />
+                        </button>
+                        <button onClick={() => handleDeleteInventory(item?._id)} className="icon-btn delete">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+              )}
+
+            </div>
+
           </div>
         </div>
-      ))
-  )}
+      )}
 
-</div>
-
-        </div>
-      </div>
-         )}   
-       
 
     </div>
   );
