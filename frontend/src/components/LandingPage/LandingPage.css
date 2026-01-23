@@ -1,0 +1,1100 @@
+/* --- NAVIGATION --- (Desktop same rakha) */
+.navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 6%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: var(--purple);
+}
+
+.logo:hover{
+    color: rgb(14, 14, 250);
+    cursor: pointer;
+    
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(108, 99, 255, 0.1);
+  color: var(--purple);
+}
+
+.nav-btn.active {
+  background: rgba(108, 99, 255, 0.15);
+  color: var(--purple);
+}
+
+
+.btn-purple {
+    background: var(--purple);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-purple:hover {
+    background: var(--purple); /* Rang wahi rahega */
+    transform: translateY(-3px) scale(1.05); /* Thoda upar aur bada hoga */
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); /* Purple shadow glow */
+    filter: brightness(1.1); /* Thoda sa chamak badhegi */
+}
+
+
+.btn-purple2 {
+    background: var(--purple);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-purple2:hover {
+    background: var(--purple); /* Rang wahi rahega */
+    transform: translateY(-3px) scale(1.05); /* Thoda upar aur bada hoga */
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); /* Purple shadow glow */
+    filter: brightness(1.1); /* Thoda sa chamak badhegi */
+}
+
+/* --- HERO SECTION (Desktop same) --- */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 8% 60px;
+    gap: 50px;
+    position: relative;
+    /* background-color: var(--purple); */
+}
+
+.hero-text {
+    flex: 1.1;
+    z-index: 10;
+}
+
+.hero-text h1 {
+    font-size: clamp(45px, 6vw, 85px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -4px;
+    margin-bottom: 25px;
+}
+
+.hero-text p {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 550px;
+}
+
+.hero-visual {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-img-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.hero-img {
+    width: 100%;
+    border-radius: 40px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
+    filter: brightness(0.9);
+}
+
+/* Floating Notifications (Desktop same) */
+.notif {
+    position: absolute;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 220px;
+    animation: floatAnim 3s infinite ease-in-out;
+    opacity: 0;
+}
+
+.notif-1 { top: 10%; left: -20%; background: #E7FFDB; animation-delay: 0s; }
+.notif-2 { top: 40%; right: -15%; background: #FFF0F5; animation-delay: 1s; }
+.notif-3 { bottom: 15%; left: -10%; background: #F0F7FF; animation-delay: 2s; }
+
+.notif img { width: 25px; height: 25px; }
+
+@keyframes floatAnim {
+    0% { transform: translateY(20px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+}
+
+/* --- STICKY REEL SWITCHER (Desktop same) --- */
+.sticky-container { position: relative; min-height: 300vh; background: #fff; }
+.sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding-top: 50px; }
+.feature-grid { display: grid; grid-template-columns: 1fr 1fr; width: 85%; gap: 80px; align-items: center; }
+
+.phone-frame {
+    /* margin-top: 50px; */
+    width: 280px;
+    height: 460px;
+    background: #000;
+    border-radius: 40px;
+    border: 15px solid #1a1a1a;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
+}
+
+.phone-screen { width: 100%; height: 100%; object-fit: cover; position: absolute; opacity: 0; transition: 0.6s; }
+.phone-screen.active { opacity: 1; }
+
+.feature-item { position: absolute; top: 0; opacity: 0; transform: translateY(30px); transition: 0.5s; pointer-events: none; }
+.feature-item.active { opacity: 1; transform: translateY(0); pointer-events: all; }
+.feature-item h2 { font-size: 60px; font-weight: 900; line-height: 1; margin-bottom: 20px; }
+
+/* --- MAGNETIC SHAKING CARDS (Desktop same) --- */
+.shake-sec {
+    background: var(--neon-yellow);
+    padding: 150px 8%;
+    min-height: 110vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.shake-sec h2 {
+    font-size: clamp(40px, 6vw, 75px);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 80px;
+    letter-spacing: -3px;
+}
+
+.cards-container {
+    position: relative;
+    height: 480px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.card {
+    position: absolute;
+    width: 48%;
+    padding: 60px 40px;
+    border-radius: 45px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-grey { background: #f0f0f0; z-index: 1; }
+.card-green { background: var(--green); color: white; z-index: 2; }
+
+.cards-container.active #card1 {
+    left: 0;
+    transform: translate(0, -50%) scale(1) rotate(-3deg);
+    opacity: 1;
+}
+
+.cards-container.active #card2 {
+    left: 52%;
+    transform: translate(0, -50%) scale(1) rotate(3deg);
+    opacity: 1;
+}
+
+.hit-shake { animation: hitShakeEffect 0.5s ease-out; }
+
+@keyframes hitShakeEffect {
+    0%, 100% { transform: translate(0, -50%) scale(1) rotate(var(--final-rot)); }
+    25% { transform: translate(0, -50%) scale(1.05) rotate(5deg); }
+    50% { transform: translate(0, -50%) scale(0.95) rotate(-5deg); }
+}
+
+/* --- BIG SCREEN ZOOM (Desktop same) --- */
+.zoom-reveal-container { position: relative; height: 300vh; background: #fff; }
+.zoom-sticky { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+.zoom-bg {
+    position: absolute;
+    width: 70%;
+    height: 60vh;
+    border-radius: 40px;
+    overflow: hidden;
+    z-index: 1;
+    transition: 0.1s linear;
+}
+
+.zoom-bg img { width: 100%; height: 100%; object-fit: cover; }
+
+.zoom-text {
+    white-space: nowrap;
+    position: absolute;
+    z-index: 2;
+    color: white;
+    font-size: clamp(40px, 8vw, 120px);
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: -5px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: 0.5s ease-out;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.after-zoom-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%;
+    transform: translateX(100%);
+    transition: transform 0.1s linear;
+    visibility: hidden;
+}
+
+.after-zoom-content > div { flex: 1; }
+
+/* --- PREMIUM FOOTER (Desktop same) --- */
+.animated-footer {
+    background: #0b0b0b;
+    color: white;
+    padding: 100px 0 40px;
+    position: relative;
+    z-index: 101;
+}
+
+.footer-container { max-width: 1200px; margin: 0 auto; padding: 0 6%; }
+.footer-row { display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 60px; }
+
+.footer-logo {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--purple);
+    margin-bottom: 20px;
+}
+
+.footer-col h4 {
+    font-size: 18px;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 2px;
+    background: var(--purple);
+}
+
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul li a {
+    color: #999;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.footer-col ul li a:hover { color: var(--purple); padding-left: 8px; }
+
+.footer-form {
+    display: flex;
+    margin-top: 20px;
+    background: #1a1a1a;
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid #333;
+    transition: 0.3s;
+}
+
+.footer-form:focus-within {
+    border-color: var(--purple);
+    box-shadow: 0 0 15px rgba(146, 70, 255, 0.2);
+}
+
+.footer-form input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    flex: 1;
+    outline: none;
+}
+
+.footer-form button {
+    background: var(--purple);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.footer-form button:hover {
+    transform: scale(1.05);
+    background: #7a32e0;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.social-icon:hover {
+    background: var(--purple);
+    transform: translateY(-10px) rotate(360deg);
+}
+
+.footer-bottom {
+    margin-top: 80px;
+    padding-top: 30px;
+    border-top: 1px solid #222;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+}
+
+/* .app-footer {
+    background: #0e0f11;
+    color: #c9c9c9;
+    border-top: 1px solid #1e1f23;
+    font-family: Inter, system-ui, sans-serif;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: auto;
+    padding: 70px 6%;
+    display: grid;
+    grid-template-columns: 1.2fr 3fr;
+    gap: 80px;
+}
+
+.footer-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 14px;
+}
+
+.footer-brand p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #9a9a9a;
+    max-width: 320px;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;
+}
+
+.footer-group h5 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8f8f8f;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 18px;
+}
+
+.footer-group a {
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    color: #c9c9c9;
+    margin-bottom: 12px;
+}
+
+.footer-group a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    border-top: 1px solid #1e1f23;
+    padding: 18px 6%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #8b8b8b;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 18px;
+}
+
+ */
+
+
+
+
+
+/* ===========================================
+   MOBILE & TABLET RESPONSIVE ONLY 
+   (Desktop view bilkul same hai)
+=========================================== */
+
+/* Tablet (1024px se niche) */
+
+/* ===========================================
+   OPTIMIZED RESPONSIVE DESIGN 
+=========================================== */
+
+/* --- TABLET & SMALL LAPTOPS (Under 1024px) --- */
+@media (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 160px;
+    }
+
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-purple {
+        width: 20%; 
+        /* Hero button full width */
+        padding: 15px ;
+        font-size: x-small;
+    }
+
+    .hero-text p {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 18px;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+        width: 90%;
+        gap: 40px;
+    }
+
+    .phone-frame {
+        width: 240px;
+        height: 420px;
+    }
+
+    .feature-item h2 {
+        font-size: 48px;
+    }
+}
+
+/* --- MOBILE LARGE (Under 768px) --- */
+@media (max-width: 768px) {
+    nav {
+        padding: 15px 5%;
+    }
+
+    /* Nav links ko thoda chota aur clean kiya */
+    .nav-links {
+        display: none; /* Mobile menu usually requires JS, but for now we keep it simple */
+    }
+
+    .hero-text h1 {
+        font-size: 50px;
+        letter-spacing: -2px;
+    }
+    .hero-text p
+    {
+        font-size: 15px;
+    }
+
+    .hero-visual {
+        margin-top: 20px;
+    }
+
+    
+    .btn-purple {
+        width: 30%; 
+        /* Hero button full width */
+        padding: 15px ;
+        font-size: x-small;
+    }
+
+    
+
+
+    .sticky-container {
+        min-height: 300vh !important; 
+    }
+
+    .sticky-wrapper {
+        padding-top: 40px !important; /* Top space kam kar di */
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Items ko upar rakhega */
+    }
+
+
+
+
+
+
+    /* Notifications mobile par space gherte hain, isliye hide karna better hai */
+    .notif {
+        display: none;
+    }
+
+    /* Sticky Section Fix for Mobile */
+    /* .sticky-container {
+        min-height: 250vh; 
+    }
+
+    .sticky-wrapper {
+        padding-top: 80px;
+        align-items: flex-start;
+    } */
+
+    .feature-item {
+        position: relative; /* Mobile par stack ho sakein agar JS na chale */
+        text-align: center;
+    }
+
+    .feature-item h2 {
+        font-size: 36px;
+        margin-top: 20px;
+    }
+
+    .feature-item p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* Shake Cards -> Vertical Stack */
+    .shake-sec {
+        padding: 80px 5%;
+    }
+
+    .cards-container {
+        height: auto; /* Fixed height hata di */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .card {
+        position: relative !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        opacity: 1 !important;
+        padding: 40px 25px;
+    }
+
+    .cards-container.active #card1, 
+    .cards-container.active #card2 {
+        transform: rotate(0deg) !important; /* Mobile par rotation ajeeb lagti hai */
+    }
+
+    /* Growth Insights Grid */
+    .after-zoom-content {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 5%;
+    }
+
+    .after-zoom-content h2 {
+        font-size: 38px !important;
+    }
+
+    .after-zoom-content div[style*="grid"] {
+        grid-template-columns: 1fr !important; /* Stack stats vertically */
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    /* Footer Fix */
+    .footer-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .footer-col.brand {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .footer-col h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+
+   
+    /* Is container ki height fix karna zaroori hai */
+    .feature-grid + div { 
+        position: relative;
+        height: 500px; /* Isse f1, f2, f3 ko ek fix jagah milegi */
+        width: 100%;
+    }
+
+    .feature-item {
+        position: absolute !important; /* Wapas absolute kiya taaki ek ke upar ek rahein */
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+    }
+
+    /* Jab JS 'active' class lagaye tabhi dikhe */
+    .feature-item.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    
+}
+
+.zoom-reveal-container {
+        height: 150vh; /* Bohat zyada scroll karne ki zaroorat nahi mobile pe */
+    }
+
+    /* Analytics Section Fix */
+    .after-zoom-content {
+        position: relative !important; /* Fixed se normal kar diya */
+        transform: none !important;    /* Slide effect hata diya */
+        visibility: visible !important; /* Hamesha dikhega */
+        height: auto !important;
+        padding: 80px 6% !important;
+        display: flex;
+        flex-direction: column; /* Text upar, Stats niche */
+        gap: 40px;
+        z-index: 11;
+        background: #fff;
+    }
+
+    .after-zoom-content > div {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Grid ko 1 column mein kiya */
+    .after-zoom-content div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Stats boxes ko bada aur clean kiya */
+    .after-zoom-content div[style*="background"] {
+        padding: 40px 20px !important;
+        border-radius: 30px !important;
+    }
+
+    .after-zoom-content h2 {
+        font-size: 38px !important;
+        line-height: 1.1;
+    }
+
+}
+
+/* --- SMALL MOBILE (Under 480px) --- */
+@media (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 42px;
+    }
+    .hero-text p
+    {
+        font-size: 12px;
+    }
+
+
+    /* .btn-purple {
+        width: 100%; 
+        padding: 15px;
+    } */
+
+    .btn-purple {
+        width: 50%; 
+        /* Hero button full width */
+        padding: 15px ;
+        font-size: x-small;
+    }
+
+    .phone-frame {
+        width: 200px;
+        height: 380px;
+        border-width: 10px;
+    }
+
+    .zoom-text {
+        font-size: 32px;
+        letter-spacing: -1px;
+    }
+
+    .footer-form {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 10px;
+    }
+
+    .footer-form button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+
+
+/* ===========================================
+   FIX PACK: MOBILE RESPONSIVE (No class change)
+=========================================== */
+
+/* --- Mobile Notifications (Don't hide, reposition) --- */
+@media (max-width: 768px) {
+
+  /* ❌ Purana: display none hatao */
+  .notif {
+    display: flex !important;
+    min-width: auto !important;
+    width: auto !important;
+    max-width: 240px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    gap: 10px;
+    font-size: 12px;
+    animation: floatAnimMobile 3.2s infinite ease-in-out;
+    opacity: 1;
+  }
+
+  .notif img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Mobile me left/right bahar ja rahe the, ab safe area me */
+  .notif-1 {
+    top: auto !important;
+    left: 12px !important;
+    bottom: 350px !important;
+  }
+
+  .notif-2 {
+    top: auto !important;
+    right: 12px !important;
+    bottom: 250px !important;
+  }
+
+  .notif-3 {
+    top: auto !important;
+    left: 12px !important;
+    bottom: 190px !important;
+  }
+
+  /* Mobile animation smooth */
+  @keyframes floatAnimMobile {
+    0% { transform: translateY(10px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-10px); opacity: 0; }
+  }
+
+  /* Hero image ko space do so notifs overlap na kare */
+  .hero-img-wrapper {
+    padding-bottom: 140px;
+  }
+}
+
+/* --- Small Mobiles (480px below) Notifications tighter --- */
+@media (max-width: 480px) {
+  .notif {
+    max-width: 210px;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .notif-1 { bottom: 310px !important; }
+  .notif-2 { bottom: 240px !important; }
+  .notif-3 { bottom: 180px !important; }
+}
+
+/* ===========================================
+   FIX: Problem / Solution cards overlap issue
+=========================================== */
+
+@media (max-width: 768px) {
+
+  .shake-sec {
+    padding: 90px 5% !important;
+    min-height: auto !important;
+  }
+
+  .cards-container {
+    height: auto !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .card {
+    position: relative !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    opacity: 1 !important;
+    padding: 38px 22px !important;
+    border-radius: 35px !important;
+  }
+
+  /* Mobile pe animation shake okay but rotation remove */
+  .cards-container.active #card1,
+  .cards-container.active #card2 {
+    transform: none !important;
+  }
+
+  /* Card headings spacing fix */
+  .card h3 {
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+
+  .card p {
+    line-height: 1.6;
+    font-size: 14px;
+  }
+}
+
+/* --- Extra safe fix for 700px - 900px (small tablets) --- */
+
+
+/* ===========================================
+   FIX: 750px ke baad notif drift issue
+   (Tablet range positioning stable)
+=========================================== */
+
+@media (max-width: 1024px) and (min-width: 769px) {
+
+  /* wrapper ko stable height do taaki notif neeche na jaye */
+  .hero-img-wrapper {
+    max-width: 520px;
+    width: 100%;
+  }
+
+  /* notif ko thoda upar set karo */
+  .notif {
+    min-width: 210px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    font-size: 13px;
+    opacity: 1;
+  }
+
+  /* Desktop wali left/right extreme values ki jagah safe values */
+  .notif-1 {
+    top: 8% !important;
+    left: -8% !important;
+  }
+
+  .notif-2 {
+    top: 38% !important;
+    right: -8% !important;
+  }
+
+  .notif-3 {
+    bottom: 12% !important;
+    left: -6% !important;
+  }
+}
+
+
+/* ===========================================
+   MOBILE OVERLAY MODE (Phone background + text overlay)
+   No class change
+=========================================== */
+
+@media (max-width: 768px) {
+
+  /* Feature grid ko overlay style banaya */
+  .feature-grid {
+    position: relative;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 0 !important;
+    align-items: center;
+  }
+
+  /* Phone ko background banaya */
+  .phone-frame {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 260px !important;
+    height: 460px !important;
+    opacity: 0.22 !important;          /* background feel */
+    filter: blur(0.2px) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;   /* click block na kare */
+  }
+
+  /* Text container ko top pe laaya */
+  .feature-grid > div:nth-child(2) {
+    position: relative !important;
+    height: 360px !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 16px !important;
+  }
+
+  /* Feature items ko overlay readable banaya */
+  .feature-item {
+    width: 100% !important;
+    max-width: 520px !important;
+    text-align: center !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-radius: 24px !important;
+    padding: 22px 18px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08) !important;
+    
+  }
+
+  .feature-item h2 {
+    font-size: 34px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .feature-item p {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+}
+@media (max-width: 768px) {
+  .sticky-wrapper {
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,1),
+      rgba(255,255,255,0.92),
+      rgba(255,255,255,1)
+    );
+  }
+}
+@media (max-width: 768px) {
+
+  /* Ye wahi div hai jisme feature-items hain (inline height=300px) */
+  .feature-grid > div[style*="height: 300px"] {
+    height: 420px !important;           /* space badhaya */
+    display: flex !important;
+    align-items: center !important;     /* vertical center */
+    justify-content: center !important; /* horizontal center */
+    padding: 0 16px !important;
+    position: relative !important;
+    z-index: 5 !important;
+  }
+
+  /* Feature card center me aur stable */
+  .feature-item {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100% !important;
+    max-width: 520px !important;
+    text-align: center !important;
+  }
+
+  /* Active state me bhi center maintain */
+  .feature-item.active {
+    transform: translate(-50%, -50%) !important;
+  }
+}

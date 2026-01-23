@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Search, Plus, MoreVertical, X, Globe, Instagram, MessageCircle, ExternalLink } from "lucide-react";
 import "./Account.css";
-
+import { useEffect, useState } from "react";
+import { Search, Plus, MoreVertical, X, Globe, Instagram, MessageCircle, ExternalLink } from "lucide-react";
 import fbimg from '../../../assets/fb.png'
 import instaimg from '../../../assets/insta.png'
 import whtsimg from '../../../assets/whtsp.png'
 import { useApi } from "../../../api/useApi";
 import businessOwnerApi from "../../../api/apiService";
+import {useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AccountsPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -15,7 +16,17 @@ const AccountsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { request: fetchTenants, loading: tenantsLoading } = useApi(businessOwnerApi.getTenants);
+  
+  const [params] = useSearchParams();
 
+const result = params.get("status");
+const type = params.get("type");
+
+useEffect(()=>{
+   if (result === "already_connected") {
+    toast.info(`This ${type} account is already connected`);
+  }
+},[result , type])
 
   const handlePlatformSelect = (type) => {
     const userId = "693ef33a3dfcb0a4a11c0ad4";
@@ -60,6 +71,9 @@ const AccountsPage = () => {
         setTenants(res?.data || []);
       } catch (err) { console.error(err); }
     };
+
+  
+  useEffect(() => {
     loadData();
   }, []);
 

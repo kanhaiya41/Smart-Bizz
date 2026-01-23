@@ -101,7 +101,7 @@ const Inventory = () => {
         <div className="inventory-heading">
           <div className="inventory-heading-div">
             {/* <h1>Knowledge Center</h1> */}
-            <button onClick={() => navigate("/rule-sheet")} className="add-account-btn">
+            <button onClick={() => navigate("/owner/rule-sheet")} className="add-account-btn">
               Add Rule Sheet
             </button>
           </div>
