@@ -3,6 +3,8 @@
   background: #f8fafc;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0.2, 0.2, 0.2, 0.2);
 }
 
 /* Header Fix */
@@ -293,14 +295,21 @@
 }
 
 .chatDiv{
+  /* padding: 10px; */
   position: absolute;
+  /* background-color: #16a34a; */
   right: 10px;
   top: 10px;
   z-index: 9999;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0.2, 0.2, 0.2, 0.2);
 }
 
 .chat-viewanimate-slide-in{
 background-color: white;
-height: 100vh;
+height: 500px;
 width: 450px;
+border-radius: 10px;
 }
+
+

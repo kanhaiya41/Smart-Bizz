@@ -46,7 +46,7 @@ const Sidebar = () => {
   return (
     <div className="app-container">
       {/* 1. LEFT SIDEBAR */}
-      <aside className="sidebar">
+      <aside  className="sidebar">
         <div className="sidebar-logo">
           <h2 className="logo-text">SMARTBIZZ</h2>
         </div>
@@ -95,7 +95,7 @@ const Sidebar = () => {
 
       {/* 2. RIGHT CONTENT AREA */}
       <div className="main-wrapper">
-        <header className='main-header'>
+        <header  className='main-header'>
           {/* LEFT: Page Title Section */}
           <div className="header-left">
             <h1 className="page-title">{getPageTitle()}</h1>
@@ -126,7 +126,10 @@ const Sidebar = () => {
         </header>
 
         <main className="page-content">
+          <div className="the-container"> 
           <Outlet />
+
+          </div>
         </main>
       </div>
     </div>

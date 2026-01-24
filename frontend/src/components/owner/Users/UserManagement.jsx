@@ -239,7 +239,7 @@ const UserManagement = () => {
             <div
               onClick={(e) => e.stopPropagation()}
               className='chat-viewanimate-slide-in'>
-              <div className='chat-header'>
+              <div className='chat-header1'>
                 <div className='chat-user-info'>
                   <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>
                   <div>
@@ -252,7 +252,7 @@ const UserManagement = () => {
                 </button>
               </div>
 
-              <div className='chat-messages-area'>
+              <div className='chat-messages-area1'>
                 {loadingSingleConversation && (
                   <div className="state-msg">
                     <div className="loader-mini"></div> Loading...
@@ -272,11 +272,13 @@ const UserManagement = () => {
                   )}
               </div>
 
-              <div className='chat-input-wrapper'>
+              <div className='chat-input-wrapper1'>
                 <input type="text" placeholder="Type a message..." />
                 <button className='send-btn'><Send size={16} /></button>
               </div>
-            </div></div>
+            </div>
+            
+            </div>
 
         )}
 

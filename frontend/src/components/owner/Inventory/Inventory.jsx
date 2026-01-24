@@ -75,7 +75,7 @@ const Inventory = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [refresh]);
+   }, [refresh]);
 
   const handleDeleteInventory = async (id) => {
     const isConfirmed = window.confirm(
