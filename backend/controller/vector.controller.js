@@ -59,7 +59,7 @@ export async function uploadPDF(req, res) {
 
     let files = [];
 
-    // ✅ multer.fields() handling
+    // multer.fields() handling
     if (req.files) {
       if (req.files.file) {
         files.push(...req.files.file);

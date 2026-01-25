@@ -5,14 +5,18 @@ import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import Tenant from "../models/Tenant.js";
 import User from "../models/User.js";
-import {searchUserData } from "../services/qdrant.service.js";
+import { searchUserData } from "../services/qdrant.service.js";
 import { compactRules } from "../utills/jswToken.js";
+import { emitToOwner } from "../utills/socket.js";
 
 
 export const verifyMetaWebhook = (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
+
+  console.log(req.query);
+
 
   if (mode === "subscribe" && token === process.env.META_VERIFY_TOKEN) {
     console.log("META WEBHOOK VERIFIED");
@@ -25,6 +29,8 @@ export const verifyMetaWebhook = (req, res) => {
 export const metaWebhookEvents = async (req, res) => {
   try {
     const body = req.body;
+    console.log(body);
+
 
     // Facebook & Instagram
     if (body.object === "page" || body.object === "instagram") {
@@ -124,11 +130,11 @@ async function getSocialUserProfile({
   }
 }
 const metaEvents = async (req, res) => {
-  try {    
+  try {
     const objectType = req.body.object;
     const platform = objectType === "page" ? "facebook" : "instagram";
 
-    const messaging = req.body.entry?.[0]?.messaging?.[0];    
+    const messaging = req.body.entry?.[0]?.messaging?.[0];
 
     // Ignore echoes / non-text
     if (!messaging?.message?.text || messaging.message.is_echo) {
@@ -160,7 +166,7 @@ const metaEvents = async (req, res) => {
     });
 
     if (!conversation) {
-      const profile = await getSocialUserProfile({platform:platform,userId: senderId , accessToken :tenant?.page?.accessToken});
+      const profile = await getSocialUserProfile({ platform: platform, userId: senderId, accessToken: tenant?.page?.accessToken });
       conversation = await Conversation.create({
         businessId: business._id,
         tenantId: tenant._id,
@@ -190,25 +196,39 @@ const metaEvents = async (req, res) => {
       lastMessageAt: new Date()
     });
 
-// Get business-specific searchable data
-const bussinessOnwerData = await searchUserData({
-  userId: business._id,
-  query: userText
-});
+    if (!conversation?.autoReplyEnabled) {
+      console.log("Emit is Triegger On Auto Reply Is user");
 
-console.log(bussinessOnwerData);
+      emitToOwner(business._id,
+        "conversation:update",
+        {
+          conversationId: conversation._id,
+          lastMessage: conversation.lastMessage,
+          lastMessageAt: conversation.lastMessageAt
+        }
+      )
+      return res.sendStatus(200);
+    }
+
+    // Get business-specific searchable data
+    const bussinessOnwerData = await searchUserData({
+      userId: business._id,
+      query: userText
+    });
+
+    console.log("", bussinessOnwerData);
 
 
-//  Safe defaults
-const safeRulesheet = business?.rulesheet || compactRules || {};
-const safeData = bussinessOnwerData || {};
+    //  Safe defaults
+    const safeRulesheet = business?.rulesheet || compactRules || {};
+    const safeData = bussinessOnwerData || {};
 
-// Stringify properly (VERY IMPORTANT)
-const rulesheetStr = JSON.stringify(safeRulesheet, null, 2);
-const dataStr = JSON.stringify(safeData, null, 2);
+    // Stringify properly (VERY IMPORTANT)
+    const rulesheetStr = JSON.stringify(safeRulesheet, null, 2);
+    const dataStr = JSON.stringify(safeData, null, 2);
 
-//  Strong, controlled prompt
-const prompt = `
+    //  Strong, controlled prompt
+    const prompt = `
 You are a BUSINESS AI assistant.
 
 STRICT INSTRUCTIONS:
@@ -227,18 +247,18 @@ User Question:
 ${userText}
 `;
 
-// AI reply
-const result = await Gemini_Model.generateContent({
-  contents: [
-    {
-      role: "user",
-      parts: [{ text: prompt }]
-    }
-  ]
-});
+    // AI reply
+    const result = await Gemini_Model.generateContent({
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }]
+        }
+      ]
+    });
 
     console.log("bussinessOnwerData", bussinessOnwerData);
-    
+
 
     const replyText =
       result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
@@ -267,6 +287,15 @@ const result = await Gemini_Model.generateContent({
         lastMessageAt: new Date()
       });
     }
+
+    emitToOwner(business._id,
+      "conversation:update",
+      {
+        conversationId: conversation._id,
+        lastMessage: conversation.lastMessage,
+        lastMessageAt: conversation.lastMessageAt
+      }
+    )
 
     return res.sendStatus(200);
 
@@ -376,7 +405,7 @@ ${userText}
 `;
 
     // 🔹 AI RESPONSE
-const result = await Gemini_Model.generateContent({
+    const result = await Gemini_Model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }]
     });
 
@@ -443,6 +472,77 @@ const sendWhatsAppMessage = async ({ phoneNumberId, accessToken, to, text }) => 
   }
 };
 
+export const handleReplyMessage = async (req, res) => {
+  try {
+    const { senderId, replyMessage, conversationId } = req.body;
+
+    // Proper validation
+    console.log(req.body);
+
+    if (!senderId || !replyMessage || !conversationId) {
+      return res.status(400).json({
+        message: "senderId, replyMessage, conversationId are required"
+      });
+    }
+
+    // Find conversation
+    const conversation = await Conversation
+      .findById(conversationId)
+      .populate("tenantId");
+
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
+    }
+
+    const lastMsg = conversation.lastMessage;
+
+    // Last message must be from customer
+    if (!lastMsg || lastMsg.senderType !== "customer") {
+      return res.status(400).json({
+        message: "Last message must be from customer first"
+      });
+    }
+    console.log(conversation);
+    // Send reply to user
+    const send = await replyToUser(
+      conversation.customer?.externalId,
+      replyMessage,
+      conversation.tenantId?.page?.accessToken
+    );
+
+    console.log("reply", send);
+
+
+    if (!send) {
+      return res.status(500).json({ message: "Error sending message" });
+    }
+
+    // Save owner reply
+    await Message.create({
+      conversationId,
+      senderType: "owner",
+      text: replyMessage
+    });
+
+    // Update conversation
+    await Conversation.findByIdAndUpdate(conversationId, {
+      lastMessage: {
+        text: replyMessage,
+        senderType: "owner"
+      },
+      lastMessageAt: new Date()
+    });
+
+    return res.status(200).json({ message: "Reply sent successfully" });
+
+  } catch (error) {
+    console.error("handleReplyMessage error:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message
+    });
+  }
+};
 
 
 

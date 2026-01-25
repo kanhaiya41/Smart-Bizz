@@ -35,7 +35,7 @@ export async function exchangeCodeForToken(code) {
 /* ===================== SIGN UP ===================== */
 export const signup = async (req, res) => {
   try {
-    const { firstName,lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     // 1. Validation
     if (!firstName || !email || !password) {
@@ -62,7 +62,7 @@ export const signup = async (req, res) => {
     });
 
     // 5. JWT token
-    const token =await  generateToken({id :user._id , firstName :user.name , email:user.email})
+    const token = await generateToken({ id: user._id, firstName: user.name, email: user.email })
 
     res.status(201).json({
       message: "Signup successful",
@@ -104,7 +104,7 @@ export const login = async (req, res) => {
     }
 
     // 4. JWT token
-    const token = await generateToken({id :user._id , name :user.firstName , email:user.email})
+    const token = await generateToken({ id: user._id, name: user.firstName, email: user.email })
 
     res.status(200).json({
       message: "Login successful",
@@ -142,16 +142,16 @@ export const socialConnection = async (req, res) => {
     const { access_token: userAccessToken } = await exchangeCodeForToken(code);
 
     if (type === "whatsapp") {
-     const result =  await whatsappConnection(userId, userAccessToken);
+      const result = await whatsappConnection(userId, userAccessToken);
       if (result.alreadyConnected) {
-  return res.redirect(
-    `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
-  );
-}
+        return res.redirect(
+          `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+        );
+      }
 
-return res.redirect(
-  `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
-);
+      return res.redirect(
+        `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+      );
     }
     else if (type === "instagram") {
       const { data } = await axios.get(
@@ -160,15 +160,15 @@ return res.redirect(
       );
       const result = await instagramConnection(pages, userId, type);
 
-if (result.alreadyConnected) {
-  return res.redirect(
-    `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
-  );
-}
+      if (result.alreadyConnected) {
+        return res.redirect(
+          `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+        );
+      }
 
-return res.redirect(
-  `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
-);
+      return res.redirect(
+        `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+      );
     }
     else {
       const { data } = await axios.get(
@@ -178,14 +178,14 @@ return res.redirect(
 
       const page = data.data[0];
 
-      if(page.id){
-        const find = Tenant.findOne({"page.pageId" :page.id })
+      if (page.id) {
+        const find = Tenant.findOne({ "page.pageId": page.id })
 
-        if (find){
-          
-return res.redirect(
-  `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${type}`
-);
+        if (find) {
+
+          return res.redirect(
+            `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${type}`
+          );
 
         }
       }
@@ -310,7 +310,7 @@ const whatsappConnection = async (userId, accessToken) => {
   const phone = phoneRes.data.data[0];
   if (!phone) throw new Error("No WhatsApp phone number found");
 
-  // ✅ FIX: await added
+  // FIX: await added
   const existingTenant = await Tenant.findOne({
     "whatsapp.wabaId": waba.id
   });

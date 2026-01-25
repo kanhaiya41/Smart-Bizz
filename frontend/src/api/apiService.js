@@ -1,15 +1,16 @@
 import API from "./axiosInstance";
 
 const businessOwnerApi = {
-  login: (data) => API.post("auth/login",data),
-  signup: (data) => API.post("auth/signup",data),
+  login: (data) => API.post("auth/login", data),
+  signup: (data) => API.post("auth/signup", data),
 
 
   getTenants: () => API.get("owner/get-all-teanants"),
   getUsers: () => API.get("owner/all-users"),
   todayConversationbyUsers: () => API.get("owner/today-conversation"),
   singleConversationbyUser: (conversationId) => API.get(`owner/single-chat-history?conversationId=${conversationId}`),
-  toggleAutoReply: (conversationId,autoReplyEnabled) => API.put(`owner/user/auto-reply?conversationId=${conversationId}`,{autoReplyEnabled}),
+  toggleAutoReply: (conversationId, autoReplyEnabled) => API.put(`owner/user/auto-reply?conversationId=${conversationId}&autoReplyEnabled=${autoReplyEnabled}`),
+  replytheMessage: (message) => API.post("webhook/reply-message", message),
   getProfile: () => API.get("owner/getProfile"),
   uploadInventory: (data) => API.post("owner/upload-inventry", data),
   getInventory: () => API.get("owner/get-inventory"),

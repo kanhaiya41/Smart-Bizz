@@ -10,14 +10,20 @@ import { useNavigate } from 'react-router-dom';
 import fbimg from '../../../assets/fb.png'
 import instaimg from '../../../assets/insta.png'
 import whtsimg from '../../../assets/whtsp.png'
+import { socket, useSocket } from '../../../api/socket';
 
 const OwnerDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // Chat state
   const [conversation, setConversation] = useState([]);
   const [users, setUsers] = useState([]);
+  const [replyMessage, setReplyMessage] = useState("");
+
 
   const navigate = useNavigate()
 
+  const businessId = localStorage.getItem("businessId");
+
+  useSocket(businessId);
   // Dummy Data (Same as yours, keeping it for logic)
   const topQueriesData = [
     { id: 1, query: "Order Kab Tak Aayega?", count: 450, platform: "WhatsApp" },
@@ -28,6 +34,7 @@ const OwnerDashboard = () => {
   const { loading: userLoading, error: userError, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
   const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
   const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
+  const { loading: msgSendLoading, error: msgSendError, request: sendReplyMessage } = useApi(businessOwnerApi.replytheMessage);
 
   const loadUsers = async () => {
     try {
@@ -39,6 +46,57 @@ const OwnerDashboard = () => {
       console.error("API Error:", error);
     }
   };
+
+  const handleReplyMessage = async (selectedUser) => {
+    try {
+
+      const now = new Date();
+      const lastCustomerMsgTime = new Date(selectedUser.lastMessageAt);
+
+      const diffHours =
+        (now.getTime() - lastCustomerMsgTime.getTime()) / (1000 * 60 * 60);
+
+      if (diffHours > 24) {
+        toast.info("Cannot reply. 24-hour messaging window expired.")
+        return
+      }
+      // console.log("lastCustomerMsgTime", lastCustomerMsgTime);
+      // console.log("diffHours", diffHours);
+
+      // console.log("call", replyMessage);
+      const message = replyMessage?.trim();
+      // console.log("call", message);
+      if (!message) return;
+
+      const payload = {
+        senderId: selectedUser?.customer?.externalId,
+        replyMessage: message,
+        conversationId: selectedUser?._id
+      };
+
+      await sendReplyMessage(payload); //  real API function
+
+      loadUsers()
+
+      handleLoadSingleConversation(selectedUser._id);
+      setReplyMessage("")
+      toast.success("Message Sent Succssfully")
+
+
+    } catch (error) {
+      console.error("API Error:", error);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+
+      toast.error(message);
+
+      // navigate("/login");
+    }
+  };
+
 
   const handleLoadSingleConversation = async (conversationId) => {
     try {
@@ -54,6 +112,7 @@ const OwnerDashboard = () => {
   const handleToggleAutoReply = async (conversationId, toogleValue) => {
     try {
       const res = await toggleAutoReply(conversationId, toogleValue);
+      await loadUsers()
       toast.success(res?.message)
 
     } catch (error) {
@@ -63,12 +122,58 @@ const OwnerDashboard = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+  useEffect(() => {
+    setReplyMessage(""); //user change hote hi input clear
+  }, [selectedUser?._id]);
 
   useEffect(() => {
     if (userError || singleComversationError) {
       toast.error(singleComversationError)
     }
   }, [userError, singleComversationError])
+
+  const handleDisable = (selectedUser) => {
+    const message = replyMessage?.trim();
+
+    // console.log({
+    //   msgSendLoading,
+    //   senderType: selectedUser?.lastMessage?.senderType,
+    //   message
+    // });
+
+    const result = (
+      msgSendLoading ||
+      selectedUser?.lastMessage?.senderType !== "customer" ||
+      !message
+    );
+    // console.log(result);
+
+    return result
+  };
+
+
+  useEffect(() => {
+    const handler = async (data) => {
+      // console.log("Conversation update:", data);
+
+      // reload conversation list
+      loadUsers();
+
+      // reload only if the same conversation is open
+      if (selectedUser?._id === data.conversationId) {
+        handleLoadSingleConversation(selectedUser._id);
+      }
+    };
+
+    socket.on("conversation:update", handler);
+
+    return () => {
+      socket.off("conversation:update", handler);
+    };
+  }, [selectedUser]);
+
+
+
   return (
     <div className='dashboard-wrapper'>
       {/* <header className='main-header'>
@@ -155,6 +260,8 @@ const OwnerDashboard = () => {
 
                     }
                     }>
+                    {/* {console.log("users", user)
+                    } */}
                     <div className='user-info-box' onClick={() => setSelectedUser(user)}>
                       <div className='avatar-main'>
                         {user?.customer?.name.charAt(0)}
@@ -233,7 +340,7 @@ const OwnerDashboard = () => {
                     conversation.map((msg, idx) => (
                       <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
                         <p>{msg.text}</p>
-                        <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
+                        <span>{moment(msg.updatedAt).format("DD MMM YYYY, hh:mm A")}</span>
                       </div>
                     )) : (
                       <div className="state-msg">
@@ -244,15 +351,35 @@ const OwnerDashboard = () => {
                 </div>
 
                 <div className='chat-input-wrapper'>
-                  <input type="text" placeholder="Type a message..." />
-                  <button className='send-btn'><Send size={16} /></button>
+                  <input
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !handleDisable(selectedUser)) {
+                        handleReplyMessage(selectedUser);
+                      }
+                    }} id='replymessageId' type="text" placeholder="Type a message..." />
+                  <button
+                    type="button"
+                    onClick={() => handleReplyMessage(selectedUser)}
+                    disabled={handleDisable(selectedUser)}
+                    className="send-btn"
+                  >
+                    {msgSendLoading ? (
+                      <div className="loader-mini"></div>
+                    ) : (
+                      <Send size={16} />
+                    )}
+                  </button>
+
+
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -7,18 +7,18 @@ import { COLLECTION, qdrant } from "../services/qdrant.service.js";
 
 
 export const getProfile = async (req, res) => {
-    try {
-        const ownerId = req.user.id;
+  try {
+    const ownerId = req.user.id;
 
-        const user = await User.findById(ownerId)
-            .select("-passwordHash")
-            .lean();
+    const user = await User.findById(ownerId)
+      .select("-passwordHash")
+      .lean();
 
-        return res.json({ success: true, data:user });
+    return res.json({ success: true, data: user });
 
-    } catch (err) {
-        res.status(500).json({message: err.message });
-    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 export const updateUserProfile = async (req, res) => {
@@ -36,7 +36,7 @@ export const updateUserProfile = async (req, res) => {
 
     const updatePayload = {};
 
-     if (req.file) {
+    if (req.file) {
       updatePayload.profilePhoto = `/uploads/profile/${req.file.filename}`;
     }
 
@@ -158,7 +158,7 @@ export const getAllUsers = async (req, res) => {
         lastMessageAt: 1,
         tenantId: 1,
         createdAt: 1,
-        platform:1
+        platform: 1
       });
 
     return res.status(200).json({
@@ -181,16 +181,16 @@ export const getAllTodayConversation = async (req, res) => {
     const tenantId = req.query.tenantId; // optional (page / account)
 
 
-const start = new Date();
-start.setHours(0, 0, 0, 0);
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
 
-const end = new Date();
-end.setHours(23, 59, 59, 999);
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
 
-let filter = {
-  businessId,
-  lastMessageAt: { $gte: start, $lte: end }
-}
+    let filter = {
+      businessId,
+      lastMessageAt: { $gte: start, $lte: end }
+    }
 
     if (tenantId) {
       filter.tenantId = tenantId;
@@ -204,7 +204,8 @@ let filter = {
         lastMessageAt: 1,
         tenantId: 1,
         createdAt: 1,
-        platform:1
+        platform: 1,
+        autoReplyEnabled: 1
       });
 
     return res.status(200).json({
@@ -244,15 +245,9 @@ export const getSingleChat = async (req, res) => {
     }
 
     const messages = await Message.find({ conversationId })
-      .sort({ createdAt: -1 }) // latest first
-      .skip(skip)
-      .limit(limit);
-
-    
-
     return res.status(200).json({
       success: true,
-      data : messages
+      data: messages
     });
 
   } catch (err) {
@@ -264,16 +259,16 @@ export const getSingleChat = async (req, res) => {
   }
 };
 export const getAllTeanants = async (req, res) => {
-    try {
-        const ownerId = req.user.id;
+  try {
+    const ownerId = req.user.id;
 
-        const teants = await Tenant.find({owner:ownerId })
+    const teants = await Tenant.find({ owner: ownerId })
 
-        return res.json({ success: true, data:teants });
+    return res.json({ success: true, data: teants });
 
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const getInventory = async (req, res) => {
@@ -330,20 +325,26 @@ export const deleteInventory = async (req, res) => {
 
 
 export const toggleAutoReply = async (req, res) => {
-  try {
-    const { conversationId } = req.query;
-    const { autoReplyEnabled } = req.body;
+  console.log(req.query);
 
-    if (typeof autoReplyEnabled !== "boolean") {
+  try {
+    let { conversationId, autoReplyEnabled } = req.query;
+
+    if (!conversationId || autoReplyEnabled === undefined) {
       return res.status(400).json({
         success: false,
-        message: "autoReplyEnabled must be true or false"
+        message: "conversationId and autoReplyEnabled are required"
       });
     }
 
+    //Convert string → boolean
+    autoReplyEnabled = autoReplyEnabled === "true";
+
     const conversation = await Conversation.findByIdAndUpdate(
       conversationId,
-      { autoReplyEnabled },
+      {
+        autoReplyEnabled: autoReplyEnabled
+      },
       { new: true }
     );
 
@@ -371,5 +372,6 @@ export const toggleAutoReply = async (req, res) => {
 };
 
 
- 
+
+
 

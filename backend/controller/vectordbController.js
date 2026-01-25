@@ -35,7 +35,7 @@ async function ensureCollection() {
         },
     });
 
-    console.log("✅ Collection created");
+    console.log("Collection created");
 }
 
 /* ===============================
@@ -46,7 +46,7 @@ const embedder = await pipeline(
     "Xenova/all-MiniLM-L6-v2"
 );
 
-console.log("✅ Embedding model loaded");
+console.log("Embedding model loaded");
 
 async function getEmbedding(text) {
     const output = await embedder(text, {
@@ -136,7 +136,7 @@ async function storePDF(filePath) {
 
     await qdrant.upsert(COLLECTION, { points });
 
-    console.log(`✅ Inserted ${points.length} new chunks`);
+    console.log(`Inserted ${points.length} new chunks`);
 }
 
 async function readAllPointsPaginated(userId, queryVector) {
@@ -157,7 +157,7 @@ async function readAllPointsPaginated(userId, queryVector) {
         offset = res.next_page_offset;
     }
 
-    console.log(`✅ Total points: ${allPoints.length}`);
+    console.log(`Total points: ${allPoints.length}`);
     console.log(allPoints);
 }
 

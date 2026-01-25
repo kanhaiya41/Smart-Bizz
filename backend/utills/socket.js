@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 let io;
 
 export const initSocket = (httpServer) => {
+  console.log("Initializing Socket.IO...");
   io = new Server(httpServer, {
     cors: {
       origin: "*",
@@ -10,6 +11,7 @@ export const initSocket = (httpServer) => {
     }
   });
 
+  console.log("Socket.IO initialized");
   io.on("connection", (socket) => {
     console.log("Socket Connected:", socket.id);
 

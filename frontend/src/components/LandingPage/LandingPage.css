@@ -19,10 +19,10 @@
     color: var(--purple);
 }
 
-.logo:hover{
+.logo:hover {
     color: rgb(14, 14, 250);
     cursor: pointer;
-    
+
 }
 
 .nav-links {
@@ -38,25 +38,25 @@
 }
 
 .nav-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-  padding: 8px 10px;
-  border-radius: 10px;
-  transition: 0.2s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: 0.2s ease;
 }
 
 .nav-btn:hover {
-  background: rgba(108, 99, 255, 0.1);
-  color: var(--purple);
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--purple);
 }
 
 .nav-btn.active {
-  background: rgba(108, 99, 255, 0.15);
-  color: var(--purple);
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--purple);
 }
 
 
@@ -72,10 +72,14 @@
 }
 
 .btn-purple:hover {
-    background: var(--purple); /* Rang wahi rahega */
-    transform: translateY(-3px) scale(1.05); /* Thoda upar aur bada hoga */
-    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); /* Purple shadow glow */
-    filter: brightness(1.1); /* Thoda sa chamak badhegi */
+    background: var(--purple);
+    /* Rang wahi rahega */
+    transform: translateY(-3px) scale(1.05);
+    /* Thoda upar aur bada hoga */
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+    /* Purple shadow glow */
+    filter: brightness(1.1);
+    /* Thoda sa chamak badhegi */
 }
 
 
@@ -91,10 +95,14 @@
 }
 
 .btn-purple2:hover {
-    background: var(--purple); /* Rang wahi rahega */
-    transform: translateY(-3px) scale(1.05); /* Thoda upar aur bada hoga */
-    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); /* Purple shadow glow */
-    filter: brightness(1.1); /* Thoda sa chamak badhegi */
+    background: var(--purple);
+    /* Rang wahi rahega */
+    transform: translateY(-3px) scale(1.05);
+    /* Thoda upar aur bada hoga */
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+    /* Purple shadow glow */
+    filter: brightness(1.1);
+    /* Thoda sa chamak badhegi */
 }
 
 /* --- HERO SECTION (Desktop same) --- */
@@ -166,23 +174,79 @@
     opacity: 0;
 }
 
-.notif-1 { top: 10%; left: -20%; background: #E7FFDB; animation-delay: 0s; }
-.notif-2 { top: 40%; right: -15%; background: #FFF0F5; animation-delay: 1s; }
-.notif-3 { bottom: 15%; left: -10%; background: #F0F7FF; animation-delay: 2s; }
+.notif-1 {
+    top: 10%;
+    left: -20%;
+    background: #E7FFDB;
+    animation-delay: 0s;
+}
 
-.notif img { width: 25px; height: 25px; }
+.notif-2 {
+    top: 40%;
+    right: -15%;
+    background: #FFF0F5;
+    animation-delay: 1s;
+}
+
+.notif-3 {
+    bottom: 15%;
+    left: -10%;
+    background: #F0F7FF;
+    animation-delay: 2s;
+}
+
+.notif img {
+    width: 25px;
+    height: 25px;
+}
 
 @keyframes floatAnim {
-    0% { transform: translateY(20px); opacity: 0; }
-    20% { transform: translateY(0); opacity: 1; }
-    80% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-20px); opacity: 0; }
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    20% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    80% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
 }
 
 /* --- STICKY REEL SWITCHER (Desktop same) --- */
-.sticky-container { position: relative; min-height: 300vh; background: #fff; }
-.sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding-top: 50px; }
-.feature-grid { display: grid; grid-template-columns: 1fr 1fr; width: 85%; gap: 80px; align-items: center; }
+.sticky-container {
+    position: relative;
+    min-height: 300vh;
+    background: #fff;
+}
+
+.sticky-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 50px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 85%;
+    gap: 80px;
+    align-items: center;
+}
 
 .phone-frame {
     /* margin-top: 50px; */
@@ -197,12 +261,40 @@
     box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
 }
 
-.phone-screen { width: 100%; height: 100%; object-fit: cover; position: absolute; opacity: 0; transition: 0.6s; }
-.phone-screen.active { opacity: 1; }
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: 0.6s;
+}
 
-.feature-item { position: absolute; top: 0; opacity: 0; transform: translateY(30px); transition: 0.5s; pointer-events: none; }
-.feature-item.active { opacity: 1; transform: translateY(0); pointer-events: all; }
-.feature-item h2 { font-size: 60px; font-weight: 900; line-height: 1; margin-bottom: 20px; }
+.phone-screen.active {
+    opacity: 1;
+}
+
+.feature-item {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.feature-item.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.feature-item h2 {
+    font-size: 60px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 20px;
+}
 
 /* --- MAGNETIC SHAKING CARDS (Desktop same) --- */
 .shake-sec {
@@ -244,8 +336,16 @@
     transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.card-grey { background: #f0f0f0; z-index: 1; }
-.card-green { background: var(--green); color: white; z-index: 2; }
+.card-grey {
+    background: #f0f0f0;
+    z-index: 1;
+}
+
+.card-green {
+    background: var(--green);
+    color: white;
+    z-index: 2;
+}
 
 .cards-container.active #card1 {
     left: 0;
@@ -259,17 +359,42 @@
     opacity: 1;
 }
 
-.hit-shake { animation: hitShakeEffect 0.5s ease-out; }
+.hit-shake {
+    animation: hitShakeEffect 0.5s ease-out;
+}
 
 @keyframes hitShakeEffect {
-    0%, 100% { transform: translate(0, -50%) scale(1) rotate(var(--final-rot)); }
-    25% { transform: translate(0, -50%) scale(1.05) rotate(5deg); }
-    50% { transform: translate(0, -50%) scale(0.95) rotate(-5deg); }
+
+    0%,
+    100% {
+        transform: translate(0, -50%) scale(1) rotate(var(--final-rot));
+    }
+
+    25% {
+        transform: translate(0, -50%) scale(1.05) rotate(5deg);
+    }
+
+    50% {
+        transform: translate(0, -50%) scale(0.95) rotate(-5deg);
+    }
 }
 
 /* --- BIG SCREEN ZOOM (Desktop same) --- */
-.zoom-reveal-container { position: relative; height: 300vh; background: #fff; }
-.zoom-sticky { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.zoom-reveal-container {
+    position: relative;
+    height: 300vh;
+    background: #fff;
+}
+
+.zoom-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
 .zoom-bg {
     position: absolute;
@@ -281,7 +406,11 @@
     transition: 0.1s linear;
 }
 
-.zoom-bg img { width: 100%; height: 100%; object-fit: cover; }
+.zoom-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 .zoom-text {
     white-space: nowrap;
@@ -315,7 +444,9 @@
     visibility: hidden;
 }
 
-.after-zoom-content > div { flex: 1; }
+.after-zoom-content>div {
+    flex: 1;
+}
 
 /* --- PREMIUM FOOTER (Desktop same) --- */
 .animated-footer {
@@ -326,8 +457,17 @@
     z-index: 101;
 }
 
-.footer-container { max-width: 1200px; margin: 0 auto; padding: 0 6%; }
-.footer-row { display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 60px; }
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 6%;
+}
+
+.footer-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+    gap: 60px;
+}
 
 .footer-logo {
     font-size: 28px;
@@ -353,14 +493,24 @@
     background: var(--purple);
 }
 
-.footer-col ul { list-style: none; }
-.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
 .footer-col ul li a {
     color: #999;
     text-decoration: none;
     transition: 0.3s;
 }
-.footer-col ul li a:hover { color: var(--purple); padding-left: 8px; }
+
+.footer-col ul li a:hover {
+    color: var(--purple);
+    padding-left: 8px;
+}
 
 .footer-form {
     display: flex;
@@ -538,9 +688,9 @@
     }
 
     .btn-purple {
-        width: 20%; 
+        width: 20%;
         /* Hero button full width */
-        padding: 15px ;
+        padding: 15px;
         font-size: x-small;
     }
 
@@ -574,15 +724,16 @@
 
     /* Nav links ko thoda chota aur clean kiya */
     .nav-links {
-        display: none; /* Mobile menu usually requires JS, but for now we keep it simple */
+        display: none;
+        /* Mobile menu usually requires JS, but for now we keep it simple */
     }
 
     .hero-text h1 {
         font-size: 50px;
         letter-spacing: -2px;
     }
-    .hero-text p
-    {
+
+    .hero-text p {
         font-size: 15px;
     }
 
@@ -590,27 +741,29 @@
         margin-top: 20px;
     }
 
-    
+
     .btn-purple {
-        width: 30%; 
+        width: 30%;
         /* Hero button full width */
-        padding: 15px ;
+        padding: 15px;
         font-size: x-small;
     }
 
-    
+
 
 
     .sticky-container {
-        min-height: 300vh !important; 
+        min-height: 300vh !important;
     }
 
     .sticky-wrapper {
-        padding-top: 40px !important; /* Top space kam kar di */
+        padding-top: 40px !important;
+        /* Top space kam kar di */
         height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Items ko upar rakhega */
+        justify-content: flex-start;
+        /* Items ko upar rakhega */
     }
 
 
@@ -634,7 +787,8 @@
     } */
 
     .feature-item {
-        position: relative; /* Mobile par stack ho sakein agar JS na chale */
+        position: relative;
+        /* Mobile par stack ho sakein agar JS na chale */
         text-align: center;
     }
 
@@ -654,7 +808,8 @@
     }
 
     .cards-container {
-        height: auto; /* Fixed height hata di */
+        height: auto;
+        /* Fixed height hata di */
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -670,9 +825,10 @@
         padding: 40px 25px;
     }
 
-    .cards-container.active #card1, 
+    .cards-container.active #card1,
     .cards-container.active #card2 {
-        transform: rotate(0deg) !important; /* Mobile par rotation ajeeb lagti hai */
+        transform: rotate(0deg) !important;
+        /* Mobile par rotation ajeeb lagti hai */
     }
 
     /* Growth Insights Grid */
@@ -688,7 +844,8 @@
     }
 
     .after-zoom-content div[style*="grid"] {
-        grid-template-columns: 1fr !important; /* Stack stats vertically */
+        grid-template-columns: 1fr !important;
+        /* Stack stats vertically */
         width: 100%;
         margin-top: 30px;
     }
@@ -716,16 +873,18 @@
     }
 
 
-   
+
     /* Is container ki height fix karna zaroori hai */
-    .feature-grid + div { 
+    .feature-grid+div {
         position: relative;
-        height: 500px; /* Isse f1, f2, f3 ko ek fix jagah milegi */
+        height: 500px;
+        /* Isse f1, f2, f3 ko ek fix jagah milegi */
         width: 100%;
     }
 
     .feature-item {
-        position: absolute !important; /* Wapas absolute kiya taaki ek ke upar ek rahein */
+        position: absolute !important;
+        /* Wapas absolute kiya taaki ek ke upar ek rahein */
         top: 0;
         left: 0;
         width: 100%;
@@ -741,28 +900,33 @@
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
-    
-}
 
-.zoom-reveal-container {
-        height: 150vh; /* Bohat zyada scroll karne ki zaroorat nahi mobile pe */
+    }
+
+    .zoom-reveal-container {
+        height: 150vh;
+        /* Bohat zyada scroll karne ki zaroorat nahi mobile pe */
     }
 
     /* Analytics Section Fix */
     .after-zoom-content {
-        position: relative !important; /* Fixed se normal kar diya */
-        transform: none !important;    /* Slide effect hata diya */
-        visibility: visible !important; /* Hamesha dikhega */
+        position: relative !important;
+        /* Fixed se normal kar diya */
+        transform: none !important;
+        /* Slide effect hata diya */
+        visibility: visible !important;
+        /* Hamesha dikhega */
         height: auto !important;
         padding: 80px 6% !important;
         display: flex;
-        flex-direction: column; /* Text upar, Stats niche */
+        flex-direction: column;
+        /* Text upar, Stats niche */
         gap: 40px;
         z-index: 11;
         background: #fff;
     }
 
-    .after-zoom-content > div {
+    .after-zoom-content>div {
         width: 100%;
         text-align: center;
     }
@@ -791,8 +955,8 @@
     .hero-text h1 {
         font-size: 42px;
     }
-    .hero-text p
-    {
+
+    .hero-text p {
         font-size: 12px;
     }
 
@@ -803,9 +967,9 @@
     } */
 
     .btn-purple {
-        width: 50%; 
+        width: 50%;
         /* Hero button full width */
-        padding: 15px ;
+        padding: 15px;
         font-size: x-small;
     }
 
@@ -841,69 +1005,92 @@
 /* --- Mobile Notifications (Don't hide, reposition) --- */
 @media (max-width: 768px) {
 
-  /* ❌ Purana: display none hatao */
-  .notif {
-    display: flex !important;
-    min-width: auto !important;
-    width: auto !important;
-    max-width: 240px;
-    padding: 10px 14px;
-    border-radius: 16px;
-    gap: 10px;
-    font-size: 12px;
-    animation: floatAnimMobile 3.2s infinite ease-in-out;
-    opacity: 1;
-  }
+    /* ❌ Purana: display none hatao */
+    .notif {
+        display: flex !important;
+        min-width: auto !important;
+        width: auto !important;
+        max-width: 240px;
+        padding: 10px 14px;
+        border-radius: 16px;
+        gap: 10px;
+        font-size: 12px;
+        animation: floatAnimMobile 3.2s infinite ease-in-out;
+        opacity: 1;
+    }
 
-  .notif img {
-    width: 20px;
-    height: 20px;
-  }
+    .notif img {
+        width: 20px;
+        height: 20px;
+    }
 
-  /* Mobile me left/right bahar ja rahe the, ab safe area me */
-  .notif-1 {
-    top: auto !important;
-    left: 12px !important;
-    bottom: 350px !important;
-  }
+    /* Mobile me left/right bahar ja rahe the, ab safe area me */
+    .notif-1 {
+        top: auto !important;
+        left: 12px !important;
+        bottom: 350px !important;
+    }
 
-  .notif-2 {
-    top: auto !important;
-    right: 12px !important;
-    bottom: 250px !important;
-  }
+    .notif-2 {
+        top: auto !important;
+        right: 12px !important;
+        bottom: 250px !important;
+    }
 
-  .notif-3 {
-    top: auto !important;
-    left: 12px !important;
-    bottom: 190px !important;
-  }
+    .notif-3 {
+        top: auto !important;
+        left: 12px !important;
+        bottom: 190px !important;
+    }
 
-  /* Mobile animation smooth */
-  @keyframes floatAnimMobile {
-    0% { transform: translateY(10px); opacity: 0; }
-    20% { transform: translateY(0); opacity: 1; }
-    80% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-10px); opacity: 0; }
-  }
+    /* Mobile animation smooth */
+    @keyframes floatAnimMobile {
+        0% {
+            transform: translateY(10px);
+            opacity: 0;
+        }
 
-  /* Hero image ko space do so notifs overlap na kare */
-  .hero-img-wrapper {
-    padding-bottom: 140px;
-  }
+        20% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        80% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+    }
+
+    /* Hero image ko space do so notifs overlap na kare */
+    .hero-img-wrapper {
+        padding-bottom: 140px;
+    }
 }
 
 /* --- Small Mobiles (480px below) Notifications tighter --- */
 @media (max-width: 480px) {
-  .notif {
-    max-width: 210px;
-    padding: 8px 12px;
-    border-radius: 14px;
-  }
+    .notif {
+        max-width: 210px;
+        padding: 8px 12px;
+        border-radius: 14px;
+    }
 
-  .notif-1 { bottom: 310px !important; }
-  .notif-2 { bottom: 240px !important; }
-  .notif-3 { bottom: 180px !important; }
+    .notif-1 {
+        bottom: 310px !important;
+    }
+
+    .notif-2 {
+        bottom: 240px !important;
+    }
+
+    .notif-3 {
+        bottom: 180px !important;
+    }
 }
 
 /* ===========================================
@@ -912,46 +1099,46 @@
 
 @media (max-width: 768px) {
 
-  .shake-sec {
-    padding: 90px 5% !important;
-    min-height: auto !important;
-  }
+    .shake-sec {
+        padding: 90px 5% !important;
+        min-height: auto !important;
+    }
 
-  .cards-container {
-    height: auto !important;
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 24px !important;
-  }
+    .cards-container {
+        height: auto !important;
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 24px !important;
+    }
 
-  .card {
-    position: relative !important;
-    width: 100% !important;
-    left: 0 !important;
-    top: 0 !important;
-    transform: none !important;
-    opacity: 1 !important;
-    padding: 38px 22px !important;
-    border-radius: 35px !important;
-  }
+    .card {
+        position: relative !important;
+        width: 100% !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        opacity: 1 !important;
+        padding: 38px 22px !important;
+        border-radius: 35px !important;
+    }
 
-  /* Mobile pe animation shake okay but rotation remove */
-  .cards-container.active #card1,
-  .cards-container.active #card2 {
-    transform: none !important;
-  }
+    /* Mobile pe animation shake okay but rotation remove */
+    .cards-container.active #card1,
+    .cards-container.active #card2 {
+        transform: none !important;
+    }
 
-  /* Card headings spacing fix */
-  .card h3 {
-    margin-top: 10px;
-    margin-bottom: 12px;
-  }
+    /* Card headings spacing fix */
+    .card h3 {
+        margin-top: 10px;
+        margin-bottom: 12px;
+    }
 
-  .card p {
-    line-height: 1.6;
-    font-size: 14px;
-  }
+    .card p {
+        line-height: 1.6;
+        font-size: 14px;
+    }
 }
 
 /* --- Extra safe fix for 700px - 900px (small tablets) --- */
@@ -964,36 +1151,36 @@
 
 @media (max-width: 1024px) and (min-width: 769px) {
 
-  /* wrapper ko stable height do taaki notif neeche na jaye */
-  .hero-img-wrapper {
-    max-width: 520px;
-    width: 100%;
-  }
+    /* wrapper ko stable height do taaki notif neeche na jaye */
+    .hero-img-wrapper {
+        max-width: 520px;
+        width: 100%;
+    }
 
-  /* notif ko thoda upar set karo */
-  .notif {
-    min-width: 210px;
-    padding: 10px 16px;
-    border-radius: 16px;
-    font-size: 13px;
-    opacity: 1;
-  }
+    /* notif ko thoda upar set karo */
+    .notif {
+        min-width: 210px;
+        padding: 10px 16px;
+        border-radius: 16px;
+        font-size: 13px;
+        opacity: 1;
+    }
 
-  /* Desktop wali left/right extreme values ki jagah safe values */
-  .notif-1 {
-    top: 8% !important;
-    left: -8% !important;
-  }
+    /* Desktop wali left/right extreme values ki jagah safe values */
+    .notif-1 {
+        top: 8% !important;
+        left: -8% !important;
+    }
 
-  .notif-2 {
-    top: 38% !important;
-    right: -8% !important;
-  }
+    .notif-2 {
+        top: 38% !important;
+        right: -8% !important;
+    }
 
-  .notif-3 {
-    bottom: 12% !important;
-    left: -6% !important;
-  }
+    .notif-3 {
+        bottom: 12% !important;
+        left: -6% !important;
+    }
 }
 
 
@@ -1004,97 +1191,102 @@
 
 @media (max-width: 768px) {
 
-  /* Feature grid ko overlay style banaya */
-  .feature-grid {
-    position: relative;
-    grid-template-columns: 1fr !important;
-    width: 100% !important;
-    gap: 0 !important;
-    align-items: center;
-  }
+    /* Feature grid ko overlay style banaya */
+    .feature-grid {
+        position: relative;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        gap: 0 !important;
+        align-items: center;
+    }
 
-  /* Phone ko background banaya */
-  .phone-frame {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 260px !important;
-    height: 460px !important;
-    opacity: 0.22 !important;          /* background feel */
-    filter: blur(0.2px) !important;
-    z-index: 1 !important;
-    pointer-events: none !important;   /* click block na kare */
-  }
+    /* Phone ko background banaya */
+    .phone-frame {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 260px !important;
+        height: 460px !important;
+        opacity: 0.22 !important;
+        /* background feel */
+        filter: blur(0.2px) !important;
+        z-index: 1 !important;
+        pointer-events: none !important;
+        /* click block na kare */
+    }
 
-  /* Text container ko top pe laaya */
-  .feature-grid > div:nth-child(2) {
-    position: relative !important;
-    height: 360px !important;
-    z-index: 5 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 16px !important;
-  }
+    /* Text container ko top pe laaya */
+    .feature-grid>div:nth-child(2) {
+        position: relative !important;
+        height: 360px !important;
+        z-index: 5 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 16px !important;
+    }
 
-  /* Feature items ko overlay readable banaya */
-  .feature-item {
-    width: 100% !important;
-    max-width: 520px !important;
-    text-align: center !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    border-radius: 24px !important;
-    padding: 22px 18px !important;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08) !important;
-    
-  }
+    /* Feature items ko overlay readable banaya */
+    .feature-item {
+        width: 100% !important;
+        max-width: 520px !important;
+        text-align: center !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        border-radius: 24px !important;
+        padding: 22px 18px !important;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08) !important;
 
-  .feature-item h2 {
-    font-size: 34px !important;
-    margin-bottom: 12px !important;
-  }
+    }
 
-  .feature-item p {
-    font-size: 14px !important;
-    line-height: 1.6 !important;
-  }
+    .feature-item h2 {
+        font-size: 34px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .feature-item p {
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+    }
 }
+
 @media (max-width: 768px) {
-  .sticky-wrapper {
-    background: linear-gradient(
-      to bottom,
-      rgba(255,255,255,1),
-      rgba(255,255,255,0.92),
-      rgba(255,255,255,1)
-    );
-  }
+    .sticky-wrapper {
+        background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.92),
+                rgba(255, 255, 255, 1));
+    }
 }
+
 @media (max-width: 768px) {
 
-  /* Ye wahi div hai jisme feature-items hain (inline height=300px) */
-  .feature-grid > div[style*="height: 300px"] {
-    height: 420px !important;           /* space badhaya */
-    display: flex !important;
-    align-items: center !important;     /* vertical center */
-    justify-content: center !important; /* horizontal center */
-    padding: 0 16px !important;
-    position: relative !important;
-    z-index: 5 !important;
-  }
+    /* Ye wahi div hai jisme feature-items hain (inline height=300px) */
+    .feature-grid>div[style*="height: 300px"] {
+        height: 420px !important;
+        /* space badhaya */
+        display: flex !important;
+        align-items: center !important;
+        /* vertical center */
+        justify-content: center !important;
+        /* horizontal center */
+        padding: 0 16px !important;
+        position: relative !important;
+        z-index: 5 !important;
+    }
 
-  /* Feature card center me aur stable */
-  .feature-item {
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 100% !important;
-    max-width: 520px !important;
-    text-align: center !important;
-  }
+    /* Feature card center me aur stable */
+    .feature-item {
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 100% !important;
+        max-width: 520px !important;
+        text-align: center !important;
+    }
 
-  /* Active state me bhi center maintain */
-  .feature-item.active {
-    transform: translate(-50%, -50%) !important;
-  }
+    /* Active state me bhi center maintain */
+    .feature-item.active {
+        transform: translate(-50%, -50%) !important;
+    }
 }

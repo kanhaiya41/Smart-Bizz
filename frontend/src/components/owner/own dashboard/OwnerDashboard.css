@@ -564,12 +564,14 @@
   border-bottom-left-radius: 2px;
 }
 
-.chat-bubble.bot {
+.chat-bubble.bot,
+.chat-bubble.owner {
   align-self: flex-end;
   background: #4f46e5;
   color: white;
   border-bottom-right-radius: 2px;
 }
+
 
 .chat-bubble span {
   display: block;
@@ -614,6 +616,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  /* faded look */
+  filter: blur(0.8px);
+  /* slight blur */
+  cursor: not-allowed;
+  pointer-events: none;
+  /* extra safety */
 }
 
 /* Active Highlight for message list */

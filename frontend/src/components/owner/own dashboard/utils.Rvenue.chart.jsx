@@ -86,7 +86,7 @@ export const RevenueChart = () => {
         day: d, current: 2000 + Math.random() * 5000, previous: 1500 + Math.random() * 4000
       }));
     }
-    
+
     if (filter === 'yearly') {
       return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => ({
         month: m, current: 20000 + Math.random() * 50000, previous: 15000 + Math.random() * 40000
@@ -104,7 +104,7 @@ export const RevenueChart = () => {
 
     if (filter === 'custom' && startDate && endDate) {
       const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
-      let groupSize = 1; 
+      let groupSize = 1;
       if (diffDays > 120) groupSize = 7;
       else if (diffDays > 45) groupSize = 3;
       else groupSize = 1;
@@ -158,26 +158,26 @@ export const RevenueChart = () => {
       {filter === 'custom' && (
         <div className='date-selection-row'>
           <div className='date-range-picker'>
-            <DatePicker 
-              selected={startDate} 
-              onChange={(date) => setStartDate(date)} 
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
               selectsStart
               startDate={startDate}
               endDate={endDate}
-              placeholderText="Start Date" 
+              placeholderText="Start Date"
               className="date-input"
               dateFormat="dd/MM/yyyy"
               value={startDate}
             />
-            <DatePicker 
-              selected={endDate} 
-              onChange={(date) => setEndDate(date)} 
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
               selectsEnd
               value={endDate}
               startDate={startDate}
               endDate={endDate}
               minDate={startDate}
-              placeholderText="End Date" 
+              placeholderText="End Date"
               className="date-input"
               dateFormat="dd/MM/yyyy"
             />
@@ -186,8 +186,8 @@ export const RevenueChart = () => {
       )}
 
       <p className='chart-timeline' style={{ marginTop: '10px', marginBottom: '15px' }}>
-        {filter === 'custom' && startDate && endDate 
-          ? `Showing sales from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}` 
+        {filter === 'custom' && startDate && endDate
+          ? `Showing sales from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`
           : 'Sales Overview'}
       </p>
 
@@ -200,7 +200,7 @@ export const RevenueChart = () => {
               axisLine={false}
               tickLine={false}
               tick={{ fill: '#94a3b8', fontSize: 10 }}
-              interval={chartData.length > 25 ? 2 : 0} 
+              interval={chartData.length > 25 ? 2 : 0}
             />
             <YAxis hide={true} />
             <Tooltip

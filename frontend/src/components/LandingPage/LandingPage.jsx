@@ -11,9 +11,11 @@ import messengerIcon from "../../assets/messenger-icon.svg";
 import image1 from "../../assets/image1.png";
 import image2 from "../../assets/image2.png";
 import image3 from "../../assets/image3.png";
-import{ useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+console.log(window.document);
 
 
 const LandingPage = () => {
@@ -25,29 +27,31 @@ const LandingPage = () => {
   const ContactRef = useRef(null);
   const solutionRef = useRef(null);
   const resourcesRef = useRef(null);
-  const homeref= useRef(null);
+  const homeref = useRef(null);
+
 
   const [activeNav, setActiveNav] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const scrollToSection = (ref, name) => {
     setActiveNav(name);
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
- let lastScroll = 0;
+  let lastScroll = 0;
 
-window.addEventListener("scroll", () => {
-  const currentScroll =
-    window.pageYOffset || document.documentElement.scrollTop;
+  window.addEventListener("scroll", () => {
+    const currentScroll =
+      window.pageYOffset || document.documentElement.scrollTop;
 
-  if (currentScroll > lastScroll) {
-    console.log("Scrolling DOWN");
-  } else {
-    console.log("Scrolling UP");
-  }
+    if (currentScroll > lastScroll) {
+      console.log("Scrolling DOWN");
+    } else {
+      console.log("Scrolling UP");
+    }
 
-  lastScroll = currentScroll;
-}, { passive: true });
+    lastScroll = currentScroll;
+  }, { passive: true });
 
 
 
@@ -120,11 +124,11 @@ window.addEventListener("scroll", () => {
       }
     };
 
-    window.addEventListener("scroll",()=>{
+    window.addEventListener("scroll", () => {
       console.log("Scroll");
-      
+
     });
-    
+
 
     // 3. Shaking Cards (Observer logic)
     const observer = new IntersectionObserver(
@@ -162,6 +166,25 @@ window.addEventListener("scroll", () => {
     };
   }, []);
 
+  const handeNavigate = () => {
+    setLoading(true)
+    setTimeout(() => {
+
+      const token = localStorage.getItem("token")
+      console.log("clcike");
+
+      if (!token) {
+        navigate("/login", { replace: true })
+      }
+      else {
+        navigate("/owner/dashboard", { replace: true })
+      }
+      setLoading(false)
+    }, 1000)
+  }
+
+
+
   return (
     <>
       <nav className="navbar">
@@ -171,7 +194,7 @@ window.addEventListener("scroll", () => {
         >
           SmartBiz</div>
         <div className="nav-links">
-         
+
 
           <button
             className={`nav-btn ${activeNav === "resources" ? "active" : ""}`}
@@ -187,7 +210,7 @@ window.addEventListener("scroll", () => {
             solution's
           </button>
 
-           <button className={` nav-btn ${activeNav === "Contact" ? "active" : ""}`}
+          <button className={` nav-btn ${activeNav === "Contact" ? "active" : ""}`}
             onClick={() => scrollToSection(ContactRef, "Contact")}
           >
             Contact
@@ -195,41 +218,21 @@ window.addEventListener("scroll", () => {
 
         </div>
 
-        <button onClick={()=>{
-            const token = localStorage.getItem("token")
-            console.log("clcike");
-            
-            if(!token){
-              navigate("/login",{replace:true})
-            }
-            else{
-              navigate("/owner/dashboard",{replace:true})
-            }
-          }} className="btn-purple">Start Free Trial</button>
+        <button onClick={handeNavigate} className="btn-purple">{loading ? <div className="loader-mini"></div> : "Start Free Trial"}</button>
       </nav>
 
       {/* <section className="hero"> */}
-      <section className="hero"  ref={homeref} >
+      <section className="hero" ref={homeref} >
         <div className="hero-text">
           <h1>Scale Your Social Commerce with AI</h1>
           <p>
             Connect WhatsApp, Instagram, and Facebook into one unified dashboard.
             Use AI to automate customer replies and close sales faster.
           </p>
-          <button 
-          onClick={()=>{
-            const token = localStorage.getItem("token")
-            console.log("clcike");
-            
-            if(!token){
-              navigate("/login",{replace:true})
-            }
-            else{
-              navigate("/owner/dashboard",{replace:true})
-            }
-          }}
-          className="btn-purple2" style={{ padding: "20px 45px", fontSize: "18px" }}>
-            Start Your Free Trial
+          <button
+            onClick={handeNavigate}
+            className="btn-purple2" style={{ padding: "20px 45px", fontSize: "18px" }}>
+            {loading ? <div className="loader-mini"></div> : "Start Your Free Trial"}
           </button>
         </div>
 
