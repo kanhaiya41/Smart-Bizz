@@ -133,7 +133,7 @@ const OwnerDashboard = () => {
             <div className='card-header'>
               <div className='header-info'>
                 <h3>Recent Conversations</h3>
-                <span className='subtitle'>Manage latest customer interactions</span>
+                {/* <span className='subtitle'>Manage latest customer interactions</span> */}
               </div>
             </div>
 

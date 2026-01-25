@@ -64,6 +64,14 @@ const DatePicker = ({ value, onChange, placeholder, maxDate, minDate }) => {
 
 
 
+// import React, { useState, useMemo } from 'react';
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
+// import { 
+//   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
+//   Tooltip, ResponsiveContainer 
+// } from 'recharts';
+
 export const RevenueChart = () => {
   const [filter, setFilter] = useState('monthly');
   const [startDate, setStartDate] = useState(null);
@@ -72,7 +80,7 @@ export const RevenueChart = () => {
   const currentDate = new Date();
 
   const chartData = useMemo(() => {
-    // Standard Filters
+    // Standard Filters (Aapka original logic)
     if (filter === 'weekly') {
       return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => ({
         day: d, current: 2000 + Math.random() * 5000, previous: 1500 + Math.random() * 4000
@@ -85,7 +93,6 @@ export const RevenueChart = () => {
       }));
     }
 
-    // Default Monthly or Custom (Before date selection)
     if (filter === 'monthly' || (filter === 'custom' && (!startDate || !endDate))) {
       const days = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
       return Array.from({ length: days }, (_, i) => ({
@@ -95,15 +102,12 @@ export const RevenueChart = () => {
       }));
     }
 
-    // Custom with Aggregation Logic
     if (filter === 'custom' && startDate && endDate) {
       const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
-      
-      // Dynamic Grouping: Hum target kar rahe hain ki hamesha 15-30 candles dikhein
       let groupSize = 1; 
-      if (diffDays > 120) groupSize = 7;      // 4 mahine se zyada -> Weekly (approx 16-20 candles)
-      else if (diffDays > 45) groupSize = 3;   // 1.5 mahine se zyada -> 3-day groups (approx 15-25 candles)
-      else groupSize = 1;                     // Choti range -> Daily candles
+      if (diffDays > 120) groupSize = 7;
+      else if (diffDays > 45) groupSize = 3;
+      else groupSize = 1;
 
       const aggregated = [];
       for (let i = 0; i < Math.ceil(diffDays / groupSize); i++) {
@@ -146,38 +150,42 @@ export const RevenueChart = () => {
               </button>
             ))}
           </div>
-          {filter === 'custom' && (
-            <div className='date-range-picker'>
-              <DatePicker 
-                selected={startDate} 
-                onChange={(date) => setStartDate(date)} 
-                selectsStart
-                value={startDate}
-                startDate={startDate}
-                endDate={endDate}
-                placeholderText="Start Date" 
-                className="date-input"
-                dateFormat="dd/MM/yyyy"
-              />
-              <DatePicker 
-                selected={endDate} 
-                onChange={(date) => setEndDate(date)} 
-                selectsEnd
-                value={endDate}
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                placeholderText="End Date" 
-                className="date-input"
-                dateFormat="dd/MM/yyyy"
-              />
-            </div>
-          )}
           <button className='view-report-btn'>View Report</button>
         </div>
       </div>
 
-      <p className='chart-timeline' style={{ marginTop: '-10px', marginBottom: '15px' }}>
+      {/* Logic: Date Inputs Shifted Below Header to stop compression */}
+      {filter === 'custom' && (
+        <div className='date-selection-row'>
+          <div className='date-range-picker'>
+            <DatePicker 
+              selected={startDate} 
+              onChange={(date) => setStartDate(date)} 
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+              placeholderText="Start Date" 
+              className="date-input"
+              dateFormat="dd/MM/yyyy"
+              value={startDate}
+            />
+            <DatePicker 
+              selected={endDate} 
+              onChange={(date) => setEndDate(date)} 
+              selectsEnd
+              value={endDate}
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+              placeholderText="End Date" 
+              className="date-input"
+              dateFormat="dd/MM/yyyy"
+            />
+          </div>
+        </div>
+      )}
+
+      <p className='chart-timeline' style={{ marginTop: '10px', marginBottom: '15px' }}>
         {filter === 'custom' && startDate && endDate 
           ? `Showing sales from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}` 
           : 'Sales Overview'}
