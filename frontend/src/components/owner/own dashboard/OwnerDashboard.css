@@ -1,3 +1,284 @@
+/* --- Bottom Row Layout Fix --- */
+.responsive-grid-row.bottom-row {
+  display: flex;
+  /* Grid ki jagah Flex use karenge better control ke liye */
+  flex-wrap: wrap;
+  /* Screen choti hote hi niche shift ho jayega */
+  gap: 20px;
+  width: 100%;
+}
+/* Container Fix */
+.dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 15px;
+}
+
+/* Row 2 Fix (Conversations + Stats) */
+.details-grid {
+  display: grid;
+  /* Ye line magic hai: 350px se niche jate hi niche shift kar degi */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Stats Card Specific Fix */
+.side-dynamic-section {
+  min-width: 320px; /* Isse kam compress nahi hone dega */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Circle Chart Wrapper Fix */
+.circle-chart-wrapper {
+  width: 100%;
+  height: 280px; /* Height fix rakho taaki ResponsiveContainer chale */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+}
+
+/* Legend Text Fix (Jo cut raha tha) */
+.custom-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.legend-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* Mobile Media Query for extra safety */
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr; /* Force single column on mobile */
+  }
+  
+  .circle-chart-wrapper {
+    height: 240px; /* Mobile pe thoda chota */
+  }
+}
+/* Recent Conversations Section */
+.glass-card.list-section {
+  flex: 1 1 600px;
+  /* Base width 600px, par screen ke hisaab se badhega */
+  min-width: 0;
+  /* Flexbox overflow fix */
+}
+
+/* Platform Stats Section (The Squeezed One) */
+.glass-card.dynamic-content-section {
+  flex: 0 0 350px;
+  /* Iski width fix kar di 350px par, compress nahi hoga */
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Recharts Squeeze Fix --- */
+.chart-holder {
+  width: 100% !important;
+  height: 280px !important;
+  /* Height fix kar di */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+/* Circle Chart Legend Fix */
+.custom-legend-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 10px;
+}
+
+/* --- Media Queries for Clean Stack --- */
+@media (max-width: 1024px) {
+  .responsive-grid-row.bottom-row {
+    flex-direction: column;
+    /* Tablet par stats card automatic message list ke neeche aa jayega */
+  }
+
+  .glass-card.dynamic-content-section {
+    flex: 1 1 auto;
+    width: 100%;
+    /* Full width on small screens */
+  }
+}
+
+/* Container Basics */
+.dashboard-wrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.dashboard-main-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Common Card Style */
+.glass-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* --- THE MASTER GRID SYSTEM --- */
+.responsive-grid-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  /* Desktop default */
+  gap: 20px;
+  width: 100%;
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+/* Tablets & Small Laptops (1200px and below) */
+@media (max-width: 1200px) {
+  .responsive-grid-row {
+    grid-template-columns: 1fr;
+    /* Components stack vertically (one below another) */
+  }
+
+  .hide-small {
+    display: none;
+    /* Hide snippet to save space on tablets */
+  }
+}
+
+/* Mobile Devices (768px and below) */
+@media (max-width: 768px) {
+  .dashboard-main-content {
+    padding: 10px;
+    gap: 15px;
+  }
+
+  /* Jab chat select ho, tab baki cheezein niche rahegi, chat upar fixed hogi */
+  .show-chat {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    border-radius: 0;
+  }
+
+  .hide-on-mobile {
+    display: none;
+    /* Only hide list when active chat is open to focus */
+  }
+
+  .back-btn-mobile {
+    display: block !important;
+  }
+
+  /* Circle Chart container width fix */
+  .chart-holder {
+    height: 200px;
+    width: 100%;
+  }
+}
+
+/* --- CHART SPECIFIC FIXES --- */
+.chart-holder,
+.bar-wrapper {
+  min-height: 250px;
+  width: 100%;
+  position: relative;
+}
+
+/* Chat UI Improvements */
+.chat-interface {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px;
+  padding: 15px 0;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.bubble.customer {
+  align-self: flex-start;
+  background: #f1f5f9;
+}
+
+.bubble.owner {
+  align-self: flex-end;
+  background: #4f46e5;
+  color: white;
+}
+
+.chat-input-box {
+  display: flex;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.chat-input-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.back-btn-mobile {
+  display: none;
+  background: none;
+  border: none;
+}
+
+.close-desktop {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Stats Legend Grid */
+.custom-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
 /* ==========================================================================
    DASHBOARD LAYOUT (Main Structure)
    ========================================================================== */
@@ -65,7 +346,8 @@
 .chart-header-main {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Set to center to keep title stable */
+  align-items: center;
+  /* Set to center to keep title stable */
   margin-bottom: 15px;
 }
 
@@ -77,8 +359,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Rest of your CSS remains EXACTLY the same as your 1st code */

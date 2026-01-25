@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import { 
   ChevronDown, Search, Bell, User, Settings, LogOut, 
-  MessageSquare, Package, AlertCircle, CheckCircle 
+  MessageSquare, Package, AlertCircle, CheckCircle, Menu, X 
 } from 'lucide-react';
 
 const MENU_CONFIG = {
@@ -31,22 +31,33 @@ const Sidebar = () => {
   const location = useLocation();
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile toggle state
   
   const notifRef = useRef(null);
   const profileRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   const userRole = localStorage.getItem("role") || "owner";
   const mainMenuItems = MENU_CONFIG[userRole] || MENU_CONFIG.owner;
 
-  // Handle Click Outside to close dropdowns
+  // Handle Click Outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target)) setShowNotif(false);
       if (profileRef.current && !profileRef.current.contains(event.target)) setShowProfileMenu(false);
+      // Close sidebar on mobile when clicking outside
+      if (isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.mobile-toggle')) {
+        setIsSidebarOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isSidebarOpen]);
+
+  // Close sidebar on route change (Mobile)
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location]);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
@@ -63,11 +74,17 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isSidebarOpen ? "sidebar-open" : ""}`}>
+      {/* MOBILE OVERLAY */}
+      {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
       {/* LEFT SIDEBAR */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarOpen ? "show" : ""}`} ref={sidebarRef}>
         <div className="sidebar-logo">
           <h2 className="logo-text">SMARTBIZZ</h2>
+          <button className="mobile-close" onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
 
         <nav className="sidebar-content">
@@ -116,16 +133,19 @@ const Sidebar = () => {
       <div className="main-wrapper">
         <header className='main-header'>
           <div className="header-left">
+            <button className="mobile-toggle" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={24} color="#1e293b" />
+            </button>
             <h1 className="page-title">{getPageTitle()}</h1>
           </div>
 
           <div className='header-right'>
-            <div className='sh-search-bar'>
+            <div className='sh-search-bar desktop-search'>
               <Search size={18} color="#94a3b8" className="sh-search-icon"/>
               <input type="text" placeholder='Search...' />
             </div>
 
-            {/* NOTIFICATION DROP DOWN */}
+            {/* NOTIFICATION */}
             <div className='notif-wrapper' ref={notifRef}>
               <div className='icon-btn-circle' onClick={() => setShowNotif(!showNotif)}>
                 <Bell size={20} color="#64748b" />
@@ -136,44 +156,29 @@ const Sidebar = () => {
                 <div className="dropdown-panel notification-box">
                   <div className="dropdown-header">
                     <span>Notifications</span>
-                    <button className="mark-read">Mark all as read</button>
+                    <button className="mark-read">Mark all</button>
                   </div>
                   <div className="dropdown-body">
                     <div className="notif-item unread">
                       <div className="notif-icon bg-blue"><Package size={14}/></div>
                       <div className="notif-info">
-                        <p><strong>New Order</strong> received from Vishal Saini</p>
+                        <p><strong>New Order</strong></p>
                         <span className="notif-time">2 mins ago</span>
                       </div>
                     </div>
-                    <div className="notif-item">
-                      <div className="notif-icon bg-orange"><AlertCircle size={14}/></div>
-                      <div className="notif-info">
-                        <p>Low stock alert: <strong>Iphone 15 Pro</strong></p>
-                        <span className="notif-time">1 hour ago</span>
-                      </div>
-                    </div>
-                    <div className="notif-item">
-                      <div className="notif-icon bg-green"><CheckCircle size={14}/></div>
-                      <div className="notif-info">
-                        <p>Backup completed successfully</p>
-                        <span className="notif-time">5 hours ago</span>
-                      </div>
-                    </div>
                   </div>
-                  <div className="dropdown-footer">View All Notifications</div>
                 </div>
               )}
             </div>
 
-            {/* PROFILE DROP DOWN */}
+            {/* PROFILE */}
             <div className='profile-menu-wrapper' ref={profileRef}>
               <div className='user-profile-trigger' onClick={() => setShowProfileMenu(!showProfileMenu)}>
                 <div className='avatar-sm'>VS</div>
-                <div className='user-text'>
+                <div className='user-text hide-mobile'>
                   <span className='u-name'>Vishal Saini</span>
-                  <ChevronDown size={14} color="#64748b" className={showProfileMenu ? 'rotate-180' : ''} />
                 </div>
+                <ChevronDown size={14} color="#64748b" className={`${showProfileMenu ? 'rotate-180' : ''} hide-mobile`} />
               </div>
 
               {showProfileMenu && (
@@ -187,18 +192,9 @@ const Sidebar = () => {
                   </div>
                   <div className="dropdown-divider"></div>
                   <div className="dropdown-body">
-                    <div className="menu-item" onClick={() => {navigate("/owner/profile"); setShowProfileMenu(false);}}>
+                    <div className="menu-item" onClick={() => navigate("/owner/profile")}>
                       <User size={16} /> <span>My Profile</span>
                     </div>
-                    <div className="menu-item">
-                      <Settings size={16} /> <span>Account Settings</span>
-                    </div>
-                    <div className="menu-item">
-                      <MessageSquare size={16} /> <span>Support Center</span>
-                    </div>
-                  </div>
-                  <div className="dropdown-divider"></div>
-                  <div className="dropdown-body">
                     <div className="menu-item logout-item" onClick={handleLogout}>
                       <LogOut size={16} /> <span>Sign Out</span>
                     </div>

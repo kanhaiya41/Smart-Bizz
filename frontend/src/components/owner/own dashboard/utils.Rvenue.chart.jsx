@@ -62,16 +62,6 @@ const DatePicker = ({ value, onChange, placeholder, maxDate, minDate }) => {
   );
 };
 
-
-
-// import React, { useState, useMemo } from 'react';
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
-// import { 
-//   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-//   Tooltip, ResponsiveContainer 
-// } from 'recharts';
-
 export const RevenueChart = () => {
   const [filter, setFilter] = useState('monthly');
   const [startDate, setStartDate] = useState(null);
@@ -228,15 +218,16 @@ const COLORS = ["#4f46e5", "#818cf8", "#c7d2fe"];
 export const CircleChart = () => {
   return (
     <div className='circle-chart-wrapper'>
-      <ResponsiveContainer width="100%" height="100%">
+      {/* minWidth={0} aur aspect ratio dena zaroori hai error hatane ke liye */}
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <PieChart>
           <Pie
             data={circleData}
             cx="50%"
             cy="50%"
-            innerRadius={70}
-            outerRadius={95}
-            paddingAngle={8}
+            innerRadius="65%" /* Fixed % use karo pixels ki jagah */
+            outerRadius="90%"
+            paddingAngle={5}
             dataKey="value"
             stroke="none"
           >
@@ -247,7 +238,6 @@ export const CircleChart = () => {
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
-      {/* Optional: Center Text for Pie Chart */}
       <div className='pie-center-label'>
         <span className='total-val'>100%</span>
         <span className='total-lbl'>Active</span>

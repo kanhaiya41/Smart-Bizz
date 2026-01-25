@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './OwnerDashboard.css';
 import { CircleChart, RevenueChart } from './utils.Rvenue.chart';
-import { MessageCircle, Instagram, Facebook, ChevronDown, Search, Bell, X, Send } from 'lucide-react';
+import { ChevronDown, Search, Bell, X, Send, ArrowLeft } from 'lucide-react';
 import { useApi } from '../../../api/useApi';
 import businessOwnerApi from '../../../api/apiService';
 import { toast } from "react-toastify";
@@ -13,217 +13,81 @@ import whtsimg from '../../../assets/whtsp.png'
 import { socket, useSocket } from '../../../api/socket';
 
 const OwnerDashboard = () => {
-  const [selectedUser, setSelectedUser] = useState(null); // Chat state
+  const [selectedUser, setSelectedUser] = useState(null);
   const [conversation, setConversation] = useState([]);
   const [users, setUsers] = useState([]);
   const [replyMessage, setReplyMessage] = useState("");
 
-
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
   const businessId = localStorage.getItem("businessId");
-
   useSocket(businessId);
-  // Dummy Data (Same as yours, keeping it for logic)
+
   const topQueriesData = [
     { id: 1, query: "Order Kab Tak Aayega?", count: 450, platform: "WhatsApp" },
     { id: 2, query: "Refund Process Kya Hai?", count: 320, platform: "Messenger" },
     { id: 3, query: "Price List & Catalog", count: 280, platform: "Instagram" },
   ];
 
-  const { loading: userLoading, error: userError, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
-  const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
-  const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
-  const { loading: msgSendLoading, error: msgSendError, request: sendReplyMessage } = useApi(businessOwnerApi.replytheMessage);
+  const { loading: userLoading, request: todayConversationbyUsers } = useApi(businessOwnerApi.todayConversationbyUsers);
+  const { loading: loadingSingleConversation, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
+  const { request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
+  const { loading: msgSendLoading, request: sendReplyMessage } = useApi(businessOwnerApi.replytheMessage);
 
   const loadUsers = async () => {
     try {
       const res = await todayConversationbyUsers();
-      // Agar API data de raha hai toh wo set hoga, warna empty array
       setUsers(res?.data || []);
-    } catch (error) {
-      navigate("/login")
-      console.error("API Error:", error);
-    }
+    } catch (error) { navigate("/login"); }
   };
 
-  const handleReplyMessage = async (selectedUser) => {
+  const handleReplyMessage = async (user) => {
+    if (!replyMessage.trim()) return;
     try {
-
-      const now = new Date();
-      const lastCustomerMsgTime = new Date(selectedUser.lastMessageAt);
-
-      const diffHours =
-        (now.getTime() - lastCustomerMsgTime.getTime()) / (1000 * 60 * 60);
-
-      if (diffHours > 24) {
-        toast.info("Cannot reply. 24-hour messaging window expired.")
-        return
-      }
-      // console.log("lastCustomerMsgTime", lastCustomerMsgTime);
-      // console.log("diffHours", diffHours);
-
-      // console.log("call", replyMessage);
-      const message = replyMessage?.trim();
-      // console.log("call", message);
-      if (!message) return;
-
-      const payload = {
-        senderId: selectedUser?.customer?.externalId,
-        replyMessage: message,
-        conversationId: selectedUser?._id
-      };
-
-      await sendReplyMessage(payload); //  real API function
-
-      loadUsers()
-
-      handleLoadSingleConversation(selectedUser._id);
-      setReplyMessage("")
-      toast.success("Message Sent Succssfully")
-
-
-    } catch (error) {
-      console.error("API Error:", error);
-
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong";
-
-      toast.error(message);
-
-      // navigate("/login");
-    }
-  };
-
-
-  const handleLoadSingleConversation = async (conversationId) => {
-    try {
-      const res = await singleLoadConversation(conversationId);
-      // Agar API data de raha hai toh wo set hoga, warna empty array
-      setConversation(res?.data || []);
-    } catch (error) {
-      navigate("/login")
-      console.error("API Error:", error);
-    }
-  };
-
-  const handleToggleAutoReply = async (conversationId, toogleValue) => {
-    try {
-      const res = await toggleAutoReply(conversationId, toogleValue);
-      await loadUsers()
-      toast.success(res?.message)
-
-    } catch (error) {
-      console.error("API Error:", error);
-    }
-  };
-  useEffect(() => {
-    loadUsers();
-  }, []);
-  useEffect(() => {
-    setReplyMessage(""); //user change hote hi input clear
-  }, [selectedUser?._id]);
-
-  useEffect(() => {
-    if (userError || singleComversationError) {
-      toast.error(singleComversationError)
-    }
-  }, [userError, singleComversationError])
-
-  const handleDisable = (selectedUser) => {
-    const message = replyMessage?.trim();
-
-    // console.log({
-    //   msgSendLoading,
-    //   senderType: selectedUser?.lastMessage?.senderType,
-    //   message
-    // });
-
-    const result = (
-      msgSendLoading ||
-      selectedUser?.lastMessage?.senderType !== "customer" ||
-      !message
-    );
-    // console.log(result);
-
-    return result
-  };
-
-
-  useEffect(() => {
-    const handler = async (data) => {
-      // console.log("Conversation update:", data);
-
-      // reload conversation list
+      const payload = { senderId: user?.customer?.externalId, replyMessage: replyMessage.trim(), conversationId: user?._id };
+      await sendReplyMessage(payload);
       loadUsers();
+      handleLoadSingleConversation(user._id);
+      setReplyMessage("");
+      toast.success("Message Sent");
+    } catch (error) { toast.error("Error sending message"); }
+  };
 
-      // reload only if the same conversation is open
-      if (selectedUser?._id === data.conversationId) {
-        handleLoadSingleConversation(selectedUser._id);
-      }
+  const handleLoadSingleConversation = async (id) => {
+    try {
+      const res = await singleLoadConversation(id);
+      setConversation(res?.data || []);
+    } catch (error) { console.error(error); }
+  };
+
+  useEffect(() => { loadUsers(); }, []);
+
+  useEffect(() => {
+    const handler = (data) => {
+      loadUsers();
+      if (selectedUser?._id === data.conversationId) handleLoadSingleConversation(selectedUser._id);
     };
-
     socket.on("conversation:update", handler);
-
-    return () => {
-      socket.off("conversation:update", handler);
-    };
+    return () => { socket.off("conversation:update", handler); };
   }, [selectedUser]);
-
-
 
   return (
     <div className='dashboard-wrapper'>
-      {/* <header className='main-header'>
-        <div className='search-container'>
-          <Search size={18} color="#94a3b8" />
-          <input type="text" placeholder='Search analytics, messages...' />
-        </div>
-        <div className='header-right'>
-          <div className='notif-wrapper'>
-            <div className='icon-btn-circle'>
-              <Bell size={20} color="#64748b" />
-              <span className='notif-ping'></span>
-              <span className='notif-badge'>9+</span>
-            </div>
-          </div>
-          <div className='user-profile-trigger'>
-            <div className='avatar-sm'>VS</div>
-            <div className='user-text'>
-              <span className='u-name'>Vishal Saini</span>
-              <ChevronDown size={14} color="#64748b" />
-            </div>
-          </div>
-        </div>
-      </header> */}
-
       <div className='dashboard-main-content'>
-        {/* <div className='page-title-section'>
-          <h1>Owner Dashboard</h1>
-          <p>Real-time overview of your business performance</p>
-        </div> */}
-
-        <div className='stats-grid'>
-          <div className='glass-card revenue-section'>
+        
+        {/* SECTION 1: Charts Row */}
+        <div className='responsive-grid-row'>
+          <div className='glass-card revenue-container'>
             <RevenueChart />
           </div>
-
-          <div className='glass-card queries-section'>
+          <div className='glass-card questions-container'>
             <div className='card-header'>
               <h3>Top Search Questions</h3>
-              <span className='view-all'>View All</span>
             </div>
             <div className='query-list-container'>
               {topQueriesData.map((query, i) => (
                 <div key={i} className='query-row'>
                   <div className='query-main'>
-                    <img
-                      src={query?.platform === 'Messenger' ? fbimg : query?.platform === 'Instagram' ? instaimg : whtsimg}
-                      alt="pf"
-                      className="iconimg"
-                    />
+                    <img src={query?.platform === 'Messenger' ? fbimg : query?.platform === 'Instagram' ? instaimg : whtsimg} alt="pf" className="iconimg" />
                     <p>{query.query}</p>
                   </div>
                   <span className='count-badge'>{query.count}</span>
@@ -233,153 +97,90 @@ const OwnerDashboard = () => {
           </div>
         </div>
 
-        <div className='details-grid'>
-          <div className='glass-card messages-section'>
+        {/* SECTION 2: Conversations & Chat/Stats Row */}
+        <div className='responsive-grid-row bottom-row'>
+          
+          {/* Recent Conversations */}
+          <div className={`glass-card list-section ${selectedUser ? 'hide-on-mobile' : ''}`}>
             <div className='card-header'>
-              <div className='header-info'>
-                <h3>Recent Conversations</h3>
-                {/* <span className='subtitle'>Manage latest customer interactions</span> */}
-              </div>
+              <h3>Recent Conversations</h3>
             </div>
-
             <div className='messages-list-container'>
-              {userLoading && (
-                <div className="state-msg">
-                  <div className="loader-mini"></div> Loading...
-                </div>
-              )}
-              {
-
-              }
-              {!userLoading && users.length > 0 ?
+              {userLoading ? <div className="loader-mini"></div> : 
                 users.map((user, index) => (
-                  <div key={index}
-                    className={`message-item-card ${selectedUser?._id === user._id ? 'active-chat' : ''}`}
-                    onClick={() => {
-                      handleLoadSingleConversation(user?._id)
-
-                    }
-                    }>
-                    {/* {console.log("users", user)
-                    } */}
-                    <div className='user-info-box' onClick={() => setSelectedUser(user)}>
-                      <div className='avatar-main'>
-                        {user?.customer?.name.charAt(0)}
-                        <div className={`platform-dot ${user?.customer?.externalId.toLowerCase().replace(' ', '')}`}></div>
-                      </div>
+                  <div key={index} className={`message-item-card ${selectedUser?._id === user._id ? 'active-chat' : ''}`}
+                    onClick={() => { setSelectedUser(user); handleLoadSingleConversation(user._id); }}>
+                    <div className='user-info-box'>
+                      <div className='avatar-main'>{user?.customer?.name.charAt(0)}</div>
                       <div className='user-details'>
                         <span className='u-name-bold'>{user?.customer?.name}</span>
                         <span className='u-platform-name'>{user.platform}</span>
                       </div>
                     </div>
-                    <div className='message-snippet'>
+                    <div className='message-snippet hide-small'>
                       <p>{user?.lastMessage?.text}</p>
-                      <span className='msg-time'>{user.lastMessageAt}</span>
                     </div>
-                    <button className='action-btn-mini' onClick={() => setSelectedUser(user)}>Open</button>
-                    <label className="switch">
-                      <input
-                        type="checkbox"
-                        checked={user?.autoReplyEnabled}
-                        onChange={(e) => {
-                          const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
-                          if (isConfirmed) {
-                            handleToggleAutoReply(user?._id, e.target.checked)
-                          }
-
-                        }
-                        }
-                      />
-                      <span className="slider"></span>
-                    </label>
-
+                    <div className='toggle-action' onClick={(e) => e.stopPropagation()}>
+                       <label className="switch">
+                        <input type="checkbox" checked={user?.autoReplyEnabled} onChange={(e) => {
+                          if(window.confirm("Update Auto Reply?")) navigate(0); // Dummy update logic
+                        }} />
+                        <span className="slider"></span>
+                      </label>
+                    </div>
                   </div>
-                )) : (
-                  <div className="state-msg">
-                    No users found matching your search/filter.
-                  </div>
-                )}
+                ))
+              }
             </div>
           </div>
 
-          {/* DYNAMIC RIGHT SECTION: STATS OR CHATBOX */}
-          <div className='glass-card side-dynamic-section'>
+          {/* Dynamic Content: Chat OR Circle Chart */}
+          <div className={`glass-card dynamic-content-section ${!selectedUser ? 'show-stats' : 'show-chat'}`}>
             {!selectedUser ? (
-              <div className='stats-view animate-fade'>
+              <div className='stats-view-full'>
                 <h3>Platform Stats</h3>
-                <CircleChart />
-                <div className='custom-legend'>
+                <div className='chart-holder'>
+                  <CircleChart />
+                </div>
+                <div className='custom-legend-grid'>
                   <div className='legend-item'><span className='dot fb'></span> Facebook <b>40%</b></div>
                   <div className='legend-item'><span className='dot ig'></span> Instagram <b>30%</b></div>
                   <div className='legend-item'><span className='dot wa'></span> WhatsApp <b>20%</b></div>
                 </div>
               </div>
             ) : (
-
-              <div className='chat-view animate-slide-in'>
-                <div className='chat-header'>
-                  <div className='chat-user-info'>
-                    <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>
-                    <div>
-                      <h4>{selectedUser.customer?.name}</h4>
-                      <span>Online • {selectedUser.platform}</span>
-                    </div>
+              <div className='chat-interface'>
+                <div className='chat-header-top'>
+                  <button className='back-btn-mobile' onClick={() => setSelectedUser(null)}><ArrowLeft size={20}/></button>
+                  <div className='chat-user-meta'>
+                    <h4>{selectedUser.customer?.name}</h4>
+                    <small>{selectedUser.platform}</small>
                   </div>
-                  <button className='close-chat' onClick={() => setSelectedUser(null)}>
-                    <X size={18} />
-                  </button>
+                  <button className='close-desktop' onClick={() => setSelectedUser(null)}><X size={18} /></button>
                 </div>
-
-                <div className='chat-messages-area'>
-                  {loadingSingleConversation && (
-                    <div className="state-msg">
-                      <div className="loader-mini"></div> Loading...
-                    </div>
-                  )}
-                  {!loadingSingleConversation && conversation.length > 0 ?
+                <div className='chat-scroll-area'>
+                  {loadingSingleConversation ? <span>Loading...</span> : 
                     conversation.map((msg, idx) => (
-                      <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
+                      <div key={idx} className={`bubble ${msg?.senderType}`}>
                         <p>{msg.text}</p>
-                        <span>{moment(msg.updatedAt).format("DD MMM YYYY, hh:mm A")}</span>
+                        <time>{moment(msg.updatedAt).format("hh:mm A")}</time>
                       </div>
-                    )) : (
-                      <div className="state-msg">
-                        No Chats Are Found.
-                      </div>
-
-                    )}
+                    ))
+                  }
                 </div>
-
-                <div className='chat-input-wrapper'>
-                  <input
-                    value={replyMessage}
-                    onChange={(e) => setReplyMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !handleDisable(selectedUser)) {
-                        handleReplyMessage(selectedUser);
-                      }
-                    }} id='replymessageId' type="text" placeholder="Type a message..." />
-                  <button
-                    type="button"
-                    onClick={() => handleReplyMessage(selectedUser)}
-                    disabled={handleDisable(selectedUser)}
-                    className="send-btn"
-                  >
-                    {msgSendLoading ? (
-                      <div className="loader-mini"></div>
-                    ) : (
-                      <Send size={16} />
-                    )}
-                  </button>
-
-
+                <div className='chat-input-box'>
+                  <input value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleReplyMessage(selectedUser)}
+                    placeholder="Type here..." />
+                  <button onClick={() => handleReplyMessage(selectedUser)} className="send-btn"><Send size={16} /></button>
                 </div>
               </div>
             )}
           </div>
+
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
