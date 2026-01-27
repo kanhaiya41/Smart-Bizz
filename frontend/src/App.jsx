@@ -23,7 +23,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage></LandingPage>}></Route>
-        <Route path="login" element={<AuthPage></AuthPage>}></Route>
+        <Route path="login" element={<Loginpage></Loginpage>}></Route>
 
         {/* Test Login Page */}
         <Route path="/login2" element={<Loginpage />} />

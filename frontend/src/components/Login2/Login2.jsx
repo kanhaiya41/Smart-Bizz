@@ -21,6 +21,7 @@ const Login2 = () => {
 
     // 🔥 Login/Signup toggle
     const [activeForm, setActiveForm] = useState("login"); // "login" | "signup"
+    const [isLogin, setIsLogin] = useState(true);
 
     // 🔥 Form Data
     const [formData, setFormData] = useState({
@@ -113,8 +114,10 @@ const Login2 = () => {
                 // Redirect
                 if (userRole === "superAdmin") {
                     navigate("/dashboard");
+                    setIsLogin(true);
                 } else {
-                    navigate("/connect");
+                    navigate("/owner");
+                    setIsLogin(true);
                 }
             } else {
                 alert(data.message || "Invalid email or password.");
@@ -130,125 +133,125 @@ const Login2 = () => {
             <div className="bg-dots"></div>
             {/* <div style={{padding:"10px 10px " ,border:"0.5px", backgroundColor:"white",borderRadius:"25px"}}> */}
 
-                <div className="login3-wrapper">
-                    {/* LEFT */}
-                    <div className="login3-left">
-                        <div className="login3-illust-box">
-                            <img
-                                key={fadeKey}
-                                src={illustrations[activeIndex]}
-                                alt="Login Illustration"
-                                className="login3-illust login3-illust-animate"
-                            />
-                        </div>
-
-                        <div className="login3-left-text">
-                            <h2>AI Automation</h2>
-                            <p>
-                                Smart replies that convert leads into customers — instantly.
-                                <br />
-                                Fast • Accurate • 24/7 Support
-                            </p>
-
-                            <div className="login3-dots">
-                                {illustrations.map((_, i) => (
-                                    <span
-                                        key={i}
-                                        className={`login3-dot ${i === activeIndex ? "active" : ""}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
+            <div className="login3-wrapper">
+                {/* LEFT */}
+                <div className="login3-left">
+                    <div className="login3-illust-box">
+                        <img
+                            key={fadeKey}
+                            src={illustrations[activeIndex]}
+                            alt="Login Illustration"
+                            className="login3-illust login3-illust-animate"
+                        />
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="login3-right">
-                        <div className="login3-card">
-                            <h1 className="login3-title">
-                                {activeForm === "login" ? "Welcome Back" : "Create Account"}
-                            </h1>
+                    <div className="login3-left-text">
+                        <h2>AI Automation</h2>
+                        <p>
+                            Smart replies that convert leads into customers — instantly.
+                            <br />
+                            Fast • Accurate • 24/7 Support
+                        </p>
 
-                            <p className="login3-subtitle">
-                                {activeForm === "login"
-                                    ? "Enter your credentials to access the hub."
-                                    : "Sign up to get started with SmartBizz."}
-                            </p>
-
-                            {/* 🔥 Form */}
-                            <form
-                                className="login3-form"
-                                onSubmit={activeForm === "login" ? handleLogin : handleSignup}
-                            >
-                                {/* Name only for Signup */}
-                                {activeForm === "signup" && (
-                                    <div className="login3-input-group">
-                                        <span className="login3-icon">👤</span>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            placeholder="Full Name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                )}
-
-                                <div className="login3-input-group">
-                                    <span className="login3-icon">✉</span>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        placeholder="Email Address"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="login3-input-group">
-                                    <span className="login3-icon">🔒</span>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        placeholder="Password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-
-                                <button className="login3-btn" type="submit">
-                                    {activeForm === "login" ? "Login Now →" : "Create Account →"}
-                                </button>
-
-                                {/* Bottom Switch */}
-                                {activeForm === "login" ? (
-                                    <>
-                                        <a className="login3-forgot" href="#">
-                                            Forgot Password
-                                        </a>
-
-                                        <p className="login3-switch">
-                                            Don’t have an account?{" "}
-                                            <span onClick={() => setActiveForm("signup")}>
-                                                Create one
-                                            </span>
-                                        </p>
-                                    </>
-                                ) : (
-                                    <p className="login3-switch">
-                                        Already have an account?{" "}
-                                        <span onClick={() => setActiveForm("login")}>Log in</span>
-                                    </p>
-                                )}
-                            </form>
+                        <div className="login3-dots">
+                            {illustrations.map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={`login3-dot ${i === activeIndex ? "active" : ""}`}
+                                />
+                            ))}
                         </div>
-
-                        <div className="login3-circle one"></div>
-                        <div className="login3-circle two"></div>
                     </div>
                 </div>
+
+                {/* RIGHT */}
+                <div className="login3-right">
+                    <div className="login3-card">
+                        <h1 className="login3-title">
+                            {activeForm === "login" ? "Welcome Back" : "Create Account"}
+                        </h1>
+
+                        <p className="login3-subtitle">
+                            {activeForm === "login"
+                                ? "Enter your credentials to access the hub."
+                                : "Sign up to get started with SmartBizz."}
+                        </p>
+
+                        {/* 🔥 Form */}
+                        <form
+                            className="login3-form"
+                            onSubmit={activeForm === "login" ? handleLogin : handleSignup}
+                        >
+                            {/* Name only for Signup */}
+                            {activeForm === "signup" && (
+                                <div className="login3-input-group">
+                                    <span className="login3-icon">👤</span>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Full Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            <div className="login3-input-group">
+                                <span className="login3-icon">✉</span>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email Address"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="login3-input-group">
+                                <span className="login3-icon">🔒</span>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <button className="login3-btn" type="submit">
+                                {activeForm === "login" ? "Login Now →" : "Create Account →"}
+                            </button>
+
+                            {/* Bottom Switch */}
+                            {activeForm === "login" ? (
+                                <>
+                                    <a className="login3-forgot" href="#">
+                                        Forgot Password
+                                    </a>
+
+                                    <p className="login3-switch">
+                                        Don’t have an account?{" "}
+                                        <span onClick={() => setActiveForm("signup")}>
+                                            Create one
+                                        </span>
+                                    </p>
+                                </>
+                            ) : (
+                                <p className="login3-switch">
+                                    Already have an account?{" "}
+                                    <span onClick={() => setActiveForm("login")}>Log in</span>
+                                </p>
+                            )}
+                        </form>
+                    </div>
+
+                    <div className="login3-circle one"></div>
+                    <div className="login3-circle two"></div>
+                </div>
+            </div>
             {/* </div> */}
         </div>
     );
