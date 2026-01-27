@@ -16,6 +16,8 @@ const businessOwnerApi = {
   getInventory: () => API.get("owner/get-inventory"),
   deleteInventory: (id) => API.delete(`owner/del-inventory?id=${id}`),
   updateProfile: (data) => API.put(`owner/profile`, data),
+  addRulesheet: (data) => API.post(`owner/add-rulesheet`, data),
+
 };
 
 export default businessOwnerApi;

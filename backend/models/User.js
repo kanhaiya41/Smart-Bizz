@@ -22,15 +22,15 @@ const UserSchema = new mongoose.Schema(
     },
 
     profilePhoto: {
-  type: String, // URL or file path
-},
+      type: String, // URL or file path
+    },
 
     firstName: {
       type: String,
       required: true,
       trim: true,
     },
-        lastName: {
+    lastName: {
       type: String,
       trim: true,
     },
@@ -70,8 +70,9 @@ const UserSchema = new mongoose.Schema(
     ],
 
     rulesheet: {
-      type: Object,
-      default: null,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rulesheet",
+
     },
 
     role: {

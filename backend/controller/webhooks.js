@@ -216,9 +216,6 @@ const metaEvents = async (req, res) => {
       query: userText
     });
 
-    console.log("", bussinessOnwerData);
-
-
     //  Safe defaults
     const safeRulesheet = business?.rulesheet || compactRules || {};
     const safeData = bussinessOnwerData || {};
@@ -248,22 +245,33 @@ ${userText}
 `;
 
     // AI reply
-    const result = await Gemini_Model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }]
-        }
-      ]
-    });
+    let replyText = "Thanks for your message";
 
-    console.log("bussinessOnwerData", bussinessOnwerData);
+    try {
+      const result = await Gemini_Model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: prompt }]
+          }
+        ]
+      });
 
 
-    const replyText =
-      result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Thanks for your message";
+      const aiText =
+        result?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
 
+      if (aiText && typeof aiText === "string") {
+        replyText = aiText.trim();
+      }
+
+    } catch (error) {
+      console.error("Gemini AI Error:", error);
+      replyText = "Thanks for your message. We will connect with you shortly.";
+    }
+
+
+    console.log("businessOwnerData:", dataStr);
     // 🔹 SEND TO META
     const sent = await replyToUser(
       senderId,
@@ -404,14 +412,32 @@ User Question:
 ${userText}
 `;
 
-    // 🔹 AI RESPONSE
-    const result = await Gemini_Model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }]
-    });
+    // AI reply
+    let replyText = "Thanks for your message";
 
-    const replyText =
-      result?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Thanks for your message";
+    try {
+      const result = await Gemini_Model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: prompt }]
+          }
+        ]
+      });
+
+      console.log("businessOwnerData:", dataStr);
+
+      const aiText =
+        result?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (aiText && typeof aiText === "string") {
+        replyText = aiText.trim();
+      }
+
+    } catch (error) {
+      console.error("Gemini AI Error:", error);
+      replyText = "Thanks for your message. We will connect with you shortly.";
+    }
 
     // 🔹 SEND MESSAGE TO WHATSAPP
     const sent = await sendWhatsAppMessage({

@@ -4,7 +4,7 @@ import Tenant from "../models/Tenant.js";
 import Conversation from "../models/Conversation.js";
 import Inventory from "../models/Inventory.js";
 import { COLLECTION, qdrant } from "../services/qdrant.service.js";
-
+import AiRulesheet from "../models/OwnerRulesheet.js";
 
 export const getProfile = async (req, res) => {
   try {
@@ -275,11 +275,18 @@ export const getInventory = async (req, res) => {
   try {
     const ownerId = req.user.id;
 
-    const inventories = await Inventory.find({ ownerId });
+
+    const [rulesheet, inventories] = await Promise.all([
+      AiRulesheet.findOne({ owner: ownerId }),
+      Inventory.find({ ownerId })
+
+
+    ])
 
     return res.json({
       success: true,
-      data: inventories
+      data: inventories,
+      rulesheet: rulesheet || null
     });
 
   } catch (err) {
@@ -370,6 +377,45 @@ export const toggleAutoReply = async (req, res) => {
     });
   }
 };
+
+export const createOrUpdateRulesheet = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { businessInfo, aiBehaviour, dosAndDonts } = req.body;
+
+    const rulesheet = await AiRulesheet.findOneAndUpdate(
+      { owner: userId },
+      {
+        owner: userId,
+        businessInfo,
+        aiBehaviour,
+        dosAndDonts,
+      },
+      {
+        new: true,
+        upsert: true,       // 👈 create if not exists
+        runValidators: true
+      }
+    );
+
+    await User.findByIdAndUpdate(userId, {
+      rulesheet: rulesheet._id,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Rulesheet saved successfully",
+      data: rulesheet,
+    });
+  } catch (error) {
+    console.error("Rulesheet error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 
 
 

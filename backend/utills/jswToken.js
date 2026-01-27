@@ -3,16 +3,16 @@ import jwt from "jsonwebtoken";
 
 const SECRET_KEY = "SMARTBIZZ_KEY"
 
-export  const generateToken =async (user) => {
+export const generateToken = async (user) => {
     try {
-        return await jwt.sign(user,SECRET_KEY, { expiresIn: "7d" });
+        return await jwt.sign(user, SECRET_KEY, { expiresIn: "7d" });
     } catch (error) {
         console.log(`Error generating token: ${error}`);
         return null;
     }
 };
 
-export const verifyToken =(req, res, next) => {
+export const verifyToken = (req, res, next) => {
     try {
         const authHeaders = req.headers["authorization"];
         if (!authHeaders) {
@@ -23,7 +23,10 @@ export const verifyToken =(req, res, next) => {
         // "Bearer <token>"
         const token = authHeaders.split(" ")[1];
 
-         jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        console.log("toke", token);
+
+
+        jwt.verify(token, SECRET_KEY, (err, decoded) => {
             if (err) {
                 return res.status(401).json({
                     message: "Invalid Token or Expired",
@@ -40,12 +43,12 @@ export const verifyToken =(req, res, next) => {
     }
 };
 export const authMiddleware = (req, res, next) => {
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
 
-  // normal auth logic
-  next();
+    // normal auth logic
+    next();
 };
 
 

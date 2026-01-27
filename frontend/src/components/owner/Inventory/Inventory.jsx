@@ -10,6 +10,7 @@ const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [refresh, setRefresh] = useState(false);
   const [inventoryRecords, setinventoryRecords] = useState([]);
+  const [rulesheet, setRulesheet] = useState(null);
 
   const navigate = useNavigate();
 
@@ -38,6 +39,7 @@ const Inventory = () => {
     try {
       const res = await getAllInventory();
       setinventoryRecords(res?.data || []);
+      setRulesheet(res?.rulesheet || null)
     } catch (error) {
       toast.error("Failed to load assets");
     }
@@ -73,16 +75,23 @@ const Inventory = () => {
         {/* CATEGORY 1: RULES SHEETS (Ab ye button ki tarah kaam karega) */}
         <div className="upload-card rules-border clickable-card" onClick={() => navigate("/owner/rule-sheet")}>
           <div className="card-badge rules-bg">AI Training Rules</div>
-          <div className="file-drop-area no-dash">
-            <div className="icon-circle rules-icon">
-              <BookOpen size={28} color="#f59e0b" />
+
+          {rulesheet && rulesheet !== null ? (
+            <div className="file-drop-area no-dash">
             </div>
-            <h3>Add Rule Sheet</h3>
-            <p>Fill out the form to define business policies</p>
-            <div className="go-btn-minimal">
-              <PlusCircle size={18} /> <span>Create Now</span>
+          ) : (
+            <div className="file-drop-area no-dash">
+              <div className="icon-circle rules-icon">
+                <BookOpen size={28} color="#f59e0b" />
+              </div>
+              <h3>Add Rule Sheet</h3>
+              <p>Fill out the form to define business policies</p>
+              <div className="go-btn-minimal">
+                <PlusCircle size={18} /> <span>Create Now</span>
+              </div>
             </div>
-          </div>
+          )}
+
         </div>
 
         {/* CATEGORY 2: INVENTORY FILES (Ye wahi purana upload hai) */}
