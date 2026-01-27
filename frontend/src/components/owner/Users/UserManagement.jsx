@@ -17,6 +17,7 @@ const UserManagement = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedUser, setSelectedUser] = useState(null); // Chat state
   const chatRef = useRef(null);
+  
 
 
   const { loading: userLoading, error: userError, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
@@ -165,6 +166,7 @@ const UserManagement = () => {
                           <strong>{customerName}</strong>
                           <span>ID: {customerId}</span>
                         </div>
+                        
                       </div>
                     </div>
 
@@ -238,7 +240,7 @@ const UserManagement = () => {
           <div className="chatDiv">
             <div
               onClick={(e) => e.stopPropagation()}
-              className='chat-viewanimate-slide-in'>
+              className='chat-view animate-slide-in'>
               <div className='chat-header1'>
                 <div className='chat-user-info'>
                   <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>

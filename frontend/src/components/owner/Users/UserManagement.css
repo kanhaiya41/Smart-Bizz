@@ -305,11 +305,18 @@
   box-shadow: 0 4px 6px rgba(0.2, 0.2, 0.2, 0.2);
 }
 
-.chat-viewanimate-slide-in{
+
+
+
+.chat-view{
 background-color: white;
 height: 500px;
 width: 450px;
 border-radius: 10px;
 }
+
+
+
+
 
 

@@ -13,12 +13,22 @@ import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx
 import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
 import AuthPage from "./components/auth/AuthPage.jsx";
 import LandingPage from "./components/LandingPage/LandingPage.jsx";
+
+
+// jaffar import second loginpage2
+
+import Loginpage from "./components/Login2/Login2.jsx";
 function App() {
   return (
     <Router>
       <Routes>
-         <Route path="/" element={<LandingPage></LandingPage>}></Route>
+        <Route path="/" element={<LandingPage></LandingPage>}></Route>
         <Route path="login" element={<AuthPage></AuthPage>}></Route>
+
+        {/* Test Login Page */}
+        <Route path="/login2" element={<Loginpage />} />
+
+
         <Route path="/owner" element={<Sidebar></Sidebar>}>
           <Route index element={<OwnerDashboard></OwnerDashboard>}></Route>
           <Route path="dashboard" element={<OwnerDashboard></OwnerDashboard>}></Route>
