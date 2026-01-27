@@ -26,7 +26,7 @@ function App() {
         <Route path="login" element={<Loginpage></Loginpage>}></Route>
 
         {/* Test Login Page */}
-        <Route path="/login2" element={<Loginpage />} />
+        {/* <Route path="/login2" element={<Loginpage />} /> */}
 
 
         <Route path="/owner" element={<Sidebar></Sidebar>}>

@@ -1,14 +1,9 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_ENDPOINTS } from "../../apiConfig";
 import "./Login2.css";
-
-// import Illustration1 from "../../assets/Visual data-amico.png";
-// import Illustration2 from "../../assets/Site Stats-pana.png";
-// import Illustration3 from "../../assets/Data report-pana.png";
-// import Illustration4 from "../../assets/Fingerprint-bro.png";
-// import Illustration5 from "../../assets/At the office-pana.png";
+import { useApi } from '../../api/useApi';
+import businessOwnerApi from '../../api/apiService';
+import { toast } from 'react-toastify';
 
 import Illustration1 from "../../assets/Online world-amico.png";
 import Illustration5 from "../../assets/Chat bot-amico.png";
@@ -22,13 +17,6 @@ const Login2 = () => {
     // 🔥 Login/Signup toggle
     const [activeForm, setActiveForm] = useState("login"); // "login" | "signup"
     const [isLogin, setIsLogin] = useState(true);
-
-    // 🔥 Form Data
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
 
     // 🔥 Illustrations slider
     const illustrations = [
@@ -53,85 +41,85 @@ const Login2 = () => {
 
     // 🔥 Handle Input Change
     const handleChange = (e) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setLoginData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+    const handleChangeInRegister = (e) => {
+        setRegisterData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
     };
 
-    // ✅ SIGNUP
-    const handleSignup = async (e) => {
-        e.preventDefault();
 
-        try {
-            const response = await fetch(API_ENDPOINTS.SIGNUP, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    password: formData.password,
-                }),
-            });
+    const [loginData, setLoginData] = useState({
+        email: "",
+        password: ""
+    });
 
-            const data = await response.json();
+    const [registerData, setRegisterData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: ""
+    });
 
-            if (response.ok) {
-                alert("Account created successfully! Please Login.");
-                setActiveForm("login");
-            } else {
-                alert(data.message || "Signup failed. Please try again.");
-            }
-        } catch (error) {
-            console.error("Signup Error:", error);
-            alert("Server error. Please check your connection.");
-        }
-    };
+    const {
+        request: loginRequest,
+        loading: loginLoading,
+        error: loginError
+    } = useApi(businessOwnerApi.login);
 
-    // ✅ LOGIN
+    const {
+        request: signupRequest,
+        loading: signupLoading,
+        error: signupError
+    } = useApi(businessOwnerApi.signup);
+
+    // LOGIN API
     const handleLogin = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await fetch(API_ENDPOINTS.LOGIN, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                }),
+            console.log("loig", loginData);
+
+            const res = await loginRequest(loginData);
+            toast.success("Login Success");
+
+            localStorage.setItem("token", res?.token);
+            localStorage.setItem("role", res?.user?.role);
+            localStorage.setItem("businessId", res?.user?.id);
+
+            navigate("/owner/dashboard");
+
+            setLoginData({
+                email: "",
+                password: ""
             });
+        } catch (err) { }
+    };
 
-            const data = await response.json();
+    // REGISTER API
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            await signupRequest(registerData);
+            toast.success("Account created");
+            setIsLogin(true);
 
-            if (response.ok) {
-                // Save Token
-                if (data.token) localStorage.setItem("token", data.token);
-
-                // Save Role
-                const userRole = data.user?.role || "owner";
-                localStorage.setItem("role", userRole);
-
-                alert("Login Successful!");
-
-                // Redirect
-                if (userRole === "superAdmin") {
-                    navigate("/dashboard");
-                    setIsLogin(true);
-                } else {
-                    navigate("/owner");
-                    setIsLogin(true);
-                }
-            } else {
-                alert(data.message || "Invalid email or password.");
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
-            alert("Server error. Please check your connection.");
-        }
+            setRegisterData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: ""
+            });
+        } catch (err) { }
     };
 
     return (
         <div className="login3-page">
             <div className="bg-dots"></div>
-            {/* <div style={{padding:"10px 10px " ,border:"0.5px", backgroundColor:"white",borderRadius:"25px"}}> */}
 
             <div className="login3-wrapper">
                 {/* LEFT */}
@@ -167,67 +155,45 @@ const Login2 = () => {
                 {/* RIGHT */}
                 <div className="login3-right">
                     <div className="login3-card">
-                        <h1 className="login3-title">
-                            {activeForm === "login" ? "Welcome Back" : "Create Account"}
-                        </h1>
 
-                        <p className="login3-subtitle">
-                            {activeForm === "login"
-                                ? "Enter your credentials to access the hub."
-                                : "Sign up to get started with SmartBizz."}
-                        </p>
+                        {/* ---------------- LOGIN DIV ---------------- */}
+                        {activeForm === "login" && (
+                            <>
+                                <h1 className="login3-title">Welcome Back</h1>
 
-                        {/* 🔥 Form */}
-                        <form
-                            className="login3-form"
-                            onSubmit={activeForm === "login" ? handleLogin : handleSignup}
-                        >
-                            {/* Name only for Signup */}
-                            {activeForm === "signup" && (
-                                <div className="login3-input-group">
-                                    <span className="login3-icon">👤</span>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        placeholder="Full Name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            )}
+                                <p className="login3-subtitle">
+                                    Enter your credentials to access the hub.
+                                </p>
 
-                            <div className="login3-input-group">
-                                <span className="login3-icon">✉</span>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    placeholder="Email Address"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                                <form className="login3-form" onSubmit={handleLogin}>
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">✉</span>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            placeholder="Email Address"
+                                            value={loginData.email}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
 
-                            <div className="login3-input-group">
-                                <span className="login3-icon">🔒</span>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">🔒</span>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            placeholder="Password"
+                                            value={loginData.password}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
 
-                            <button className="login3-btn" type="submit">
-                                {activeForm === "login" ? "Login Now →" : "Create Account →"}
-                            </button>
+                                    <button disabled={loginLoading} className="login3-btn" type="submit">
+                                        {loginLoading ? <div className="loader-mini"></div> : "Login Now →"}
+                                    </button>
 
-                            {/* Bottom Switch */}
-                            {activeForm === "login" ? (
-                                <>
                                     <a className="login3-forgot" href="#">
                                         Forgot Password
                                     </a>
@@ -238,21 +204,89 @@ const Login2 = () => {
                                             Create one
                                         </span>
                                     </p>
-                                </>
-                            ) : (
-                                <p className="login3-switch">
-                                    Already have an account?{" "}
-                                    <span onClick={() => setActiveForm("login")}>Log in</span>
+                                </form>
+                            </>
+                        )}
+
+                        {/* ---------------- REGISTER DIV ---------------- */}
+                        {activeForm === "signup" && (
+                            <>
+                                <h1 className="login3-title">Create Account</h1>
+
+                                <p className="login3-subtitle">
+                                    Sign up to get started with SmartBizz.
                                 </p>
-                            )}
-                        </form>
+
+                                <form className="login3-form" onSubmit={handleRegister}>
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">👤</span>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            placeholder="First Name"
+                                            value={registerData.firstName}
+                                            onChange={handleChangeInRegister}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">👤</span>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            placeholder="Last Name"
+                                            value={registerData.lastName}
+                                            onChange={handleChangeInRegister}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">✉</span>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            placeholder="Email Address"
+                                            value={registerData.email}
+                                            onChange={handleChangeInRegister}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="login3-input-group">
+                                        <span className="login3-icon">🔒</span>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            placeholder="Password"
+                                            value={registerData.password}
+                                            onChange={handleChangeInRegister}
+                                            required
+                                        />
+                                    </div>
+
+                                    <button className="login3-btn" type="submit">
+                                        {signupLoading ? <div className="loader-mini"></div> : "Create Account →"}
+
+                                    </button>
+
+                                    <p className="login3-switch">
+                                        Already have an account?{" "}
+                                        <span onClick={() => setActiveForm("login")}>
+                                            Log in
+                                        </span>
+                                    </p>
+                                </form>
+                            </>
+                        )}
+
                     </div>
+
 
                     <div className="login3-circle one"></div>
                     <div className="login3-circle two"></div>
                 </div>
             </div>
-            {/* </div> */}
         </div>
     );
 };
