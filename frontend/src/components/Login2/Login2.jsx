@@ -89,7 +89,7 @@ const Login2 = () => {
 
             localStorage.setItem("token", res?.token);
             localStorage.setItem("role", res?.user?.role);
-            localStorage.setItem("businessId", res?.user?.id);
+            localStorage.setItem("profile", JSON.stringify(res?.user));
 
             navigate("/owner/dashboard");
 

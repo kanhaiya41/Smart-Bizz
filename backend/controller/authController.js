@@ -158,6 +158,7 @@ export const socialConnection = async (req, res) => {
         "https://graph.facebook.com/v18.0/me/accounts",
         { params: { access_token: userAccessToken } }
       );
+      const pages = data?.data;
       const result = await instagramConnection(pages, userId, type);
 
       if (result.alreadyConnected) {

@@ -21,9 +21,9 @@ const OwnerDashboard = () => {
 
     const navigate = useNavigate()
 
-    const businessId = localStorage.getItem("businessId");
+    const profile = localStorage.getItem("profile");
 
-    useSocket(businessId);
+    useSocket(profile?.id);
     // Dummy Data (Same as yours, keeping it for logic)
     const topQueriesData = [
         { id: 1, query: "Order Kab Tak Aayega?", count: 450, platform: "WhatsApp" },
@@ -339,9 +339,10 @@ const OwnerDashboard = () => {
                                 <h3>Platform Stats</h3>
                                 <CircleChart />
                                 <div className='custom-legend'>
-                                    <div className='legend-item'><span className='dot fb'></span> Facebook <b>40%</b></div>
-                                    <div className='legend-item'><span className='dot ig'></span> Instagram <b>30%</b></div>
-                                    <div className='legend-item'><span className='dot wa'></span> WhatsApp <b>20%</b></div>
+
+                                    <div className='legend-item'><img src={instaimg} height={15} alt="Instagram" />  Instagram <b>70%</b></div>
+                                    <div className='legend-item'><img src={fbimg} height={15} alt="Facebook" /> Facebook <b>40%</b></div>
+                                    <div className='legend-item'><img src={whtsimg} height={15} alt="WhatsApp" />  WhatsApp <b>30%</b></div>
                                 </div>
                             </div>
                         ) : (
