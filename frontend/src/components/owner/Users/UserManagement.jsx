@@ -134,7 +134,8 @@ const UserManagement = () => {
                 <div
                   className={`user-row ${isExpanded ? 'row-expanded' : ''}`}
                   key={item._id}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // YE LINE ADD KAREIN: Parent div ka click trigger nahi hoga
                     setSelectedUser(item);
                     handleLoadSingleConversation(item._id);
                   }}

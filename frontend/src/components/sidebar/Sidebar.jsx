@@ -95,7 +95,10 @@ const Sidebar = () => {
       {/* LEFT SIDEBAR */}
       <aside className={`sidebar ${isSidebarOpen ? "show" : ""}`} ref={sidebarRef}>
         <div className="sidebar-logo">
-          <h2 className="logo-text">SMARTBIZZ</h2>
+          <div className="logo-wrapper">
+            <img src="/LOGOB.png" alt="logo" className="logo" />
+            <h2 className="logo-text">Smartbizz</h2>
+          </div>
           <button className="mobile-close" onClick={() => setIsSidebarOpen(false)}>
             <X size={24} />
           </button>
