@@ -123,13 +123,6 @@ const LandingPage = () => {
         }
       }
     };
-
-    window.addEventListener("scroll", () => {
-      console.log("Scroll");
-
-    });
-
-
     // 3. Shaking Cards (Observer logic)
     const observer = new IntersectionObserver(
       (entries) => {

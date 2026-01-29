@@ -298,22 +298,30 @@ const OwnerDashboard = () => {
                                                 {user.lastMessageAt ? moment(user.lastMessageAt).fromNow() : ""}
                                             </span>
                                         </div>
-                                        <button className='action-btn-mini' onClick={() => setSelectedUser(user)}>Open</button>
-                                        <label className="switch">
-                                            <input
-                                                type="checkbox"
-                                                checked={user?.autoReplyEnabled}
-                                                onChange={(e) => {
-                                                    const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
-                                                    if (isConfirmed) {
-                                                        handleToggleAutoReply(user?._id, e.target.checked)
-                                                    }
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: 'space-between',
+                                            gap: '10px'
+                                        }}>
 
-                                                }
-                                                }
-                                            />
-                                            <span className="slider"></span>
-                                        </label>
+                                            <button className='action-btn-mini' onClick={() => setSelectedUser(user)}>Open</button>
+                                            <label className="switch">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={user?.autoReplyEnabled}
+                                                    onChange={(e) => {
+                                                        const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
+                                                        if (isConfirmed) {
+                                                            handleToggleAutoReply(user?._id, e.target.checked)
+                                                        }
+
+                                                    }
+                                                    }
+                                                />
+                                                <span className="slider"></span>
+                                            </label>
+                                        </div>
+
 
                                     </div>
                                 )) : (

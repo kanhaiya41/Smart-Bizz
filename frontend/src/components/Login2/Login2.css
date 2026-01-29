@@ -14,9 +14,9 @@
 
 
 :root {
-  --primary: #4f46e5;   
-  --primary2: #7c3aed; 
-  --bg: #f4f6ff;        
+  --primary: #4f46e5;
+  --primary2: #7c3aed;
+  --bg: #f4f6ff;
   --text: #0f172a;
   --muted: #64748b;
   --card: #ffffff;
@@ -25,11 +25,6 @@
 
 
 /* REMOVE DEFAULT BODY SCROLL ISSUE */
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
 /* PAGE */
 /* .login3-page {
@@ -61,9 +56,9 @@ html, body {
 
   /* Soft friendly background */
   background: radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.14), transparent 45%),
-              radial-gradient(circle at 80% 30%, rgba(124, 58, 237, 0.12), transparent 50%),
-              radial-gradient(circle at 30% 90%, rgba(99, 102, 241, 0.12), transparent 55%),
-              linear-gradient(135deg, var(--bg), #eef4ff);
+    radial-gradient(circle at 80% 30%, rgba(124, 58, 237, 0.12), transparent 50%),
+    radial-gradient(circle at 30% 90%, rgba(99, 102, 241, 0.12), transparent 55%),
+    linear-gradient(135deg, var(--bg), #eef4ff);
 
 }
 
@@ -116,9 +111,11 @@ html, body {
   0% {
     transform: translate(0px, 0px);
   }
+
   50% {
     transform: translate(20px, 18px);
   }
+
   100% {
     transform: translate(0px, 0px);
   }
@@ -133,7 +130,8 @@ html, body {
 .login3-wrapper {
   width: 100%;
   max-width: 1180px;
-  height: 92vh; /* so it always fits without scroll */
+  height: 92vh;
+  /* so it always fits without scroll */
   max-height: 680px;
 
   display: flex;
@@ -204,6 +202,7 @@ html, body {
     opacity: 0;
     transform: translateY(14px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0px) scale(1);
@@ -397,6 +396,7 @@ html, body {
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0px);
@@ -408,6 +408,7 @@ html, body {
     opacity: 0;
     transform: scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -416,8 +417,11 @@ html, body {
 
 /* RESPONSIVE */
 @media (max-width: 950px) {
-  html, body {
-    overflow: auto; /* mobile me allow scroll if needed */
+
+  html,
+  body {
+    overflow: auto;
+    /* mobile me allow scroll if needed */
   }
 
   .login3-wrapper {
@@ -443,7 +447,7 @@ html, body {
 
   .login3-card {
     max-width: 420px;
-    
+
   }
 }
 
