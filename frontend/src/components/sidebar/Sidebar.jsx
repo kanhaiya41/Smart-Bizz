@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
-import { 
-  ChevronDown, Search, Bell, User, Settings, LogOut, 
-  MessageSquare, Package, AlertCircle, CheckCircle, Menu, X 
+import {
+  ChevronDown, Search, Bell, User, Settings, LogOut,
+  MessageSquare, Package, AlertCircle, CheckCircle, Menu, X
 } from 'lucide-react';
 
 const MENU_CONFIG = {
@@ -32,7 +32,8 @@ const Sidebar = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile toggle state
-  
+
+
   const notifRef = useRef(null);
   const profileRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -72,6 +73,19 @@ const Sidebar = () => {
     const currentItem = allItems.find(item => item.path === path);
     return currentItem ? currentItem.name : "Dashboard";
   };
+
+  const profile = JSON.parse(localStorage.getItem("profile")) || null;
+
+  useEffect(() => {
+    if (!profile) {
+      navigate("/login");
+    }
+    console.log("profile", profile);
+  }, [profile]);
+
+
+
+
 
   return (
     <div className={`app-container ${isSidebarOpen ? "sidebar-open" : ""}`}>
@@ -141,7 +155,7 @@ const Sidebar = () => {
 
           <div className='header-right'>
             <div className='sh-search-bar desktop-search'>
-              <Search size={18} color="#94a3b8" className="sh-search-icon"/>
+              <Search size={18} color="#94a3b8" className="sh-search-icon" />
               <input type="text" placeholder='Search...' />
             </div>
 
@@ -151,7 +165,7 @@ const Sidebar = () => {
                 <Bell size={20} color="#64748b" />
                 <span className='notif-badge'>3</span>
               </div>
-              
+
               {showNotif && (
                 <div className="dropdown-panel notification-box">
                   <div className="dropdown-header">
@@ -160,7 +174,7 @@ const Sidebar = () => {
                   </div>
                   <div className="dropdown-body">
                     <div className="notif-item unread">
-                      <div className="notif-icon bg-blue"><Package size={14}/></div>
+                      <div className="notif-icon bg-blue"><Package size={14} /></div>
                       <div className="notif-info">
                         <p><strong>New Order</strong></p>
                         <span className="notif-time">2 mins ago</span>
@@ -174,9 +188,9 @@ const Sidebar = () => {
             {/* PROFILE */}
             <div className='profile-menu-wrapper' ref={profileRef}>
               <div className='user-profile-trigger' onClick={() => setShowProfileMenu(!showProfileMenu)}>
-                <div className='avatar-sm'>VS</div>
+                <div className='avatar-sm'>     {`${profile?.firstName?.[0] || ""}${profile?.lastName?.[0] || ""}`}</div>
                 <div className='user-text hide-mobile'>
-                  <span className='u-name'>Vishal Saini</span>
+                  <span className='u-name'>{`${profile?.firstName} ${profile?.lastName || ""}`}</span>
                 </div>
                 <ChevronDown size={14} color="#64748b" className={`${showProfileMenu ? 'rotate-180' : ''} hide-mobile`} />
               </div>
@@ -184,10 +198,13 @@ const Sidebar = () => {
               {showProfileMenu && (
                 <div className="dropdown-panel profile-box">
                   <div className="profile-box-user">
-                    <div className='avatar-lg'>VS</div>
+                    <div className="avatar-lg">
+                      {`${profile?.firstName?.[0] || ""}${profile?.lastName?.[0] || ""}`}
+                    </div>
+
                     <div className="user-details">
-                      <h4>Vishal Saini</h4>
-                      <p>vishal@smartbizz.com</p>
+                      <h4>{`${profile?.firstName} ${profile?.lastName || ""}`}</h4>
+                      <p>{`${profile?.email}` || ""}</p>
                     </div>
                   </div>
                   <div className="dropdown-divider"></div>
@@ -206,7 +223,7 @@ const Sidebar = () => {
         </header>
 
         <main className="page-content">
-          <div className="the-container"> 
+          <div className="the-container">
             <Outlet />
           </div>
         </main>

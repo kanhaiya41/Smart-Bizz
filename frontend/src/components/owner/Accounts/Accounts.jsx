@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Search, Plus, MoreVertical, X, Globe, Instagram, MessageCircle, ExternalLink } from "lucide-react";
 import "./Account.css";
 
@@ -7,6 +8,7 @@ import instaimg from '../../../assets/insta.png'
 import whtsimg from '../../../assets/whtsp.png'
 import { useApi } from "../../../api/useApi";
 import businessOwnerApi from "../../../api/apiService";
+import { toast } from "react-toastify";
 
 const AccountsPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -16,6 +18,24 @@ const AccountsPage = () => {
 
   const { request: fetchTenants, loading: tenantsLoading } = useApi(businessOwnerApi.getTenants);
 
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    const status = params.get("status");
+    const type = params.get("type");
+
+    if (status && type) {
+      if (status === "already_connected") {
+        toast.info(`${type} account already connected`);
+      }
+
+      if (status === "success") {
+        toast.info(`${type} connected successfully`);
+      }
+    }
+  }, [location.search]);
 
   const handlePlatformSelect = (type) => {
     const userId = "693ef33a3dfcb0a4a11c0ad4";
