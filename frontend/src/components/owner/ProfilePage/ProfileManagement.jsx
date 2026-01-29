@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { 
-  User, Mail, MapPin, Phone, ShieldCheck, Edit3, Camera, Save, X, 
-  Building2, Globe, Lock, ExternalLink 
+import {
+  User, Mail, MapPin, Phone, ShieldCheck, Edit3, Camera, Save, X,
+  Building2, Globe, Lock, ExternalLink
 } from "lucide-react";
 import "./ProfileManagement.css";
 import { useApi } from "../../../api/useApi";
@@ -51,10 +51,11 @@ const ProfileManagement = () => {
     if (profilePhoto) formDataPayload.append("profilePhoto", profilePhoto);
 
     try {
-      await updateUserProfile(formDataPayload);
+      const res = await updateUserProfile(formDataPayload);
       toast.success("Changes saved successfully");
       setIsEditingPersonal(false);
       setIsEditingAddress(false);
+      localStorage.setItem("profile", JSON.stringify(res?.user));
       loadProfile();
     } catch (error) { toast.error("Update failed"); }
   };
@@ -82,10 +83,10 @@ const ProfileManagement = () => {
   return (
     <div className="profile-page-wrapper">
       <div className="profile-content-grid">
-        
+
         {/* Left Column: Personal & Address */}
         <div className="main-info-column">
-          
+
           <div className="info-card-white">
             <div className="card-header-inline">
               <div className="card-label-row">
@@ -98,7 +99,7 @@ const ProfileManagement = () => {
                 </button>
               )}
             </div>
-            
+
             <div className="avatar-upload-section">
               <div className="avatar-circle-large">
                 {profile?.image ? <img src={profile.image} alt="Profile" /> : <span>{formData.firstName?.[0] || 'U'}</span>}
@@ -127,8 +128,8 @@ const ProfileManagement = () => {
               <div className="input-field full-width">
                 <label>Email Address</label>
                 <div className="input-with-icon">
-                   <Mail size={14} className="field-icon" />
-                   <input name="email" value={formData.email} onChange={handleChange} disabled={!isEditing} />
+                  <Mail size={14} className="field-icon" />
+                  <input name="email" value={formData.email} onChange={handleChange} disabled={!isEditing} />
                 </div>
               </div>
             </div>

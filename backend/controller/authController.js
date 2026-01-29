@@ -143,15 +143,15 @@ export const socialConnection = async (req, res) => {
 
     if (type === "whatsapp") {
       const result = await whatsappConnection(userId, userAccessToken);
-      if (result.alreadyConnected) {
-        return res.redirect(
-          `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
-        );
-      }
+      // if (result.alreadyConnected) {
+      //   return res.redirect(
+      //     `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+      //   );
+      // }
 
-      return res.redirect(
-        `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
-      );
+      // return res.redirect(
+      //   `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+      // );
     }
     else if (type === "instagram") {
       const { data } = await axios.get(
@@ -161,15 +161,15 @@ export const socialConnection = async (req, res) => {
       const pages = data?.data;
       const result = await instagramConnection(pages, userId, type);
 
-      if (result.alreadyConnected) {
-        return res.redirect(
-          `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
-        );
-      }
+      // if (result.alreadyConnected) {
+      //   return res.redirect(
+      //     `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${result.platform}`
+      //   );
+      // }
 
-      return res.redirect(
-        `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
-      );
+      // return res.redirect(
+      //   `${process.env.FRONTEND_SUCCESS_URL}?status=success&type=${result.platform}`
+      // );
     }
     else {
       const { data } = await axios.get(
@@ -182,13 +182,13 @@ export const socialConnection = async (req, res) => {
       if (page.id) {
         const find = Tenant.findOne({ "page.pageId": page.id })
 
-        if (find) {
+        // if (find) {
 
-          return res.redirect(
-            `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${type}`
-          );
+        //   return res.redirect(
+        //     `${process.env.FRONTEND_SUCCESS_URL}?status=already_connected&type=${type}`
+        //   );
 
-        }
+        // }
       }
 
       const tenant = await Tenant.create({
