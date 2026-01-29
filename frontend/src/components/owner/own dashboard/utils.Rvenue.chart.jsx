@@ -208,9 +208,9 @@ export const RevenueChart = () => {
 
 
 const circleData = [
-  { name: "Morning", value: 30 },
-  { name: "Afternoon", value: 40 },
-  { name: "Evening", value: 30 },
+  { name: "Instagram", value: 70 },
+  { name: "Facebook", value: 40 },
+  { name: "Whatsapp", value: 30 },
 ];
 
 const COLORS = ["#4f46e5", "#818cf8", "#c7d2fe"];

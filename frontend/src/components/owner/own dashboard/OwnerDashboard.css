@@ -790,7 +790,8 @@ input:checked+.slider:before {
   font-size: 13px;
   color: #64748b;
   line-height: 1.4;
-  word-break: break-word; /* Expand hone par text niche jaye, bahar nahi */
+  word-break: break-word;
+  /* Expand hone par text niche jaye, bahar nahi */
 }
 
 .read-more-dashboard:hover {
