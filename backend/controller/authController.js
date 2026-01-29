@@ -218,6 +218,8 @@ export const socialConnection = async (req, res) => {
 
 
 const instagramConnection = async (pages, userId, type) => {
+  console.log("Instagram Call");
+
   const igResults = await Promise.all(
     pages.map(async (page) => {
       try {
@@ -230,6 +232,9 @@ const instagramConnection = async (pages, userId, type) => {
             }
           }
         );
+
+        console.log("igRes", igRes);
+
 
         if (igRes.data.instagram_business_account) {
           return {
@@ -257,13 +262,13 @@ const instagramConnection = async (pages, userId, type) => {
   const igPage = igPages[0];
 
   // FIX: await added
-  const existingTenant = await Tenant.findOne({
-    "page.igBusinessId": igPage.igBusinessId
-  });
+  // const existingTenant = await Tenant.findOne({
+  //   "page.igBusinessId": igPage.igBusinessId
+  // });
 
-  if (existingTenant) {
-    return { alreadyConnected: true, platform: type };
-  }
+  // if (existingTenant) {
+  //   return { alreadyConnected: true, platform: type };
+  // }
 
   const tenant = await Tenant.create({
     owner: userId,
@@ -276,11 +281,16 @@ const instagramConnection = async (pages, userId, type) => {
     }
   });
 
-  await User.findByIdAndUpdate(userId, {
+  console.log("tenant", tenant);
+
+
+  const updated = await User.findByIdAndUpdate(userId, {
     $push: {
       tenants: { name: type, tenantId: tenant._id }
     }
-  });
+  }, { new: true });
+  console.log("updated", updated);
+
 
   return { success: true, tenantId: tenant._id, platform: type };
 };
