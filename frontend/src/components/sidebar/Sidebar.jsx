@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
-import { 
-  ChevronDown, Search, Bell, User, Settings, LogOut, 
-  MessageSquare, Package, AlertCircle, CheckCircle, Menu, X 
+import {
+  ChevronDown, Search, Bell, User, Settings, LogOut,
+  MessageSquare, Package, AlertCircle, CheckCircle, Menu, X
 } from 'lucide-react';
 
 const MENU_CONFIG = {
@@ -32,7 +32,7 @@ const Sidebar = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile toggle state
-  
+
   const notifRef = useRef(null);
   const profileRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -81,7 +81,10 @@ const Sidebar = () => {
       {/* LEFT SIDEBAR */}
       <aside className={`sidebar ${isSidebarOpen ? "show" : ""}`} ref={sidebarRef}>
         <div className="sidebar-logo">
-          <h2 className="logo-text">SMARTBIZZ</h2>
+          <div className="logo-wrapper">
+            <img src="/LOGOB.png" alt="logo" className="logo" />
+            <h2 className="logo-text">Smartbizz</h2>
+          </div>
           <button className="mobile-close" onClick={() => setIsSidebarOpen(false)}>
             <X size={24} />
           </button>
@@ -141,7 +144,7 @@ const Sidebar = () => {
 
           <div className='header-right'>
             <div className='sh-search-bar desktop-search'>
-              <Search size={18} color="#94a3b8" className="sh-search-icon"/>
+              <Search size={18} color="#94a3b8" className="sh-search-icon" />
               <input type="text" placeholder='Search...' />
             </div>
 
@@ -151,7 +154,7 @@ const Sidebar = () => {
                 <Bell size={20} color="#64748b" />
                 <span className='notif-badge'>3</span>
               </div>
-              
+
               {showNotif && (
                 <div className="dropdown-panel notification-box">
                   <div className="dropdown-header">
@@ -160,7 +163,7 @@ const Sidebar = () => {
                   </div>
                   <div className="dropdown-body">
                     <div className="notif-item unread">
-                      <div className="notif-icon bg-blue"><Package size={14}/></div>
+                      <div className="notif-icon bg-blue"><Package size={14} /></div>
                       <div className="notif-info">
                         <p><strong>New Order</strong></p>
                         <span className="notif-time">2 mins ago</span>
@@ -206,7 +209,7 @@ const Sidebar = () => {
         </header>
 
         <main className="page-content">
-          <div className="the-container"> 
+          <div className="the-container">
             <Outlet />
           </div>
         </main>

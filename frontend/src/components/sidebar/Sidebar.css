@@ -7,14 +7,17 @@
   --sidebar-width: 260px;
   --header-height: 64px;
 }
+
 .the-container {
-    /* background-color: white; */
-    border-radius: 10px;
-    /* padding: 24px; */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e2e8f0;
+  /* background-color: white; */
+  border-radius: 10px;
+  /* padding: 24px; */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e2e8f0;
 }
+
+
 /* Pura Screen Layout */
 .app-container {
   display: flex;
@@ -59,7 +62,8 @@
   background-color: #ffffff;
   border-bottom: 1px solid #f1f5f9;
   display: flex;
-  justify-content: space-between; /* Title left mein, controls right mein */
+  justify-content: space-between;
+  /* Title left mein, controls right mein */
   align-items: center;
   padding: 0 40px;
   width: 100%;
@@ -67,6 +71,7 @@
   top: 0;
   z-index: 1000;
 }
+
 /* Page Title Styling */
 .page-title {
   font-size: 20px;
@@ -96,7 +101,8 @@
   padding: 6px 14px;
   display: flex;
   align-items: center;
-  width: 260px; /* Thoda chhota kiya taaki cluttered na lage */
+  width: 260px;
+  /* Thoda chhota kiya taaki cluttered na lage */
   transition: 0.2s;
 }
 
@@ -214,15 +220,47 @@
 
 /* Sidebar Nav Styling */
 .sidebar-logo {
-  padding: 30px 24px;
+  /* padding: 20px 24px; */
+  /* Padding thoda adjust kiya hai */
   border-bottom: 1px solid #eef0f7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Logo ek taraf, close button dusri taraf */
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  /* gap: 12px; */
+  /* Logo aur Text ke beech ki doori */
+}
+
+.logo {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo-text {
   font-size: 20px;
   font-weight: 800;
   color: var(--primary-blue);
-  letter-spacing: 1.5px;
+  letter-spacing: 0.5px;
+  /* 1.5px thoda zyada ho sakta hai, 0.5px clean dikhega */
+  margin: 0;
+  /* H2 ka default margin hatao */
+  text-transform: uppercase;
+  /* Agar premium look chahiye toh */
+}
+
+.mobile-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #666;
 }
 
 .sidebar-content {
@@ -314,7 +352,8 @@
 
 /* Previous styles remain, adding new Dropdown styles below */
 
-.notif-wrapper, .profile-menu-wrapper {
+.notif-wrapper,
+.profile-menu-wrapper {
   position: relative;
 }
 
@@ -332,12 +371,21 @@
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Notification Box */
-.notification-box { width: 320px; }
+.notification-box {
+  width: 320px;
+}
 
 .dropdown-header {
   padding: 16px;
@@ -347,8 +395,20 @@
   align-items: center;
 }
 
-.dropdown-header span { font-weight: 700; color: #1e293b; font-size: 14px; }
-.mark-read { border: none; background: none; color: #4f46e5; font-size: 12px; cursor: pointer; font-weight: 600; }
+.dropdown-header span {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.mark-read {
+  border: none;
+  background: none;
+  color: #4f46e5;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
 
 .notif-item {
   display: flex;
@@ -359,51 +419,135 @@
   transition: 0.2s;
 }
 
-.notif-item:hover { background: #f8fafc; }
-.notif-item.unread { background: #f0f3ff50; border-left: 3px solid #4f46e5; }
+.notif-item:hover {
+  background: #f8fafc;
+}
+
+.notif-item.unread {
+  background: #f0f3ff50;
+  border-left: 3px solid #4f46e5;
+}
 
 .notif-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
 }
-.bg-blue { background: #4f46e5; }
-.bg-orange { background: #f59e0b; }
-.bg-green { background: #10b981; }
 
-.notif-info p { margin: 0; font-size: 13px; color: #475467; line-height: 1.4; }
-.notif-info strong { color: #1e293b; }
-.notif-time { font-size: 11px; color: #94a3b8; display: block; margin-top: 4px; }
+.bg-blue {
+  background: #4f46e5;
+}
+
+.bg-orange {
+  background: #f59e0b;
+}
+
+.bg-green {
+  background: #10b981;
+}
+
+.notif-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #475467;
+  line-height: 1.4;
+}
+
+.notif-info strong {
+  color: #1e293b;
+}
+
+.notif-time {
+  font-size: 11px;
+  color: #94a3b8;
+  display: block;
+  margin-top: 4px;
+}
 
 .dropdown-footer {
-  padding: 12px; text-align: center; font-size: 13px; 
-  font-weight: 600; color: #4f46e5; cursor: pointer; border-top: 1px solid #f1f5f9;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f46e5;
+  cursor: pointer;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* Profile Box */
-.profile-box { width: 240px; }
+.profile-box {
+  width: 240px;
+}
+
 .profile-box-user {
-  padding: 20px; display: flex; align-items: center; gap: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .avatar-lg {
-  width: 44px; height: 44px; background: #4f46e5; color: white;
-  border-radius: 12px; display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 16px;
+  width: 44px;
+  height: 44px;
+  background: #4f46e5;
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
 }
 
-.user-details h4 { margin: 0; font-size: 14px; color: #1e293b; }
-.user-details p { margin: 0; font-size: 12px; color: #64748b; }
+.user-details h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #1e293b;
+}
 
-.dropdown-divider { height: 1px; background: #f1f5f9; margin: 4px 0; }
+.user-details p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 4px 0;
+}
 
 .menu-item {
-  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
-  color: #475467; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #475467;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
 }
-.menu-item:hover { background: #f8fafc; color: #4f46e5; }
-.logout-item:hover { background: #fef2f2; color: #ef4444; }
 
-.rotate-180 { transform: rotate(180deg); transition: 0.2s; }
+.menu-item:hover {
+  background: #f8fafc;
+  color: #4f46e5;
+}
+
+.logout-item:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: 0.2s;
+}
 
 :root {
   --primary-blue: #4e73df;
@@ -440,7 +584,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Prevent flex-item overflow */
+  min-width: 0;
+  /* Prevent flex-item overflow */
   background-color: #f8fafc;
 }
 
@@ -524,13 +669,14 @@
   }
 
   .desktop-search {
-    display: none; /* Mobile pe search hide kar di taaki space bache */
+    display: none;
+    /* Mobile pe search hide kar di taaki space bache */
   }
 
   .hide-mobile {
     display: none;
   }
-  
+
   .main-header {
     padding: 0 16px;
   }
@@ -565,6 +711,6 @@
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   z-index: 1002;
 }
