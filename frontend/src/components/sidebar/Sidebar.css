@@ -220,12 +220,12 @@
 
 /* Sidebar Nav Styling */
 .sidebar-logo {
-  /* padding: 20px 24px; */
+  padding: 20px 24px;
   /* Padding thoda adjust kiya hai */
   border-bottom: 1px solid #eef0f7;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* Logo ek taraf, close button dusri taraf */
 }
 
@@ -237,7 +237,7 @@
 }
 
 .logo {
-  height: 90px;
+  height: 40px;
   width: auto;
   object-fit: contain;
 }

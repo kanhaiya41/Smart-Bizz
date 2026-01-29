@@ -19,6 +19,8 @@ const MENU_CONFIG = {
     { name: "Inventory", path: "/owner/inventory", icon: "ri-box-3-line" },
     { name: "Accounts", path: "/owner/accounts", icon: "ri-wallet-3-line" },
     { name: "Users", path: "/owner/users", icon: "ri-group-line" },
+    { name: "Inventory", path: "/owner/rule-sheet", icon: "ri-group-line" },
+
   ],
   others: [
     { name: "Profile", path: "/owner/profile", icon: "ri-user-3-line" },
@@ -82,7 +84,7 @@ const Sidebar = () => {
       <aside className={`sidebar ${isSidebarOpen ? "show" : ""}`} ref={sidebarRef}>
         <div className="sidebar-logo">
           <div className="logo-wrapper">
-            <img src="/LOGOB.png" alt="logo" className="logo" />
+            <img src="/JLOGO.png" alt="logo" className="logo" />
             <h2 className="logo-text">Smartbizz</h2>
           </div>
           <button className="mobile-close" onClick={() => setIsSidebarOpen(false)}>
