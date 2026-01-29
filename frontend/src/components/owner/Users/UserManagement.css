@@ -315,7 +315,43 @@ width: 450px;
 border-radius: 10px;
 }
 
+/* Message ko ek line mein rakhne ke liye */
+.text-truncate {
+  display: inline-block;
+  max-width: 150px; /* Aap apne hisab se width adjust kar sakte hain */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
 
+/* Poora message dikhane ke liye */
+.text-full {
+  display: inline;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Read More button ka style */
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #2563eb; 
+  cursor: pointer;
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+.read-more-btn:hover {
+  text-decoration: underline;
+}
+
+.msg-preview-box p {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
 
 
 

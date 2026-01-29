@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { MoreVertical, MessageSquare, Search, Bell, X, Send, Globe } from "lucide-react";
-// import { MessageCircle, Instagram, Facebook, ChevronDown,  } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { MoreVertical, MessageSquare, Search, X, Send, Globe } from "lucide-react";
 import "./UserManagement.css";
 import { useApi } from "../../../api/useApi";
 import { toast } from "react-toastify";
@@ -15,18 +14,16 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [conversation, setConversation] = useState([]);
   const [activeFilter, setActiveFilter] = useState("All");
-  const [selectedUser, setSelectedUser] = useState(null); // Chat state
-  const chatRef = useRef(null);
-  
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [expandedMsgId, setExpandedMsgId] = useState(null);
 
+  const { loading: userLoading, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
+  const { request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
+  const { loading: loadingSingleConversation, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
 
-  const { loading: userLoading, error: userError, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
-  const { loading: toggleLoading, error: toggleError, request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
-  const { loading: loadingSingleConversation, error: singleComversationError, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
   const loadUsers = async () => {
     try {
       const res = await getAllUsers();
-      // Agar API data de raha hai toh wo set hoga, warna empty array
       setUsers(res?.data || []);
     } catch (error) {
       console.error("API Error:", error);
@@ -36,62 +33,55 @@ const UserManagement = () => {
   const handleToggleAutoReply = async (conversationId, toogleValue) => {
     try {
       const res = await toggleAutoReply(conversationId, toogleValue);
-      toast.success(res?.message)
-
+      toast.success(res?.message || "Status updated");
+      setUsers(prev => prev.map(u => u._id === conversationId ? { ...u, autoReplyEnabled: toogleValue } : u));
     } catch (error) {
-      console.error("API Error:", error);
+      toast.error("Failed to update status");
     }
   };
 
   const handleLoadSingleConversation = async (conversationId) => {
     try {
       const res = await singleLoadConversation(conversationId);
-      // Agar API data de raha hai toh wo set hoga, warna empty array
       setConversation(res?.data || []);
     } catch (error) {
-      navigate("/login")
       console.error("API Error:", error);
     }
   };
+
   useEffect(() => {
     loadUsers();
   }, []);
 
-
-  // SAFE FILTER LOGIC: Case insensitive aur null checks ke saath
   const filteredUsers = users.filter(user => {
-    const userName = user?.name?.toLowerCase() || "";
-    const userPlatform = user?.platform?.toLowerCase() || "";
+    const userName = (user?.customer?.name || "").toLowerCase();
+    const userPlatform = (user?.platform || "").toLowerCase();
     const filterKey = activeFilter.toLowerCase();
-
     const matchesSearch = userName.includes(searchTerm.toLowerCase());
-    const matchesPlatform = filterKey === "all" || userPlatform === filterKey;
+
+    let targetFilter = filterKey;
+    if (filterKey === "messenger") targetFilter = "facebook";
+    const matchesPlatform = filterKey === "all" || userPlatform === targetFilter;
 
     return matchesSearch && matchesPlatform;
   });
 
   return (
-    <div
-      onClick={() => setSelectedUser(null)}
-      className="UserPageDiv">
-      {/* HEADER - Wahi Image 1 Wala Clean Style */}
-      {/* <div className="user-header-main">
-        <div className="header-left">
-          <h1>User Management</h1>
-          <p>Monitor customer interactions and channel activity</p>
+    <div className="UserPageDiv" onClick={() => setSelectedUser(null)}>
+
+      {/* SEARCH BAR */}
+      <div className="user-header-right" style={{ marginBottom: '20px', padding: '0 20px' }}>
+        <div className="search-wrapper-user">
+          <Search size={18} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search by customer name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
-        <div className="user-header-right">
-          <div className="search-wrapper-user">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-      </div> */}
+      </div>
 
       {/* FILTERS */}
       <div className="user-filter-row">
@@ -99,194 +89,178 @@ const UserManagement = () => {
           <button
             key={f}
             className={`filter-pill ${activeFilter === f ? 'active' : ''}`}
-            onClick={() => setActiveFilter(f)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveFilter(f);
+            }}
           >
-            {f === 'All'
-              ? <Globe className="iconimg" />
-              : <img
-                src={f === 'Facebook' ? fbimg : f === 'Instagram' ? instaimg : whtsimg}
-                alt="pf"
+            {f === 'All' ? (
+              <Globe className="iconimg" size={16} />
+            ) : (
+              <img
+                src={f === 'Messenger' ? fbimg : f === 'Instagram' ? instaimg : whtsimg}
+                alt={f}
                 className="iconimg"
               />
-            }
-            {f}
+            )}
+            <span>{f}</span>
           </button>
         ))}
       </div>
 
-      {/* USER LIST CONTAINER */}
-
       <div className="user-table-container">
-        <div className="user-table-container">
-          <div className="user-table-header">
-            <div className="col-check"><input type="checkbox" /></div>
-            <div className="col-info">Customer Details</div>
-            <div className="col-plt">Platform</div>
-            <div className="col-msg">Last Message</div>
-            <div className="col-status">Activity</div>
-            <div className="col-act">Actions</div>
-          </div>
+        <div className="user-table-header">
+          <div className="col-check"><input type="checkbox" /></div>
+          <div className="col-info">Customer Details</div>
+          <div className="col-plt">Platform</div>
+          <div className="col-msg">Last Message</div>
+          <div className="col-status">Activity</div>
+          <div className="col-act">Actions</div>
+        </div>
 
-          <div className="user-table-body">
-            {userLoading ? (
-              <div className="state-msg">
-                <div className="loader-mini"></div> Loading...
-              </div>
-            ) : filteredUsers.length > 0 ? (
-              filteredUsers.map((item, idx) => {
-                const customerName = item?.customer?.name || "Unknown User";
-                const customerId = item?.customer?.externalId || "N/A";
+        <div className="user-table-body">
+          {userLoading ? (
+            <div className="state-msg">Loading users...</div>
+          ) : filteredUsers.length > 0 ? (
+            filteredUsers.map((item) => {
+              const customerName = item?.customer?.name || "Unknown User";
+              const customerId = item?.customer?.externalId || "N/A";
+              const lastMsgText = item?.lastMessage?.text || "No message yet";
+              const platform = (item.platform || "whatsapp").toLowerCase();
+              const sender = item?.lastMessage?.senderType === "user" ? "Client" : "Bot";
+              const isExpanded = expandedMsgId === item._id;
 
-                const lastMsgText = item?.lastMessage?.text || "No conversation yet";
-                const sender =
-                  item?.lastMessage?.senderType === "user" ? "Client" : "Bot";
-                const platform = item.platform || "-/"
+              return (
+                <div
+                  className={`user-row ${isExpanded ? 'row-expanded' : ''}`}
+                  key={item._id}
+                  onClick={() => {
+                    setSelectedUser(item);
+                    handleLoadSingleConversation(item._id);
+                  }}
+                >
+                  <div className="col-check" onClick={e => e.stopPropagation()}>
+                    <input type="checkbox" />
+                  </div>
 
-                return (
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="user-row" key={item._id || idx}>
-                    {/* CHECK */}
-                    <div className="col-check">
-                      <input type="checkbox" />
-                    </div>
-
-                    {/* CUSTOMER INFO */}
-                    <div className="col-info">
-                      <div className="user-profile-meta">
-                        <div className="avatar-circle">
-                          {customerName[0]}
-                        </div>
-                        <div style={{
-                          cursor: 'pointer'
-                        }} onClick={() => {
-                          handleLoadSingleConversation(item?._id)
-                          setSelectedUser(item)
-                        }} className="name-id">
-                          <strong>{customerName}</strong>
-                          <span>ID: {customerId}</span>
-                        </div>
-                        
-                      </div>
-                    </div>
-
-                    {/* PLATFORM */}
-                    <div className="col-plt">
-                      <span className="plt-badge whatsapp platform-badge">
-                        <img
-                          src={platform === 'facebook' ? fbimg : platform === 'instagram' ? instaimg : whtsimg}
-                          alt="pf"
-                          className="iconimg"
-                        />
-                        {platform}
-                      </span>
-                    </div>
-
-                    {/* LAST MESSAGE */}
-                    <div className="col-msg">
-                      <div className="msg-preview-box">
-                        <MessageSquare size={14} className="msg-icon-sub" />
-                        <p>
-                          <strong>{sender}:</strong> {lastMsgText}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* ACTIVITY */}
-                    <div className="col-status">
-                      <div className="activity-status-wrapper">
-                        <div className="pulse-indicator online"></div>
-                        <span className="time-text">
-                          {new Date(item.lastMessageAt).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* ACTIONS */}
-                    <div className="col-act">
-                      <div className="action-icons">
-                        <label className="switch">
-                          <input
-                            type="checkbox"
-                            checked={item?.autoReplyEnabled}
-                            onChange={(e) => {
-                              const isConfirmed = window.confirm("Are you Sure you want To update Auto Reply")
-                              if (isConfirmed) {
-                                handleToggleAutoReply(item?._id, e.target.checked)
-                              }
-
-                            }
-                            }
-                          />
-                          <span className="slider"></span>
-                        </label>
-                        <button className="icon-btn more">
-                          <MoreVertical size={15} />
-                        </button>
+                  <div className="col-info">
+                    <div className="user-profile-meta">
+                      <div className="avatar-circle">{customerName[0]}</div>
+                      <div className="name-id">
+                        <strong>{customerName}</strong>
+                        <span>ID: {customerId}</span>
                       </div>
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <div className="state-msg">
-                No users found matching your search/filter.
-              </div>
-            )}
-          </div>
 
-        </div>
-        {selectedUser && (
-          <div className="chatDiv">
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className='chat-view animate-slide-in'>
-              <div className='chat-header1'>
-                <div className='chat-user-info'>
-                  <div className='avatar-sm-chat'>{selectedUser?.customer?.name.charAt(0)}</div>
-                  <div>
-                    <h4>{selectedUser?.customer?.name}</h4>
-                    <span>Online • {selectedUser.platform}</span>
+                  <div className="col-plt">
+                    <span className={`plt-badge ${platform} platform-badge`}>
+                      <img
+                        src={platform === 'facebook' ? fbimg : platform === 'instagram' ? instaimg : whtsimg}
+                        alt="pf"
+                        className="iconimg"
+                      />
+                      {platform === 'facebook' ? 'Messenger' : platform}
+                    </span>
+                  </div>
+
+                  {/* LAST MESSAGE COLUMN */}
+                  <div className="col-msg">
+                    <div className="msg-preview-box">
+                      <MessageSquare size={14} className="msg-icon-sub" />
+                      <div className="msg-content">
+                        <strong>{sender}:</strong>{" "}
+                        <span className={isExpanded ? "msg-full" : "msg-truncated"}>
+                          {/* YAHAN FIX HAI: Agar expanded nahi hai toh sirf 15 chars + ... dikhao */}
+                          {isExpanded
+                            ? lastMsgText
+                            : `${lastMsgText?.substring(0, 15)}${lastMsgText?.length > 15 ? "..." : ""}`
+                          }
+                        </span>
+                        {lastMsgText?.length > 15 && (
+                          <button
+                            className="read-more-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedMsgId(isExpanded ? null : item._id);
+                            }}
+                          >
+                            {isExpanded ? " Show Less" : " more"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-status">
+                    <span className="time-text">
+                      {item.lastMessageAt ? moment(item.lastMessageAt).fromNow() : "N/A"}
+                    </span>
+                  </div>
+
+                  <div className="col-act" onClick={e => e.stopPropagation()}>
+                    <div className="action-icons">
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          checked={item?.autoReplyEnabled || false}
+                          onChange={(e) => {
+                            if (window.confirm("Update Auto Reply settings?")) {
+                              handleToggleAutoReply(item._id, e.target.checked);
+                            }
+                          }}
+                        />
+                        <span className="slider"></span>
+                      </label>
+                      <button className="icon-btn more"><MoreVertical size={15} /></button>
+                    </div>
                   </div>
                 </div>
-                <button className='close-chat' onClick={() => setSelectedUser(null)}>
-                  <X size={18} />
-                </button>
-              </div>
-
-              <div className='chat-messages-area1'>
-                {loadingSingleConversation && (
-                  <div className="state-msg">
-                    <div className="loader-mini"></div> Loading...
-                  </div>
-                )}
-                {!loadingSingleConversation && conversation.length > 0 ?
-                  conversation.map((msg, idx) => (
-                    <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
-                      <p>{msg.text}</p>
-                      <span> {moment(msg.updatedAt).format("hh:mm A")}</span>
-                    </div>
-                  )) : (
-                    <div className="state-msg">
-                      No Chats Are Found.
-                    </div>
-
-                  )}
-              </div>
-
-              <div className='chat-input-wrapper1'>
-                <input type="text" placeholder="Type a message..." />
-                <button className='send-btn'><Send size={16} /></button>
-              </div>
-            </div>
-            
-            </div>
-
-        )}
-
+              );
+            })
+          ) : (
+            <div className="state-msg">No users found.</div>
+          )}
+        </div>
       </div>
 
+      {/* CHAT MODAL SECTION */}
+      {selectedUser && (
+        <div className="chatDiv" onClick={() => setSelectedUser(null)}>
+          <div className="chat-view animate-slide-in" onClick={(e) => e.stopPropagation()}>
+            <div className="chat-header1">
+              <div className="chat-user-info">
+                <div className="avatar-sm-chat">{selectedUser?.customer?.name?.charAt(0)}</div>
+                <div>
+                  <h4>{selectedUser?.customer?.name}</h4>
+                  <span style={{ textTransform: 'capitalize' }}>{selectedUser.platform}</span>
+                </div>
+              </div>
+              <button className="close-chat" onClick={() => setSelectedUser(null)}><X size={18} /></button>
+            </div>
 
+            <div className="chat-messages-area1">
+              {loadingSingleConversation ? (
+                <div className="state-msg">Loading chat...</div>
+              ) : conversation.length > 0 ? (
+                conversation.map((msg, idx) => (
+                  <div key={idx} className={`chat-bubble ${msg?.senderType}`}>
+                    <p>{msg.text}</p>
+                    <span>{moment(msg.createdAt).format("hh:mm A")}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="state-msg">No messages yet.</div>
+              )}
+            </div>
+
+            <div className="chat-input-wrapper1">
+              <input type="text" placeholder="Type a message..." onClick={(e) => e.stopPropagation()} />
+              <button className="send-btn"><Send size={16} /></button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -64,9 +64,17 @@ const AccountsPage = () => {
   }, []);
 
 
+  // Filter logic ko update karein:
   const filteredTenants = tenants.filter(item => {
-    const matchesFilter = filter === "All" || item?.type?.toLowerCase() === filter.toLowerCase();
-    const matchesSearch = item.businessName.toLowerCase().includes(searchTerm.toLowerCase());
+    // 1. Check karein ki filter 'All' hai ya item ka platform filter se match karta hai
+    // Hum 'item.platform' use kar rahe hain kyunki aapne card mein wahi use kiya hai
+    const itemPlatform = item?.platform?.toLowerCase() || "";
+    const matchesFilter = filter === "All" || itemPlatform === filter.toLowerCase();
+
+    // 2. Search logic
+    const businessName = item?.businessName?.toLowerCase() || "";
+    const matchesSearch = businessName.includes(searchTerm.toLowerCase());
+
     return matchesFilter && matchesSearch;
   });
 
