@@ -72,14 +72,32 @@ const Inventory = () => {
       </div>
 
       <div className="upload-grid-double">
-        {/* CATEGORY 1: RULES SHEETS (Ab ye button ki tarah kaam karega) */}
-        <div className="upload-card rules-border clickable-card" onClick={() => navigate("/owner/rule-sheet")}>
-          <div className="card-badge rules-bg">AI Training Rules</div>
-
-          {rulesheet && rulesheet !== null ? (
+        {/* RULE SHEET */}
+        {console.log("rulse", rulesheet)
+        }
+        {rulesheet ? (
+          <div
+            className="upload-card rules-border clickable-card"
+            onClick={() => navigate("/owner/rule-sheet", { state: rulesheet })}
+          >
+            <div className="card-badge rules-bg">AI Training Rules</div>
             <div className="file-drop-area no-dash">
+              <div className="icon-circle rules-icon">
+                <BookOpen size={28} color="#f59e0b" />
+              </div>
+              <h3>Modify Rulesheet</h3>
+              <p>Fill out the form to define business policies</p>
+              <div className="go-btn-minimal">
+                <PlusCircle size={18} /> <span>Modify Now</span>
+              </div>
             </div>
-          ) : (
+          </div>
+        ) : (
+          <div
+            className="upload-card rules-border clickable-card"
+            onClick={() => navigate("/owner/rule-sheet")}
+          >
+            <div className="card-badge rules-bg">AI Training Rules</div>
             <div className="file-drop-area no-dash">
               <div className="icon-circle rules-icon">
                 <BookOpen size={28} color="#f59e0b" />
@@ -90,18 +108,27 @@ const Inventory = () => {
                 <PlusCircle size={18} /> <span>Create Now</span>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-        </div>
-
-        {/* CATEGORY 2: INVENTORY FILES (Ye wahi purana upload hai) */}
+        {/* INVENTORY */}
         <div className="upload-card inventory-border">
           <div className="card-badge inventory-bg">Stock Data</div>
           <div className="file-drop-area">
-            <input type="file" accept=".csv, .json" id="inventory-upload" onChange={handleSaveFile} hidden />
+            <input
+              type="file"
+              accept=".csv,.json"
+              id="inventory-upload"
+              onChange={handleSaveFile}
+              hidden
+            />
             <label htmlFor="inventory-upload" className="drop-label">
               <div className="icon-circle inventory-icon">
-                {loadingUpload ? <div className="loader-mini"></div> : <ClipboardList size={28} color="#10b981" />}
+                {loadingUpload ? (
+                  <div className="loader-mini"></div>
+                ) : (
+                  <ClipboardList size={28} color="#10b981" />
+                )}
               </div>
               <h3>Upload Inventory</h3>
               <p>Import products via CSV or JSON file</p>
@@ -109,6 +136,7 @@ const Inventory = () => {
           </div>
         </div>
       </div>
+
 
       {/* LIST SECTION */}
       <div className="inventory-content-card">

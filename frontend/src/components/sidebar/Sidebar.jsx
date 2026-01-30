@@ -5,6 +5,8 @@ import {
   ChevronDown, Search, Bell, User, Settings, LogOut,
   MessageSquare, Package, AlertCircle, CheckCircle, Menu, X
 } from 'lucide-react';
+import { useApi } from "../../api/useApi";
+import businessOwnerApi from "../../api/apiService";
 
 const MENU_CONFIG = {
   superAdmin: [
@@ -19,7 +21,7 @@ const MENU_CONFIG = {
     { name: "Inventory", path: "/owner/inventory", icon: "ri-box-3-line" },
     { name: "Accounts", path: "/owner/accounts", icon: "ri-wallet-3-line" },
     { name: "Users", path: "/owner/users", icon: "ri-group-line" },
-    { name: "Inventory", path: "/owner/rule-sheet", icon: "ri-group-line" },
+    // { name: "Inventory", path: "/owner/rule-sheet", icon: "ri-group-line" },
 
   ],
   others: [
@@ -34,6 +36,7 @@ const Sidebar = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile toggle state
+  const [profile, setProfile] = useState(null);
 
 
   const notifRef = useRef(null);
@@ -76,14 +79,17 @@ const Sidebar = () => {
     return currentItem ? currentItem.name : "Dashboard";
   };
 
-  const profile = JSON.parse(localStorage.getItem("profile")) || null;
+  const { loading, request: getProfile } = useApi(businessOwnerApi.getProfile);
+  const loadProfile = async () => {
+    try {
+      const res = await getProfile();
+      setProfile(res?.data || null);
+    } catch (error) { console.log(error); }
+  };
 
-  useEffect(() => {
-    if (!profile) {
-      navigate("/login");
-    }
-    console.log("profile", profile);
-  }, [profile]);
+
+
+  useEffect(() => { loadProfile(); }, []);
 
 
 

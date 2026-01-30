@@ -16,10 +16,12 @@ const UserManagement = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedUser, setSelectedUser] = useState(null);
   const [expandedMsgId, setExpandedMsgId] = useState(null);
+  const [replyMessage, setReplyMessage] = useState("");
 
   const { loading: userLoading, request: getAllUsers } = useApi(businessOwnerApi.getUsers);
   const { request: toggleAutoReply } = useApi(businessOwnerApi.toggleAutoReply);
   const { loading: loadingSingleConversation, request: singleLoadConversation } = useApi(businessOwnerApi.singleConversationbyUser);
+  const { loading: msgSendLoading, error: msgSendError, request: sendReplyMessage } = useApi(businessOwnerApi.replytheMessage);
 
   const loadUsers = async () => {
     try {
@@ -48,6 +50,56 @@ const UserManagement = () => {
       console.error("API Error:", error);
     }
   };
+  const handleReplyMessage = async (selectedUser) => {
+    try {
+
+      const now = new Date();
+      const lastCustomerMsgTime = new Date(selectedUser.lastMessageAt);
+
+      const diffHours =
+        (now.getTime() - lastCustomerMsgTime.getTime()) / (1000 * 60 * 60);
+
+      if (diffHours > 24) {
+        toast.info("Cannot reply. 24-hour messaging window expired.")
+        return
+      }
+      // console.log("lastCustomerMsgTime", lastCustomerMsgTime);
+      // console.log("diffHours", diffHours);
+
+      // console.log("call", replyMessage);
+      const message = replyMessage?.trim();
+      // console.log("call", message);
+      if (!message) return;
+
+      const payload = {
+        senderId: selectedUser?.customer?.externalId,
+        replyMessage: message,
+        conversationId: selectedUser?._id
+      };
+
+      await sendReplyMessage(payload); //  real API function
+
+      loadUsers()
+
+      handleLoadSingleConversation(selectedUser._id);
+      setReplyMessage("")
+      toast.success("Message Sent Succssfully")
+
+
+    } catch (error) {
+      console.error("API Error:", error);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+
+      toast.error(message);
+
+      // navigate("/login");
+    }
+  };
+
 
   useEffect(() => {
     loadUsers();
@@ -65,7 +117,24 @@ const UserManagement = () => {
 
     return matchesSearch && matchesPlatform;
   });
+  const handleDisable = (selectedUser) => {
+    const message = replyMessage?.trim();
 
+    // console.log({
+    //   msgSendLoading,
+    //   senderType: selectedUser?.lastMessage?.senderType,
+    //   message
+    // });
+
+    const result = (
+      msgSendLoading ||
+      selectedUser?.lastMessage?.senderType !== "customer" ||
+      !message
+    );
+    // console.log(result);
+
+    return result
+  };
   return (
     <div className="UserPageDiv" onClick={() => setSelectedUser(null)}>
 
@@ -254,10 +323,29 @@ const UserManagement = () => {
                 <div className="state-msg">No messages yet.</div>
               )}
             </div>
+            <div className='chat-input-wrapper'>
+              <input
+                value={replyMessage}
+                onChange={(e) => setReplyMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !handleDisable(selectedUser)) {
+                    handleReplyMessage(selectedUser);
+                  }
+                }} id='replymessageId' type="text" placeholder="Type a message..." />
+              <button
+                type="button"
+                onClick={() => handleReplyMessage(selectedUser)}
+                disabled={handleDisable(selectedUser)}
+                className="send-btn"
+              >
+                {msgSendLoading ? (
+                  <div className="loader-mini"></div>
+                ) : (
+                  <Send size={16} />
+                )}
+              </button>
 
-            <div className="chat-input-wrapper1">
-              <input type="text" placeholder="Type a message..." onClick={(e) => e.stopPropagation()} />
-              <button className="send-btn"><Send size={16} /></button>
+
             </div>
           </div>
         </div>

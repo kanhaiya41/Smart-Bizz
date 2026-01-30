@@ -53,11 +53,14 @@ const ProfileManagement = () => {
     try {
       const res = await updateUserProfile(formDataPayload);
       toast.success("Changes saved successfully");
-      setIsEditingPersonal(false);
-      setIsEditingAddress(false);
       localStorage.setItem("profile", JSON.stringify(res?.user));
-      loadProfile();
-    } catch (error) { toast.error("Update failed"); }
+      setIsEditing(false)
+      await loadProfile();
+    } catch (error) {
+      console.log("error", error);
+
+      toast.error("Update failed");
+    }
   };
 
   useEffect(() => {

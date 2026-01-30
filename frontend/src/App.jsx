@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css"
 // Components
-import Login from "./components/Login/Login";
 import OwnerDashboard from "./components/owner/own dashboard/OwnerDashboard";
 import Inventory from "./components/owner/Inventory/Inventory";
 import Sidebar from "./components/sidebar/Sidebar.jsx";
@@ -11,7 +10,6 @@ import UserMangement from "./components/owner/Users/UserManagement.jsx";
 import ProfileManagement from "./components/owner/ProfilePage/ProfileManagement.jsx";
 import SupportAndHelp from "./components/owner/SupportAndHelp/SupportAndHelp.jsx";
 import Rulesheet from "./components/owner/RuleSheet/Rulesheet.jsx";
-import AuthPage from "./components/auth/AuthPage.jsx";
 import LandingPage from "./components/LandingPage/LandingPage.jsx";
 
 

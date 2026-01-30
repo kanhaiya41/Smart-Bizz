@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Store, MessageSquare, ShieldAlert, ChevronRight,
   ChevronLeft, CheckCircle2, Bot, Target, Languages
@@ -17,6 +17,18 @@ const Rulesheet = () => {
     aiBehaviour: { personality: '', responseStyle: '', language: 'english', restrictions: { noSlang: false, noJargon: false, noEmojis: false, noPromises: false } },
     dosAndDonts: { canDo: '', cannotDo: '', restrictions: { discountAllowed: false, competitorComparison: false, priceNegotiation: false, futurePromises: false } }
   });
+  const location = useLocation()
+  const rulesheet = location.state || null;
+
+  useEffect(() => {
+    if (!rulesheet) return;
+
+    setFormData({
+      businessInfo: rulesheet.businessInfo ?? formData.businessInfo,
+      aiBehaviour: rulesheet.aiBehaviour ?? formData.aiBehaviour,
+      dosAndDonts: rulesheet.dosAndDonts ?? formData.dosAndDonts
+    });
+  }, [rulesheet]);
 
   const sections = [
     { id: 'section1', title: 'Business Identity', desc: 'Core business info', icon: <Store size={20} /> },
@@ -53,7 +65,14 @@ const Rulesheet = () => {
   const handleSubmit = async () => {
     try {
       await addRulesheet(formData)
+      navigate(-1)
+      setFormData({
+        businessInfo: { name: '', type: '', email: '', phone: '', websiteLink: '', description: '', targetCustomers: '' },
+        aiBehaviour: { personality: '', responseStyle: '', language: 'english', restrictions: { noSlang: false, noJargon: false, noEmojis: false, noPromises: false } },
+        dosAndDonts: { canDo: '', cannotDo: '', restrictions: { discountAllowed: false, competitorComparison: false, priceNegotiation: false, futurePromises: false } }
+      });
       toast.success("Rulesheet Updated Successfully")
+
 
     } catch (error) {
       toast.error("Error To Upload Rulesheet")
@@ -72,7 +91,22 @@ const Rulesheet = () => {
     <div className="rs-container">
       {/* Sidebar Navigation - Professional Look */}
       <aside className="rs-sidebar">
+        <div style={{
+          padding: '10px',
+          marginBottom: '10px'
+        }}>
+          <button
+            className={`rs-btn-secondary hover`}
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeft size={18} /> Back
+          </button>
+        </div>
+
+
         <div className="rs-sidebar-header">
+
+
           <div className="rs-logo-box"><Bot color="white" /></div>
           <div>
             <h3>AI Configurator</h3>

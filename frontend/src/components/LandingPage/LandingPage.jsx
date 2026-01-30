@@ -161,9 +161,9 @@ const LandingPage = () => {
 
   const handeNavigate = () => {
     setLoading(true)
-    setTimeout(() => {
+    setTimeout(async () => {
 
-      const token = localStorage.getItem("token")
+      const token = await localStorage.getItem("token")
       console.log("clcike");
 
       if (!token) {

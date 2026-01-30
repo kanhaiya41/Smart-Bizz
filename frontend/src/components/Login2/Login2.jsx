@@ -40,19 +40,6 @@ const Login2 = () => {
     }, []);
 
     // 🔥 Handle Input Change
-    const handleChange = (e) => {
-        setLoginData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
-    };
-    const handleChangeInRegister = (e) => {
-        setRegisterData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
-    };
-
 
     const [loginData, setLoginData] = useState({
         email: "",
@@ -65,6 +52,25 @@ const Login2 = () => {
         email: "",
         password: ""
     });
+    const handleChange = (e) => {
+        setLoginData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+    const handleChangeInRegister = (e) => {
+
+
+
+        setRegisterData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+        console.log("registerData", registerData);
+
+    };
+
+
 
     const {
         request: loginRequest,
@@ -107,7 +113,7 @@ const Login2 = () => {
             await signupRequest(registerData);
             toast.success("Account created");
             setIsLogin(true);
-
+            setActiveForm("login")
             setRegisterData({
                 firstName: "",
                 lastName: "",
@@ -194,6 +200,13 @@ const Login2 = () => {
                                         {loginLoading ? <div className="loader-mini"></div> : "Login Now →"}
                                     </button>
 
+                                    {loginError && (
+                                        <p style={{
+                                            color: 'red',
+                                            fontSize: '12px'
+                                        }}>{loginError}</p>
+
+                                    )}
                                     <a className="login3-forgot" href="#">
                                         Forgot Password
                                     </a>
@@ -222,7 +235,7 @@ const Login2 = () => {
                                         <span className="login3-icon">👤</span>
                                         <input
                                             type="text"
-                                            name="name"
+                                            name="firstName"
                                             placeholder="First Name"
                                             value={registerData.firstName}
                                             onChange={handleChangeInRegister}
@@ -234,7 +247,7 @@ const Login2 = () => {
                                         <span className="login3-icon">👤</span>
                                         <input
                                             type="text"
-                                            name="name"
+                                            name="lastName"
                                             placeholder="Last Name"
                                             value={registerData.lastName}
                                             onChange={handleChangeInRegister}
@@ -269,6 +282,13 @@ const Login2 = () => {
                                         {signupLoading ? <div className="loader-mini"></div> : "Create Account →"}
 
                                     </button>
+                                    {signupError && (
+                                        <p style={{
+                                            color: 'red',
+                                            fontSize: '12px'
+                                        }}>{loginError}</p>
+
+                                    )}
 
                                     <p className="login3-switch">
                                         Already have an account?{" "}

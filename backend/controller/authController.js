@@ -233,9 +233,6 @@ const instagramConnection = async (pages, userId, type) => {
           }
         );
 
-        console.log("igRes", igRes);
-
-
         if (igRes.data.instagram_business_account) {
           return {
             pageId: page.id,
@@ -259,41 +256,52 @@ const instagramConnection = async (pages, userId, type) => {
     throw new Error("No Instagram business account linked");
   }
 
-  const igPage = igPages[0];
+  const createdTenants = [];
 
-  // FIX: await added
-  // const existingTenant = await Tenant.findOne({
-  //   "page.igBusinessId": igPage.igBusinessId
-  // });
 
-  // if (existingTenant) {
-  //   return { alreadyConnected: true, platform: type };
-  // }
+    // OPTIONAL: duplicate check
+    const existingTenant = await Tenant.findOne({
+      "page.igBusinessId": igPage.igBusinessId
+    });
 
-  const tenant = await Tenant.create({
-    owner: userId,
-    businessName: igPage.pageName,
+    if (existingTenant) {
+      createdTenants.push({
+        tenantId: existingTenant._id,
+        alreadyConnected: true
+      });
+      continue;
+    }
+
+    const tenant = await Tenant.create({
+      owner: userId,
+      businessName: igPage.pageName,
+      platform: type,
+      page: {
+        pageId: igPage.pageId,
+        igBusinessId: igPage.igBusinessId,
+        accessToken: igPage.pageAccessToken
+      }
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: {
+        tenants: { name: type, tenantId: tenant._id }
+      }
+    });
+
+    createdTenants.push({
+      tenantId: tenant._id,
+      pageName: igPage.pageName
+    });
+  }
+
+  return {
+    success: true,
     platform: type,
-    page: {
-      pageId: igPage.pageId,
-      igBusinessId: igPage.igBusinessId,
-      accessToken: igPage.pageAccessToken
-    }
-  });
-
-  console.log("tenant", tenant);
-
-
-  const updated = await User.findByIdAndUpdate(userId, {
-    $push: {
-      tenants: { name: type, tenantId: tenant._id }
-    }
-  }, { new: true });
-  console.log("updated", updated);
-
-
-  return { success: true, tenantId: tenant._id, platform: type };
+    tenants: createdTenants
+  };
 };
+
 
 
 const whatsappConnection = async (userId, accessToken) => {
