@@ -258,6 +258,7 @@ const instagramConnection = async (pages, userId, type) => {
 
   const createdTenants = [];
 
+  for (const igPage of igPages) {
 
     // OPTIONAL: duplicate check
     const existingTenant = await Tenant.findOne({
